@@ -1,5 +1,7 @@
 package AST;
 import TYPES.*;
+import IR.*;
+import TEMP.*;
 import SYMBOL_TABLE.*;
 
 import java.util.Objects;
@@ -8,6 +10,7 @@ public class AST_STMT_FUNCCALL extends AST_STMT
 	public String fname;
 	public AST_VAR v;
 	public AST_EXP_LIST l;
+	public TYPE_FUNCTION functionType;
 
 	/**/
 	/* CONSTRUCTOR(S) */
@@ -78,6 +81,7 @@ public class AST_STMT_FUNCCALL extends AST_STMT
 				System.out.format(">> ERROR [%d:%d] can't find function %s\n",2,2, fname);
 				throw new semanticExc(this.LineNum);}
 
+			functionType = (TYPE_FUNCTION) func;
 			TYPE returnType =  (TYPE_FUNCTION)func.type;
 			TYPE_LIST expectedParams = ((TYPE_FUNCTION) func.type).params;
 			for (AST_EXP_LIST it=l; it != null; it=it.restoflist) {
@@ -123,5 +127,15 @@ public class AST_STMT_FUNCCALL extends AST_STMT
 
 		}
 		return null;
+	}
+	
+	public TEMP IRme() {
+		if(v != null){
+			v.IRme();
+		}
+		TEMP_LIST arg_temps = (l != null ? l.IRme() : null);
+		TEMP resReg = TEMP_FACTORY.getInstance().getFreshTEMP();
+		IR.getInstance().Add_IRcommand(new IRcommand_Func_Call(resReg, functionType, arg_temps));
+		return resReg;
 	}
 }
