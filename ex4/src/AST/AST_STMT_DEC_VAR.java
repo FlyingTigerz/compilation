@@ -1,5 +1,7 @@
 package AST;
 import TYPES.*;
+import IR.*;
+import TEMP.*;
 import SYMBOL_TABLE.*;
 
 public class AST_STMT_DEC_VAR extends AST_STMT
@@ -10,6 +12,7 @@ public class AST_STMT_DEC_VAR extends AST_STMT
 	public AST_TYPE type;
 	public String name;
 	public AST_EXP exp;
+	private int offset;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
@@ -88,7 +91,7 @@ public class AST_STMT_DEC_VAR extends AST_STMT
 		/* [2] Enter the Function Type to the Symbol Table */
 		/***************************************************/
 		SYMBOL_TABLE.getInstance().enter(name, t);
-
+		this.offset = SYMBOL_TABLE.getInstance().find(name).offset;
 		/***************************************************/
 		/* [3] check assigned expression type validity */
 		/***************************************************/
@@ -119,4 +122,16 @@ public class AST_STMT_DEC_VAR extends AST_STMT
 		/*********************************************************/
 		return t;
 	}
+	
+	public TEMP IRme()
+	{
+		TEMP dst = IR.getInstance().fp;
+		if(exp != null) {
+			TEMP src = exp.IRme();
+			IR.getInstance().Add_IRcommand(new IRcommand_Store_Temp(src, dst, this.offset));
+		}
+
+		return null;
+	}
+	
 }
