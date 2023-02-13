@@ -1,27 +1,34 @@
 package TYPES;
 
-public class TYPE_VOID extends TYPE
+public class TYPE_NIL extends TYPE
 {
 	/**************************************/
 	/* USUAL SINGLETON IMPLEMENTATION ... */
 	/**************************************/
-	private static TYPE_VOID instance = null;
+	private static TYPE_NIL instance = null;
 
 	/*****************************/
 	/* PREVENT INSTANTIATION ... */
 	/*****************************/
-	protected TYPE_VOID() {}
+	protected TYPE_NIL() {}
 
 	/******************************/
 	/* GET SINGLETON INSTANCE ... */
 	/******************************/
-	public static TYPE_VOID getInstance()
+	public static TYPE_NIL getInstance()
 	{
 		if (instance == null)
 		{
-			instance = new TYPE_VOID();
-			instance.name = "void";
+			instance = new TYPE_NIL();
+			instance.name = "nil";
 		}
 		return instance;
+	}
+
+	public boolean isInstanceOf(TYPE t) {
+		if (t.isArray() || t.isClass()) {
+			return true;
+		}
+		return false;
 	}
 }
