@@ -1,8 +1,7 @@
 package AST;
 
-import TYPES.*;
-import TEMP.*;
-import IR.*;
+import TYPES.TYPE;
+import TYPES.TYPE_INT;
 
 public class AST_EXP_INT extends AST_EXP
 {
@@ -11,15 +10,23 @@ public class AST_EXP_INT extends AST_EXP
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_INT(int value)
+	public AST_EXP_INT(int LineNum,int value)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
 		System.out.format("====================== exp -> INT( %d )\n", value);
+
+		/*******************************/
+		/* COPY INPUT DATA NENBERS ... */
+		/*******************************/
 		this.value = value;
+		this.LineNum=++LineNum;
 	}
 
 	/************************************************/
@@ -32,21 +39,13 @@ public class AST_EXP_INT extends AST_EXP
 		/*******************************/
 		System.out.format("AST NODE INT( %d )\n",value);
 
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
+		/*********************************/
+		/* Print to AST GRAPHIZ DOT file */
+		/*********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			String.format("INT(%d)",value));
 	}
-	public TEMP IRme()
-	{
-		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
-		IR.getInstance().Add_IRcommand(new IRcommandConstInt(t,value));
-		return t;
-	}
-	public TYPE SemantMe()
-	{
-		return TYPE_INT.getInstance();
-	}
+	public TYPE SemantMe() { return TYPE_INT.getInstance(); }
+
 }

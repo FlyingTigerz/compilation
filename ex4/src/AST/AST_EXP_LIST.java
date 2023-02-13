@@ -1,59 +1,66 @@
 package AST;
 
-import TEMP.*;
+import TYPES.TYPE;
 
-public class AST_EXP_LIST extends AST_Node
+public class AST_EXP_LIST extends AST_EXP
 {
-	/****************/
-	/* DATA MEMBERS */
-	/****************/
-	public AST_EXP head;
-	public AST_EXP_LIST tail;
-
+	AST_EXP first;
+	AST_EXP_LIST restoflist;
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_LIST(AST_EXP head,AST_EXP_LIST tail)
+	public AST_EXP_LIST(int LineNum,AST_EXP first,AST_EXP_LIST restoflist)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
-		this.head = head;
-		this.tail = tail;
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
+		if (restoflist != null) System.out.print("====================== exps -> exp, exps\n");
+		if (restoflist == null) System.out.print("====================== exps -> exp      \n");
+
+		/*******************************/
+		/* COPY INPUT DATA NENBERS ... */
+		/*******************************/
+		this.first = first;
+		this.restoflist=restoflist;
+		this.LineNum=++LineNum;
 	}
-	public TEMP IRme()
-	{
-		return head.IRme();
-	}
-	/******************************************************/
-	/* The printing message for a statement list AST node */
-	/******************************************************/
+	
+	/*************************************************/
+	/* The printing message for a binop exp AST node */
+	/*************************************************/
 	public void PrintMe()
 	{
-		/********************************/
-		/* AST NODE TYPE = AST EXP LIST */
-		/********************************/
+		
 		System.out.print("AST NODE EXP LIST\n");
+		
+		
+		if (first != null) first.PrintMe();
+		if (restoflist != null) restoflist.PrintMe();
 
-		/*************************************/
-		/* RECURSIVELY PRINT HEAD + TAIL ... */
-		/*************************************/
-		if (head != null) head.PrintMe();
-		if (tail != null) tail.PrintMe();
-
-		/**********************************/
+		/************/
 		/* PRINT to AST GRAPHVIZ DOT file */
-		/**********************************/
+		/************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			"EXP\nLIST\n");
 		
-		/****************************************/
+		/**************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
-		/****************************************/
-		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,head.SerialNumber);
-		if (tail != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,tail.SerialNumber);
+		/**************/
+		if (first != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,first.SerialNumber);
+		if (restoflist != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,restoflist.SerialNumber);	
+	
+	}
+	public TYPE SemantMe() throws semanticExc
+	{
+		if (first != null) first.SemantMe();
+		if (restoflist != null) restoflist.SemantMe();
+
+		return null;
 	}
 }

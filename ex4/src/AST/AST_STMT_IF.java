@@ -1,7 +1,8 @@
 package AST;
-
 import TYPES.*;
 import SYMBOL_TABLE.*;
+
+import java.util.Objects;
 
 public class AST_STMT_IF extends AST_STMT
 {
@@ -11,75 +12,42 @@ public class AST_STMT_IF extends AST_STMT
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_IF(AST_EXP cond,AST_STMT_LIST body)
+	public AST_STMT_IF(int LineNum,AST_EXP cond,AST_STMT_LIST body)
 	{
-		/******************************/
-		/* SET A UNIQUE SERIAL NUMBER */
-		/******************************/
+
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
 		this.cond = cond;
 		this.body = body;
+		this.LineNum=++LineNum;
+		System.out.print("====================== stmt -> IF(exp){stmtList}\n");
 	}
-
-	/*************************************************/
-	/* The printing message for a binop exp AST node */
-	/*************************************************/
 	public void PrintMe()
 	{
-		/*************************************/
-		/* AST NODE TYPE = AST SUBSCRIPT VAR */
-		/*************************************/
-		System.out.print("AST NODE STMT IF\n");
+		System.out.print("IF STATEMENT\n");
 
-		/**************************************/
-		/* RECURSIVELY PRINT left + right ... */
-		/**************************************/
 		if (cond != null) cond.PrintMe();
 		if (body != null) body.PrintMe();
 
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
+
 		AST_GRAPHVIZ.getInstance().logNode(
-			SerialNumber,
-			"IF (left)\nTHEN right");
-		
-		/****************************************/
-		/* PRINT Edges to AST GRAPHVIZ DOT file */
-		/****************************************/
+				SerialNumber,
+				String.format("IF\n(cond) {body}"));
 		if (cond != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,cond.SerialNumber);
 		if (body != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,body.SerialNumber);
 	}
-
-	public TYPE SemantMe()
-	{
-		/****************************/
-		/* [0] Semant the Condition */
-		/****************************/
-		if (cond.SemantMe() != TYPE_INT.getInstance())
-		{
-			System.out.format(">> ERROR [%d:%d] condition inside IF is not integral\n",2,2);
+	public TYPE SemantMe() throws semanticExc{
+		TYPE condType = cond.SemantMe();
+		if(!Objects.equals(condType.name, TYPE_INT.getInstance().name)){
+			System.out.format(">> ERROR [%d:%d] invalid condition\n",2,2);
+			throw new semanticExc(this.LineNum);
 		}
-		
-		/*************************/
-		/* [1] Begin Class Scope */
-		/*************************/
+
 		SYMBOL_TABLE.getInstance().beginScope();
+		TYPE_LIST bodyType = body.SemantMe();
 
-		/***************************/
-		/* [2] Semant Data Members */
-		/***************************/
-		body.SemantMe();
-
-		/*****************/
-		/* [3] End Scope */
-		/*****************/
 		SYMBOL_TABLE.getInstance().endScope();
+		return null;
+	}
 
-		/*********************************************************/
-		/* [4] Return value is irrelevant for class declarations */
-		/*********************************************************/
-		return null;		
-	}	
 }

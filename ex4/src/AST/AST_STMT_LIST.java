@@ -1,8 +1,8 @@
 package AST;
-
 import TYPES.*;
-import TEMP.*;
+import SYMBOL_TABLE.*;
 
+import java.util.Objects;
 public class AST_STMT_LIST extends AST_Node
 {
 	/****************/
@@ -14,7 +14,7 @@ public class AST_STMT_LIST extends AST_Node
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_STMT_LIST(AST_STMT head,AST_STMT_LIST tail)
+	public AST_STMT_LIST(int LineNum,AST_STMT head,AST_STMT_LIST tail)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -32,6 +32,7 @@ public class AST_STMT_LIST extends AST_Node
 		/*******************************/
 		this.head = head;
 		this.tail = tail;
+		this.LineNum=++LineNum;
 	}
 
 	/******************************************************/
@@ -54,29 +55,28 @@ public class AST_STMT_LIST extends AST_Node
 		/* PRINT to AST GRAPHVIZ DOT file */
 		/**********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-			SerialNumber,
-			"STMT\nLIST\n");
-		
+				SerialNumber,
+				"STMT\nLIST\n");
+
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,head.SerialNumber);
 		if (tail != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,tail.SerialNumber);
 	}
-	
-	public TEMP IRme()
-	{
-		if (head != null) head.IRme();
-		if (tail != null) tail.IRme();
-		
-		return null;
+	public TYPE_LIST SemantMe() throws semanticExc{
+		TYPE rtype=null;
+		TYPE_LIST prev=null;
+		if(head!=null){
+			TYPE stmttype=head.SemantMe();
+			if(head instanceof AST_STMT_RETURN){
+				rtype=stmttype;
+			}
+		}
+		if(tail!=null){
+			prev=tail.SemantMe();
+		};
+		return new TYPE_LIST(rtype,prev);
 	}
-	
-	public TYPE SemantMe()
-	{
-		if (head != null) head.SemantMe();
-		if (tail != null) tail.SemantMe();
-		
-		return null;
-	}
+
 }
