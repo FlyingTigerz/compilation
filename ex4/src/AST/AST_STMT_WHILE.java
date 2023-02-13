@@ -1,71 +1,45 @@
 package AST;
+import SYMBOL_TABLE.*;
+import TYPES.*;
+import java.util.Objects;
 
-import TEMP.*;
-import IR.*;
-import MIPS.*;
 
-public class AST_STMT_WHILE extends AST_STMT
-{
-	public AST_EXP cond;
-	public AST_STMT_LIST body;
-
-	/*******************/
-	/*  CONSTRUCTOR(S) */
-	/*******************/
-	public AST_STMT_WHILE(AST_EXP cond,AST_STMT_LIST body)
+	public class AST_STMT_WHILE extends AST_STMT
 	{
-		this.cond = cond;
-		this.body = body;
-	}
-	public TEMP IRme()
-	{
-		/*******************************/
-		/* [1] Allocate 2 fresh labels */
-		/*******************************/
-		String label_end   = IRcommand.getFreshLabel("end");
-		String label_start = IRcommand.getFreshLabel("start");
-	
-		/*********************************/
-		/* [2] entry label for the while */
-		/*********************************/
-		IR.
-		getInstance().
-		Add_IRcommand(new IRcommand_Label(label_start));
-
-		/********************/
-		/* [3] cond.IRme(); */
-		/********************/
-		TEMP cond_temp = cond.IRme();
-
-		/******************************************/
-		/* [4] Jump conditionally to the loop end */
-		/******************************************/
-		IR.
-		getInstance().
-		Add_IRcommand(new IRcommand_Jump_If_Eq_To_Zero(cond_temp,label_end));		
+		public AST_EXP cond;
+		public AST_STMT_LIST body;
 
 		/*******************/
-		/* [5] body.IRme() */
+		/*  CONSTRUCTOR(S) */
 		/*******************/
-		body.IRme();
+		public AST_STMT_WHILE(int LineNum,AST_EXP cond,AST_STMT_LIST body)
+		{
+			this.cond = cond;
+			this.body = body;
+			this.LineNum=++LineNum;
+			System.out.print("====================== stmt -> WHILE(exp){stmtList}\n");
+		}
 
-		/******************************/
-		/* [6] Jump to the loop entry */
-		/******************************/
-		IR.
-		getInstance().
-		Add_IRcommand(new IRcommand_Jump_Label(label_start));		
 
-		/**********************/
-		/* [7] Loop end label */
-		/**********************/
-		IR.
-		getInstance().
-		Add_IRcommand(new IRcommand_Label(label_end));
 
-		/*******************/
-		/* [8] return null */
-		/*******************/
+	public TYPE SemantMe() throws semanticExc {
+		System.out.print("WE ARE HERE");
+		TYPE condType = cond.SemantMe();
+		if(!Objects.equals(condType.name, TYPE_INT.getInstance().name)){
+			System.out.format(">> ERROR [%d:%d] invalid condition\n",2,2);
+			throw new semanticExc(this.LineNum);
+		}
+		/***************/
+		/* begin scope */
+		/***************/
+		SYMBOL_TABLE.getInstance().beginScope();
+		TYPE_LIST bodyType = body.SemantMe();
+		/***************/
+		/* end scope */
+		/***************/
+		SYMBOL_TABLE.getInstance().endScope();
 		return null;
 	}
+
+
 }

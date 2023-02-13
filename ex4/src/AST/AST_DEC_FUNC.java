@@ -2,28 +2,22 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
-import TEMP.*;
-import IR.*;
-import MIPS.*;
 
 public class AST_DEC_FUNC extends AST_DEC
 {
-	/****************/
-	/* DATA MEMBERS */
-	/****************/
-	public String returnTypeName;
+	public AST_TYPE returnTypeName;
 	public String name;
-	public AST_TYPE_NAME_LIST params;
+	public AST_VAR_LIST params;
 	public AST_STMT_LIST body;
-	
+
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_DEC_FUNC(
-		String returnTypeName,
-		String name,
-		AST_TYPE_NAME_LIST params,
-		AST_STMT_LIST body)
+	public AST_DEC_FUNC(int LineNum,
+						AST_TYPE returnTypeName,
+						String name,
+						AST_VAR_LIST params,
+						AST_STMT_LIST body)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -31,107 +25,108 @@ public class AST_DEC_FUNC extends AST_DEC
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
 		this.returnTypeName = returnTypeName;
+
 		this.name = name;
 		this.params = params;
 		this.body = body;
+		this.LineNum=++LineNum;
 	}
 
-	public TEMP IRme()
-	{
-		IR.
-		getInstance().
-		Add_IRcommand(new IRcommand_Label("main"));		
-		if (body != null) body.IRme();
-
-		return null;
-	}
-	
 	/************************************************************/
 	/* The printing message for a function declaration AST node */
 	/************************************************************/
 	public void PrintMe()
-	{
-		/*************************************************/
-		/* AST NODE TYPE = AST NODE FUNCTION DECLARATION */
-		/*************************************************/
-		System.out.format("FUNC(%s):%s\n",name,returnTypeName);
-
-		/***************************************/
-		/* RECURSIVELY PRINT params + body ... */
-		/***************************************/
-		if (params != null) params.PrintMe();
-		if (body   != null) body.PrintMe();
-		
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
+	{/*****************************/
+		/* RECURSIVELY PRINT typename ... */
+		/*****************************/
+		if (returnTypeName != null) returnTypeName.PrintMe();
+		if(params!=null)params.PrintMe();
+		if(body!=null)body.PrintMe();
+		System.out.format("AST FUNC DEC ( %s )\n",name);
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-			SerialNumber,
-			String.format("FUNC(%s)\n:%s\n",name,returnTypeName));
-		
+				SerialNumber,
+				String.format("DEC\ntype %s(args){stmtLst}",name)
+		);
+
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (params != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,params.SerialNumber);		
-		if (body   != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,body.SerialNumber);		
+		if (returnTypeName != null){ AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,returnTypeName.SerialNumber);}
+		if (body != null){ AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,body.SerialNumber);}
+		if (params != null){AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,params.SerialNumber);}
 	}
 
-	public TYPE SemantMe()
+
+	public TYPE SemantMe() throws semanticExc
 	{
-		TYPE t;
+		TYPE arg_type;
 		TYPE returnType = null;
+		TYPE_LIST reverse_type_list = null;
 		TYPE_LIST type_list = null;
+		TYPE_FUNCTION func_t=null;
+		func_t=SYMBOL_TABLE.getInstance().cur_func;
 
 		/*******************/
-		/* [0] return type */
+		/* [0] check return type */
 		/*******************/
-		returnType = SYMBOL_TABLE.getInstance().find(returnTypeName);
-		if (returnType == null)
-		{
-			System.out.format(">> ERROR [%d:%d] non existing return type %s\n",6,6,returnType);				
+
+		if(returnTypeName != null) {
+			returnType = returnTypeName.SemantMe();
 		}
-	
-		/****************************/
-		/* [1] Begin Function Scope */
-		/****************************/
-		SYMBOL_TABLE.getInstance().beginScope();
 
 		/***************************/
 		/* [2] Semant Input Params */
 		/***************************/
-		for (AST_TYPE_NAME_LIST it = params; it  != null; it = it.tail)
+		for (AST_VAR_LIST it = this.params; it  != null; it = it.restoflist)
 		{
-			t = SYMBOL_TABLE.getInstance().find(it.head.type);
-			if (t == null)
-			{
-				System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,it.head.type);				
-			}
-			else
-			{
-				type_list = new TYPE_LIST(t,type_list);
-				SYMBOL_TABLE.getInstance().enter(it.head.name,t);
-			}
+			it.typename.SemantMe();
+			arg_type = it.typename.type.SemantMe();
+			reverse_type_list = new TYPE_LIST(arg_type,reverse_type_list);
 		}
-
-		/*******************/
-		/* [3] Semant Body */
-		/*******************/
-		body.SemantMe();
-
-		/*****************/
-		/* [4] End Scope */
-		/*****************/
-		SYMBOL_TABLE.getInstance().endScope();
+		/* reverse type list to preserve original argument order */
+		for (TYPE_LIST it = reverse_type_list; it  != null; it = it.tail) {type_list = new TYPE_LIST(it.head,type_list);}
 
 		/***************************************************/
 		/* [5] Enter the Function Type to the Symbol Table */
 		/***************************************************/
-		SYMBOL_TABLE.getInstance().enter(name,new TYPE_FUNCTION(returnType,name,type_list));
+		TYPE_FUNCTION sym=new TYPE_FUNCTION(returnType,name,null);
+		SYMBOL_TABLE.getInstance().cur_func=sym;
+		SYMBOL_TABLE.getInstance().enter(name,sym);
+
+		/****************************/
+		/* [1] Begin Function Scope */
+		/****************************/
+		SYMBOL_TABLE.getInstance().beginScope();
+		for (AST_VAR_LIST it = this.params; it  != null; it = it.restoflist)
+		{
+			it.typename.SemantMe();
+			arg_type = it.typename.type.SemantMe();
+			reverse_type_list = new TYPE_LIST(arg_type,reverse_type_list);
+			SYMBOL_TABLE.getInstance().enter(it.typename.name, arg_type);
+		}
+		sym.params=type_list;
+		/*******************/
+		/* [3] Semant Body */
+		/*******************/
+		this.body.SemantMe();
+		
+		/*****************/
+		/* [4] End Scope */
+		/*****************/
+		SYMBOL_TABLE.getInstance().endScope();
+		SYMBOL_TABLE.getInstance().cur_func=func_t;
 
 		/*********************************************************/
 		/* [6] Return value is irrelevant for class declarations */
 		/*********************************************************/
-		return null;		
+
+		func_t=new TYPE_FUNCTION(returnType,name,type_list);
+
+		
+		this.se=func_t;
+
+		return returnType;
 	}
 	
 }

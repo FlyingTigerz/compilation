@@ -1,10 +1,8 @@
 package AST;
 
 import TYPES.*;
-import TEMP.*;
 
-public class AST_DEC_LIST extends AST_Node
-{
+public class AST_DEC_LIST extends AST_Node {
 	/****************/
 	/* DATA MEMBERS */
 	/****************/
@@ -13,9 +11,9 @@ public class AST_DEC_LIST extends AST_Node
 
 	/******************/
 	/* CONSTRUCTOR(S) */
+
 	/******************/
-	public AST_DEC_LIST(AST_DEC head,AST_DEC_LIST tail)
-	{
+	public AST_DEC_LIST(AST_DEC head, AST_DEC_LIST tail) {
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
@@ -25,30 +23,12 @@ public class AST_DEC_LIST extends AST_Node
 		this.tail = tail;
 	}
 
-	public TEMP IRme()
-	{
-		if (head != null) head.IRme();
-		if (tail != null) tail.IRme();
-		
-		return null;			
-	}
-
-	public TYPE SemantMe()
-	{		
-		/*************************************/
-		/* RECURSIVELY PRINT HEAD + TAIL ... */
-		/*************************************/
-		if (head != null) head.SemantMe();
-		if (tail != null) tail.SemantMe();
-		
-		return null;	
-	}
 
 	/********************************************************/
 	/* The printing message for a declaration list AST node */
+
 	/********************************************************/
-	public void PrintMe()
-	{
+	public void PrintMe() {
 		/********************************/
 		/* AST NODE TYPE = AST DEC LIST */
 		/********************************/
@@ -64,13 +44,24 @@ public class AST_DEC_LIST extends AST_Node
 		/* PRINT to AST GRAPHVIZ DOT file */
 		/**********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-			SerialNumber,
-			"DEC\nLIST\n");
-				
+				SerialNumber,
+				"DEC\nLIST\n");
+
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,head.SerialNumber);
-		if (tail != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,tail.SerialNumber);
+		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, head.SerialNumber);
+		if (tail != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, tail.SerialNumber);
 	}
+
+	public TYPE SemantMe() throws semanticExc {
+		/*************************************/
+		/* RECURSIVELY PRINT HEAD + TAIL ... */
+		/*************************************/
+		if (head != null) head.SemantMe();
+		if (tail != null) tail.SemantMe();
+
+		return null;
+	}
+
 }

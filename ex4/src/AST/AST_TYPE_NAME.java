@@ -1,79 +1,57 @@
-/***********/
-/* PACKAGE */
-/***********/
 package AST;
-
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
 public class AST_TYPE_NAME extends AST_Node
 {
-	/****************/
-	/* DATA MEMBERS */
-	/****************/
-	public String type;
+
 	public String name;
-	
+	AST_TYPE type;
+
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_TYPE_NAME(String type,String name)
+	public AST_TYPE_NAME(int LineNum, AST_TYPE type, String name)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
-	
-		this.type = type;
+
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
+		System.out.format("====================== arg -> type %s\n", name);
+
+		/*******************************/
+		/* COPY INPUT DATA NENBERS ... */
+		/*******************************/
+		this.LineNum = ++LineNum;
 		this.name = name;
+		this.type = type;
+	}
+	public TYPE SemantMe() throws semanticExc {
+		SYMBOL_TABLE.getInstance().enter(name, type.SemantMe());
+		SYMBOL_TABLE_ENTRY prevDec = SYMBOL_TABLE.getInstance().find(name);
+		return null;
 	}
 
-	/*************************************************/
-	/* The printing message for a type name AST node */
-	/*************************************************/
+	/************************************************/
+	/* The printing message for an INT EXP AST node */
+	/************************************************/
 	public void PrintMe()
 	{
-		/**************************************/
-		/* AST NODE TYPE = AST TYPE NAME NODE */
-		/**************************************/
-		System.out.format("NAME(%s):TYPE(%s)\n",name,type);
+		/*******************************/
+		/* AST NODE TYPE = AST INT EXP */
+		/*******************************/
+		System.out.format("AST ARG %s %s\n", type.type, name);
 
-		/***************************************/
-		/* PRINT Node to AST GRAPHVIZ DOT file */
-		/***************************************/
+		/*********************************/
+		/* Print to AST GRAPHIZ DOT file */
+		/*********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-			SerialNumber,
-			String.format("NAME:TYPE\n%s:%s",name,type));
+				SerialNumber,
+				String.format("ARGUMENT type %s\n",name)
+		);
 	}
-
-	/*****************/
-	/* SEMANT ME ... */
-	/*****************/
-	public TYPE SemantMe()
-	{
-		TYPE t = SYMBOL_TABLE.getInstance().find(type);
-		if (t == null)
-		{
-			/**************************/
-			/* ERROR: undeclared type */
-			/**************************/
-			System.exit(0);
-			return null;
-		}
-		else
-		{
-			/*******************************************************/
-			/* Enter var with name=name and type=t to symbol table */
-			/*******************************************************/
-			SYMBOL_TABLE.getInstance().enter(name,t);
-		}
-
-		/****************************/
-		/* return (existing) type t */
-		/****************************/
-		return t;
-	}	
 }
