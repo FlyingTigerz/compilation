@@ -1,5 +1,5 @@
 package TYPES;
-
+import java.util.Objects;
 public class TYPE_CLASS_VAR_DEC_LIST
 {
 	public TYPE_CLASS_VAR_DEC head;
