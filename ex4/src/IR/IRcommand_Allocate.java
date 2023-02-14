@@ -29,4 +29,6 @@ public class IRcommand_Allocate extends IRcommand
 	{
 		MIPSGenerator.getInstance().allocate(var_name);
 	}
+
+	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("alloc " + var_name); }
 }

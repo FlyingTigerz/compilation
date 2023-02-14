@@ -7,6 +7,7 @@ public class AST_TYPE_NAME extends AST_Node
 
 	public String name;
 	AST_TYPE type;
+	int offset = 0;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -33,6 +34,8 @@ public class AST_TYPE_NAME extends AST_Node
 	public TYPE SemantMe() throws semanticExc {
 		SYMBOL_TABLE.getInstance().enter(name, type.SemantMe());
 		SYMBOL_TABLE_ENTRY prevDec = SYMBOL_TABLE.getInstance().find(name);
+		offset = prevDec.offset;
+		this.se = null;
 		return null;
 	}
 

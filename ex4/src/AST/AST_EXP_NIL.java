@@ -2,6 +2,8 @@ package AST;
 
 import TYPES.TYPE;
 import TYPES.TYPE_NIL;
+import IR.*;
+import TEMP.*;
 
 public class AST_EXP_NIL extends AST_EXP
 {
@@ -42,6 +44,17 @@ public class AST_EXP_NIL extends AST_EXP
 
 	}
 
-	public TYPE SemantMe() { return TYPE_NIL.getInstance(); }
+	public TYPE SemantMe() {
+		this.se = TYPE_NIL.getInstance();
+		return this.se; 
+		}
+
+	public TEMP IRme()
+	{
+		TEMP null_p = TEMP_FACTORY.getInstance().getFreshTEMP();
+		IR.getInstance().Add_IRcommand(new IRcommandConstInt(null_p,0));
+
+		return null_p;
+	}
 
 }

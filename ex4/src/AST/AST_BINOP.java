@@ -63,4 +63,10 @@ public class AST_BINOP extends AST_Node
 		return null;
 
 	}
+	
+	public TEMP IRme() {
+		return null;
+	}
+	
+	
 }

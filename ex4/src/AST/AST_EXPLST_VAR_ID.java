@@ -1,7 +1,8 @@
 package AST;
 import TYPES.*;
 import SYMBOL_TABLE.*;
-
+import IR.*;
+import TEMP.*;
 import java.util.Objects;
 
 
@@ -10,7 +11,9 @@ public class AST_EXPLST_VAR_ID extends AST_EXP
 	public AST_VAR var;
 	public AST_EXP_LIST explist;
 	String name;
-
+	public TYPE_FUNCTION functionType;
+	
+	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
@@ -93,6 +96,7 @@ public class AST_EXPLST_VAR_ID extends AST_EXP
 			System.out.format(">> ERROR [%d:%d] can't find function %s\n",2,2, name);
 			throw new semanticExc(this.LineNum);
 		}
+		functionType = (TYPE_FUNCTION) func;
 		TYPE returnType =  ((TYPE_FUNCTION) func).returnType;
 		TYPE_LIST expectedParams = ((TYPE_FUNCTION) func).params;
 		for (AST_EXP_LIST it=explist; it != null; it=it.restoflist)
@@ -114,8 +118,18 @@ public class AST_EXPLST_VAR_ID extends AST_EXP
 			System.out.format(">> ERROR [%d:%d] function %s expect more arguments\n",2,2, name);
 			throw new semanticExc(this.LineNum);
 		}
+		this.se = returnType;
 		return returnType;
 	}
-
+	
+	public TEMP IRme() {
+		if(var != null){
+			var.IRme();
+		}
+		TEMP_LIST arg_temps = (explist != null ? explist.IRme() : null);
+		TEMP resReg = TEMP_FACTORY.getInstance().getFreshTEMP();
+		IR.getInstance().Add_IRcommand(new IRcommand_Func_Call(resReg, functionType, arg_temps));
+		return resReg;
+	}
 
 }

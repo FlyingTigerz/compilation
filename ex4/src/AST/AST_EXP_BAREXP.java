@@ -1,6 +1,9 @@
 package AST;
 import TYPES.TYPE;
 import TYPES.TYPE_INT;
+import TEMP.TEMP;
+import IR.*;
+
 
 import java.util.Objects;
 
@@ -58,6 +61,12 @@ public class AST_EXP_BAREXP extends AST_EXP
 		if (exp  != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
 	}
 	public TYPE SemantMe() throws semanticExc {
-		return exp.SemantMe();
+		this.se = exp.SemantMe();
+		return this.se;
 	}
+	
+	public TEMP IRme() {
+		return exp.IRme();
+	}
+	
 }

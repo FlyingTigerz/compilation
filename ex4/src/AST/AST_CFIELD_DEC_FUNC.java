@@ -146,4 +146,5 @@ public class AST_CFIELD_DEC_FUNC extends AST_CFIELD
 		/*********************************************************/
 		return new TYPE_CLASS_VAR_DEC(new TYPE_FUNCTION(returnType, returnType.name,null),name);
 	}
+
 }

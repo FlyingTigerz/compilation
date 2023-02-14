@@ -1,11 +1,15 @@
 package AST;
 import TYPES.*;
+import TEMP.*;
+import IR.*;
 import SYMBOL_TABLE.*;
 
 public class AST_VAR_SUBSCRIPT extends AST_VAR
 {
 	public AST_VAR var;
 	public AST_EXP subscript;
+	public TEMP base;
+	public TEMP offset;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -70,6 +74,23 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 			System.out.format(">> ERROR [%d:%d] can't cast %s to int\n", 2, 2, exp_type.name);
 			throw new semanticExc(LineNum);
 		}
+		this.se = ((TYPE_ARRAY)arr_type).arrayType
 		return ((TYPE_ARRAY)arr_type).arrayType;
+	}
+	
+	public TEMP IRme(){
+		return this.IRme(true);
+	}
+	
+	
+	public TEMP IRme(boolean storeInTemp){
+		this.base = var.IRme();
+		this.offset = subscript.IRme();
+		TEMP storeTo = null;
+		if(storeInTemp) {
+			storeTo = TEMP_FACTORY.getInstance().getFreshTEMP();
+			IR.getInstance().Add_IRcommand(new IRcommand_Array_Access(storeTo, this.base, offset));
+		}
+		return storeTo;
 	}
 }

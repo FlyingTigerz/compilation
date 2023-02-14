@@ -80,7 +80,8 @@ public class AST_ARRAYTYPEDEF extends AST_DEC
 		/* [2] Enter the Array Type to the Symbol Table */
 		/***************************************************/
 		SYMBOL_TABLE.getInstance().enter(name, at);
-
+		this.se=at;
 		return at;
 	}
+
 }
