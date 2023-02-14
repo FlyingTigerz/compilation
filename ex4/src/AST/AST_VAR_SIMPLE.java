@@ -1,6 +1,9 @@
 package AST;
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import MIPS.MIPSGenerator;
+import TEMP.*;
+import IR.*;
 
 
 public class AST_VAR_SIMPLE extends AST_VAR
@@ -9,6 +12,9 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	/* simple variable name */
 	/************************/
 	public String name;
+	public int offset;
+	public boolean isGlobal;
+	public TEMP base;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -59,6 +65,39 @@ public class AST_VAR_SIMPLE extends AST_VAR
 			System.out.format(">> ERROR [%d:%d] variable %s does not exist in scope\n", 2, 2, name);
 			throw new semanticExc(this.LineNum);
 		}
-		return prevDec.type;
+		
+		this.se = prevDec.type;
+		this.offset = prevDec.offset;
+		this.isGlobal = prevDec.isGlobal;
+		return this.se;
 	}
+	
+	public TEMP IRme(){
+		return this.IRme(true);
+	}
+	
+	
+	public TEMP IRme(boolean storeInTemp) {
+		TEMP dest = null;
+		if(storeInTemp) {
+			dest = TEMP_FACTORY.getInstance().getFreshTEMP();
+		}
+		TEMP src;
+		int offset = 0;
+		if(isGlobal){
+			src = TEMP_FACTORY.getInstance().getFreshNamedTEMP(IR.globalVarPrefix + name);
+		}
+		else{
+			src = IR.getInstance().fp;
+			offset = this.offset;
+		}
+		this.base = src;
+		if(storeInTemp) {
+			IR.getInstance().Add_IRcommand(new IRcommand_Load(dest, src, offset));
+			return dest;
+		}
+		return null;
+	}
+	
+	
 }

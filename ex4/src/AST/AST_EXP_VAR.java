@@ -1,5 +1,5 @@
 package AST;
-
+import TEMP.TEMP;
 import TYPES.TYPE;
 
 public class AST_EXP_VAR extends AST_EXP
@@ -56,6 +56,10 @@ public class AST_EXP_VAR extends AST_EXP
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 			
 	}
+	
 	public TYPE SemantMe() throws semanticExc { return var.SemantMe(); }
+	public TEMP IRme() {
+		return var.IRme();
+	}
 
 }

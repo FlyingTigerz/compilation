@@ -68,5 +68,8 @@ public class AST_TYPE_NAME_LIST extends AST_Node
 				head.SemantMe(),
 				tail.SemantMe());
 		}
+		
+		this.se = null;
+		
 	}
 }

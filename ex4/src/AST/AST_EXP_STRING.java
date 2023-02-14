@@ -2,6 +2,8 @@ package AST;
 
 import TYPES.TYPE;
 import TYPES.TYPE_STRING;
+import TEMP.*;
+import IR.*;
 
 public class AST_EXP_STRING extends AST_EXP
 {
@@ -46,6 +48,13 @@ public class AST_EXP_STRING extends AST_EXP
 			SerialNumber,
 			String.format("STRING(%s)",s));
 	}
-	public TYPE SemantMe() { return TYPE_STRING.getInstance(); }
+	public TYPE SemantMe() { 
+		this.se = TYPE_STRING.getInstance();
+		return TYPE_STRING.getInstance(); }
 
+	public TEMP IRme(){
+		TEMP dataStorage = TEMP_FACTORY.getInstance().getFreshNamedTEMP(IR.strPrefix + IR.getInstance().getLabelIndex());
+		IR.getInstance().Add_IRdata(new IRdata_Constant_String(dataStorage, s));
+		return dataStorage;
+	}
 }

@@ -1,5 +1,7 @@
 package AST;
 import TYPES.*;
+import IR.*;
+import TEMP.*;
 import SYMBOL_TABLE.*;
 
 import java.util.Objects;
@@ -61,20 +63,25 @@ public class AST_VAR_FIELD extends AST_VAR
 		if (var != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 	}
 	public TYPE SemantMe() throws semanticExc {
-		System.out.print("AST NODE FIELD VAR\n");
-	System.out.print("AST NODE FIELD VAR\n");
-	System.out.print("AST NODE FIELD VAR\n");
 		/* TODO: add a dedicated AST node for class types*/
 		TYPE_CLASS parent_type = (TYPE_CLASS) var.SemantMe();
 		while(parent_type != null) {
 			for (TYPE_CLASS_VAR_DEC_LIST field = parent_type.data_members; field != null; field = field.tail) {
 				if (Objects.equals(field.head.name, fieldName)) {
-					return field.head.t;
+					this.se = field.head.t;
 				}
 			}
 			parent_type = parent_type.father;
 		}
+		this.se = null;
 		return null;
 	}
-
+	
+	public TEMP IRme() {
+		TEMP base = var.IRme();
+		TEMP storeTo = TEMP_FACTORY.getInstance().getFreshTEMP();
+		IR.getInstance().Add_IRcommand(new IRcommand_Field_Access(storeTo, base, fieldName));
+		return storeTo;
+	}
+	
 }
