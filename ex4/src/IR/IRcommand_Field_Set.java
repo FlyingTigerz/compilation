@@ -10,41 +10,43 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
-import TEMP.*;
-import MIPS.*;
+
+import MIPS.MIPSGenerator;
+import TEMP.TEMP;
 
 import java.util.HashSet;
 import java.util.Set;
+/* TODO - copy-pasted from another IRcommand, adjustments required */
 
-import static MIPS.sir_MIPS_a_lot.WORD_SIZE;
-
-public class IRcommand_Load extends IRcommand
+public class IRcommand_Field_Set extends IRcommand
 {
 	TEMP dst;
+	String field;
 	TEMP src;
-	int offset;
-	
-	public IRcommand_Load(TEMP dst, TEMP src, int offset)
+
+
+	public IRcommand_Field_Set(TEMP dst, String field, TEMP src)
 	{
-		this.dst = dst;
+		this.dst      = dst;
+		this.field = field;
 		this.src = src;
-		this.offset = offset;
 	}
 
 	public Set<TEMP> usedRegs() {
 		Set<TEMP> used_regs = new HashSet<TEMP>();
 		used_regs.add(src);
+		used_regs.add(dst);
 		return used_regs;
 	}
-	public TEMP modifiedReg() { return dst;}
-	
+
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/
 	public void MIPSme()
 	{
-		sir_MIPS_a_lot.getInstance().load(dst, src, offset);
+		/*TODO: implement*/
 	}
 
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(dst + " = " + offset * WORD_SIZE + "(" + src + ")"); }
+	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("field_set " + dst + ", " + field + ", " + src); }
 }

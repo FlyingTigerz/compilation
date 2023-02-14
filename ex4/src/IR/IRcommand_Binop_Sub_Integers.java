@@ -10,24 +10,24 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
-import TEMP.*;
-import MIPS.*;
+
+import MIPS.MIPSGenerator;
+import TEMP.TEMP;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class IRcommand_Binop_Mul_Integers extends IRcommand
+public class IRcommand_Binop_Sub_Integers extends IRcommand
 {
 	public TEMP t1;
 	public TEMP t2;
 	public TEMP dst;
-	
-	public IRcommand_Binop_Mul_Integers(TEMP dst,TEMP t1,TEMP t2)
+
+	public IRcommand_Binop_Sub_Integers(TEMP dst, TEMP t1, TEMP t2)
 	{
 		this.dst = dst;
 		this.t1 = t1;
 		this.t2 = t2;
-		System.out.println(t2.getSerialNumber());
 	}
 
 	public Set<TEMP> usedRegs() {
@@ -43,8 +43,8 @@ public class IRcommand_Binop_Mul_Integers extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		MIPSGenerator.getInstance().mul(dst,t1,t2);
+		MIPSGenerator.getInstance().sub(dst,t1,t2);
 	}
 
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(dst + " = mul " + t1 + ", " + t2); }
+	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(dst + " = sub " + t1 + ", " + t2); }
 }

@@ -10,14 +10,15 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
-import TEMP.*;
-import MIPS.*;
 
-public class IRcommand_Allocate extends IRcommand
+import MIPS.MIPSGenerator;
+/* TODO - copy-pasted from another IRcommand, adjustments required */
+
+public class IRcommand_Class_Dec extends IRcommand
 {
 	String var_name;
-	
-	public IRcommand_Allocate(String var_name)
+
+	public IRcommand_Class_Dec(String var_name)
 	{
 		this.var_name = var_name;
 	}
@@ -30,5 +31,4 @@ public class IRcommand_Allocate extends IRcommand
 		MIPSGenerator.getInstance().allocate(var_name);
 	}
 
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("alloc " + var_name); }
 }

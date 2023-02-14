@@ -10,25 +10,24 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
-import TEMP.*;
-import MIPS.*;
+
+import AST.AST_VAR;
+import MIPS.sir_MIPS_a_lot;
+import TEMP.TEMP;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static MIPS.sir_MIPS_a_lot.WORD_SIZE;
-
-public class IRcommand_Load extends IRcommand
+public class IRcommand_Store_Var extends IRcommand
 {
-	TEMP dst;
+	String dst_name;
 	TEMP src;
 	int offset;
-	
-	public IRcommand_Load(TEMP dst, TEMP src, int offset)
+
+	public IRcommand_Store_Var(String dst_name, TEMP src)
 	{
-		this.dst = dst;
 		this.src = src;
-		this.offset = offset;
+		this.dst_name = dst_name;
 	}
 
 	public Set<TEMP> usedRegs() {
@@ -36,15 +35,15 @@ public class IRcommand_Load extends IRcommand
 		used_regs.add(src);
 		return used_regs;
 	}
-	public TEMP modifiedReg() { return dst;}
 	
 	/***************/
 	/* MIPS me !!! */
 	/***************/
+
 	public void MIPSme()
 	{
-		sir_MIPS_a_lot.getInstance().load(dst, src, offset);
+		//sir_MIPS_a_lot.getInstance().store(dst_name, src, offset);
 	}
 
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(dst + " = " + offset * WORD_SIZE + "(" + src + ")"); }
+	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(dst_name + " = " + src); }
 }
