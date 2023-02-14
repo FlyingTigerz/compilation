@@ -10,14 +10,15 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
-import TEMP.*;
-import MIPS.*;
 
-public class IRcommand_Jump_Label extends IRcommand
+import MIPS.sir_MIPS_a_lot;
+
+public class IRcommand_Virtual_Call extends IRcommand
 {
+	/* TODO - copy-pasted from another IRcommand, adjustments required */
 	String label_name;
-	
-	public IRcommand_Jump_Label(String label_name)
+
+	public IRcommand_Virtual_Call(String label_name)
 	{
 		this.label_name = label_name;
 	}
@@ -30,5 +31,7 @@ public class IRcommand_Jump_Label extends IRcommand
 		sir_MIPS_a_lot.getInstance().jump(label_name);
 	}
 
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("jmp " + label_name); }
+	/* TODO
+	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(); }
+	*/
 }

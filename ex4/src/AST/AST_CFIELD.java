@@ -1,5 +1,6 @@
 package AST;
 import TYPES.*;
+import TEMP.*;
 import SYMBOL_TABLE.*;
 
 public abstract class AST_CFIELD extends AST_Node
@@ -14,4 +15,5 @@ public abstract class AST_CFIELD extends AST_Node
 		System.out.print("UNKNOWN AST CLASS FIELD NODE");
 	}
 	public TYPE SemantMe() throws semanticExc {return type.SemantMe();}
+	public TEMP IRme(){return null;}
 }

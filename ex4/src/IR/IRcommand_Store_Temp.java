@@ -16,35 +16,35 @@ import MIPS.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class IRcommand_Binop_Mul_Integers extends IRcommand
+import static MIPS.sir_MIPS_a_lot.WORD_SIZE;
+
+public class IRcommand_Store_Temp extends IRcommand
 {
-	public TEMP t1;
-	public TEMP t2;
-	public TEMP dst;
+	TEMP dst;
+	TEMP src;
+	int offset;
 	
-	public IRcommand_Binop_Mul_Integers(TEMP dst,TEMP t1,TEMP t2)
+	public IRcommand_Store_Temp(TEMP src, TEMP dst, int offset)
 	{
+		this.src = src;
 		this.dst = dst;
-		this.t1 = t1;
-		this.t2 = t2;
-		System.out.println(t2.getSerialNumber());
+		this.offset = offset;
 	}
 
 	public Set<TEMP> usedRegs() {
 		Set<TEMP> used_regs = new HashSet<TEMP>();
-		used_regs.add(t1);
-		used_regs.add(t2);
+		used_regs.add(src);
 		return used_regs;
 	}
 	public TEMP modifiedReg() { return dst;}
-
+	
 	/***************/
 	/* MIPS me !!! */
 	/***************/
 	public void MIPSme()
 	{
-		MIPSGenerator.getInstance().mul(dst,t1,t2);
+		sir_MIPS_a_lot.getInstance().store(src, dst, offset);
 	}
 
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(dst + " = mul " + t1 + ", " + t2); }
+	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("" + offset * WORD_SIZE + "(" +dst + ") = " + src); }
 }

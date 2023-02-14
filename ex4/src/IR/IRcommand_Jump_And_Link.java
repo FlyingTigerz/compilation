@@ -10,14 +10,14 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
-import TEMP.*;
-import MIPS.*;
 
-public class IRcommand_Label extends IRcommand
+import MIPS.sir_MIPS_a_lot;
+
+public class IRcommand_Jump_And_Link extends IRcommand
 {
 	String label_name;
-	
-	public IRcommand_Label(String label_name)
+
+	public IRcommand_Jump_And_Link(String label_name)
 	{
 		this.label_name = label_name;
 	}
@@ -27,8 +27,8 @@ public class IRcommand_Label extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		sir_MIPS_a_lot.getInstance().label(label_name);
+		sir_MIPS_a_lot.getInstance().jal(label_name);
 	}
 
-	public void printMe() { IR.getInstance().fileNewLine(true); IR.getInstance().filePrintln("  " + label_name  + ":"); }
+	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("jal " + label_name); }
 }

@@ -2,6 +2,7 @@
 /* PACKAGE */
 /***********/
 package IR;
+import TEMP.*;
 
 /*******************/
 /* GENERAL IMPORTS */
@@ -10,26 +11,25 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
-import TEMP.*;
-import MIPS.*;
+
+import MIPS.sir_MIPS_a_lot;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class IRcommand_Jump_If_Eq_To_Zero extends IRcommand
+
+public class IRcommand_Return extends IRcommand
 {
-	TEMP t;
-	String label_name;
-	
-	public IRcommand_Jump_If_Eq_To_Zero(TEMP t, String label_name)
+	TEMP val;
+
+	public IRcommand_Return(TEMP val)
 	{
-		this.t          = t;
-		this.label_name = label_name;
+		this.val = val;
 	}
 
 	public Set<TEMP> usedRegs() {
 		Set<TEMP> used_regs = new HashSet<TEMP>();
-		used_regs.add(t);
+		used_regs.add(val);
 		return used_regs;
 	}
 	
@@ -38,8 +38,8 @@ public class IRcommand_Jump_If_Eq_To_Zero extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		sir_MIPS_a_lot.getInstance().beqz(t,label_name);
+		sir_MIPS_a_lot.getInstance().ret(val);
 	}
 
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("jifz " + t + ", " + label_name); }
+	public void printMe() {IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("return " + (val == null ? "" : val)); }
 }
