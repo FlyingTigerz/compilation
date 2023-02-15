@@ -12,7 +12,7 @@ import TEMP.*;
 /* PROJECT IMPORTS */
 /*******************/
 
-import MIPS.sir_MIPS_a_lot;
+import MIPS.MIPSGenerator;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +38,7 @@ public class IRcommand_Return extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		sir_MIPS_a_lot.getInstance().ret(val);
+		MIPSGenerator.getInstance().ret(val);
 	}
 
 	public void printMe() {IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("return " + (val == null ? "" : val)); }

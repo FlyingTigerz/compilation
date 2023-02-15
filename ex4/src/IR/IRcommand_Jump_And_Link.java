@@ -11,7 +11,7 @@ package IR;
 /* PROJECT IMPORTS */
 /*******************/
 
-import MIPS.sir_MIPS_a_lot;
+import MIPS.MIPSGenerator;
 
 public class IRcommand_Jump_And_Link extends IRcommand
 {
@@ -27,7 +27,7 @@ public class IRcommand_Jump_And_Link extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		sir_MIPS_a_lot.getInstance().jal(label_name);
+		MIPSGenerator.getInstance().jal(label_name);
 	}
 
 	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("jal " + label_name); }

@@ -11,7 +11,7 @@ package IR;
 /* PROJECT IMPORTS */
 /*******************/
 
-import MIPS.sir_MIPS_a_lot;
+import MIPS.MIPSGenerator;
 import TEMP.*;
 
 public class IRcommand_Print_String extends IRcommand
@@ -27,7 +27,7 @@ public class IRcommand_Print_String extends IRcommand
 	public void MIPSme()
 	{
 		System.out.println(str + "KIKIKIKK");
-		//sir_MIPS_a_lot.getInstance().print_string(str);
+		//MIPSGenerator.getInstance().print_string(str);
 	}
 
 	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("printString(%s)" + str.toString()); }

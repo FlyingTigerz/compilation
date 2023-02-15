@@ -11,7 +11,7 @@ package IR;
 /* PROJECT IMPORTS */
 /*******************/
 
-import MIPS.sir_MIPS_a_lot;
+import MIPS.MIPSGenerator;
 
 public class IRcommand_Virtual_Call extends IRcommand
 {
@@ -28,7 +28,7 @@ public class IRcommand_Virtual_Call extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		sir_MIPS_a_lot.getInstance().jump(label_name);
+		MIPSGenerator.getInstance().jump(label_name);
 	}
 
 	/* TODO

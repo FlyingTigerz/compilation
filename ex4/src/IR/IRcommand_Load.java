@@ -16,7 +16,7 @@ import MIPS.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import static MIPS.sir_MIPS_a_lot.WORD_SIZE;
+import static MIPS.MIPSGenerator.WORD_SIZE;
 
 public class IRcommand_Load extends IRcommand
 {
@@ -43,7 +43,7 @@ public class IRcommand_Load extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		sir_MIPS_a_lot.getInstance().load(dst, src, offset);
+		MIPSGenerator.getInstance().load(dst, src, offset);
 	}
 
 	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(dst + " = " + offset * WORD_SIZE + "(" + src + ")"); }

@@ -12,7 +12,7 @@ import TYPES.*;
 /* PROJECT IMPORTS */
 /*******************/
 
-import MIPS.sir_MIPS_a_lot;
+import MIPS.MIPSGenerator;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -44,21 +44,21 @@ public class IRcommand_New_Array extends IRcommand
 		//TODO: implement MIPSme
 
 		// li $v0, 9
-		sir_MIPS_a_lot.getInstance().li(IR.getInstance().v0, 9);
+		MIPSGenerator.getInstance().li(IR.getInstance().v0, 9);
 		// move $a0, len
-		sir_MIPS_a_lot.getInstance().move(IR.getInstance().a0, len);
+		MIPSGenerator.getInstance().move(IR.getInstance().a0, len);
 		// move $a0, len
-		sir_MIPS_a_lot.getInstance().move(IR.getInstance().s0, len);
+		MIPSGenerator.getInstance().move(IR.getInstance().s0, len);
 		// addi $a0, $a0, 1
-		sir_MIPS_a_lot.getInstance().addi(IR.getInstance().a0, IR.getInstance().a0, 1);
+		MIPSGenerator.getInstance().addi(IR.getInstance().a0, IR.getInstance().a0, 1);
 		// mul $a0, $a0, 4
-		sir_MIPS_a_lot.getInstance().mul(IR.getInstance().a0, IR.getInstance().a0, IR.getInstance().wordSizeTemp);
+		MIPSGenerator.getInstance().mul(IR.getInstance().a0, IR.getInstance().a0, IR.getInstance().wordSizeTemp);
 		// syscall
-		sir_MIPS_a_lot.getInstance().syscall();
+		MIPSGenerator.getInstance().syscall();
 		// move pointer, $v0
-		sir_MIPS_a_lot.getInstance().move(pointer, IR.getInstance().v0);
+		MIPSGenerator.getInstance().move(pointer, IR.getInstance().v0);
 		// sw len, 0(pointer)
-		sir_MIPS_a_lot.getInstance().store(IR.getInstance().s0, pointer, 0);
+		MIPSGenerator.getInstance().store(IR.getInstance().s0, pointer, 0);
 	}
 
 	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(pointer + " = new_array " + len); }

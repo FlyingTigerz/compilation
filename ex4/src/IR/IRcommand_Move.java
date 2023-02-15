@@ -11,7 +11,7 @@ package IR;
 /* PROJECT IMPORTS */
 /*******************/
 
-import MIPS.sir_MIPS_a_lot;
+import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
 import java.util.HashSet;
@@ -38,7 +38,7 @@ public class IRcommand_Move extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		sir_MIPS_a_lot.getInstance().move(dst, src);
+		MIPSGenerator.getInstance().move(dst, src);
 	}
 
 	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(dst + " = move " + src ); }

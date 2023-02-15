@@ -12,7 +12,7 @@ import TYPES.*;
 /* PROJECT IMPORTS */
 /*******************/
 
-import MIPS.sir_MIPS_a_lot;
+import MIPS.MIPSGenerator;
 
 import java.util.HashSet;
 import java.util.Set;

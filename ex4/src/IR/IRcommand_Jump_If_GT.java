@@ -11,7 +11,7 @@ package IR;
 /* PROJECT IMPORTS */
 /*******************/
 
-import MIPS.sir_MIPS_a_lot;
+import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
 import java.util.HashSet;
@@ -48,8 +48,8 @@ public class IRcommand_Jump_If_GT extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		if (t2 != null) sir_MIPS_a_lot.getInstance().bgt(t1, t2, label_name);
-		else sir_MIPS_a_lot.getInstance().bgt(t1, immed, label_name);
+		if (t2 != null) MIPSGenerator.getInstance().bgt(t1, t2, label_name);
+		else MIPSGenerator.getInstance().bgt(t1, immed, label_name);
 	}
 
 	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("jigt " + t1 + ", " + (t2 != null ? t2 : immed) + ", " + label_name); }

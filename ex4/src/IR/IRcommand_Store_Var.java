@@ -12,7 +12,7 @@ package IR;
 /*******************/
 
 import AST.AST_VAR;
-import MIPS.sir_MIPS_a_lot;
+import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
 import java.util.HashSet;

@@ -11,6 +11,8 @@ public class TYPE_FUNCTION extends TYPE
 	/* types of input params */
 	/*************************/
 	public TYPE_LIST params;
+	public boolean isSysCall = false;
+	public int sysCallNum = 0;
 	
 	/****************/
 	/* CTROR(S) ... */

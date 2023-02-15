@@ -11,7 +11,7 @@ package IR;
 /* PROJECT IMPORTS */
 /*******************/
 
-import MIPS.sir_MIPS_a_lot;
+import MIPS.MIPSGenerator;
 import TEMP.TEMP;
 
 public class IRdata_Constant_String extends IRdata
@@ -29,7 +29,7 @@ public class IRdata_Constant_String extends IRdata
 	/***************/
 	public void MIPSme()
 	{
-		sir_MIPS_a_lot.getInstance().storeString(label, str);
+		MIPSGenerator.getInstance().storeString(label, str);
 	}
 
 	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(label.toString() + " : " + str ); }

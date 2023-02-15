@@ -170,12 +170,14 @@ public class MIPSGenerator
 	{
 		fileWriter.format("\tj %s\n",inlabel);
 	}	
+
 	public void blt(TEMP oprnd1,TEMP oprnd2,String label)
 	{
-		int i1 =oprnd1.getSerialNumber();
-		int i2 =oprnd2.getSerialNumber();
-		
-		fileWriter.format("\tblt Temp_%d,Temp_%d,%s\n",i1,i2,label);				
+		fileWriter.format("\tblt %s,%s,%s\n",oprnd1.toString(),oprnd2.toString(),label);
+	}
+	public void blt(TEMP oprnd1,int immed,String label)
+	{
+		fileWriter.format("\tblt %s,%s,%s\n",oprnd1.toString(),immed,label);
 	}
 	public void bge(TEMP oprnd1,TEMP oprnd2,String label)
 	{
@@ -204,6 +206,28 @@ public class MIPSGenerator
 				
 		fileWriter.format("\tbeq Temp_%d,$zero,%s\n",i1,label);				
 	}
+	public void ret(TEMP res)
+	{
+		// epilogue
+		if(res != null) {
+			fileWriter.format("\tmove $v0 %s\n", res);
+		}
+		fileWriter.format("\tmove $sp, $fp\n");
+		fileWriter.format("\tlw $fp, 0($sp)\n");
+		fileWriter.format("\tlw $ra, 4($sp)\n");
+		fileWriter.format("\taddi $sp, $sp, 8\n");
+		fileWriter.format("\tjr $ra\n");
+	}
+	public void syscall(){
+		fileWriter.format("\tsyscall\n");
+	}
+	public void storeString(TEMP label, String str){
+		fileWriter.format("\t%s: .asciiz \"%s\"\n", label, str);
+	}
+	public void storeGlobalVariable(TEMP label, String word){
+		fileWriter.format("\t%s: .word %s\n", label, word);
+	}
+
 	public void la(TEMP dst, TEMP src)
 	{
 		fileWriter.format("\tla %s,0(%s)\n",dst.toString(),src.toString());
@@ -240,6 +264,18 @@ public class MIPSGenerator
 		fileWriter.format("\tli %s, %s\n",IR.getInstance().v0, 4);
 		// syscall
 		fileWriter.format("\tsyscall\n");
+	}
+	public void bgt(TEMP oprnd1,TEMP oprnd2,String label)
+	{
+		fileWriter.format("\tbgt %s,%s,%s\n",oprnd1.toString(),oprnd2.toString(),label);
+	}
+	public void bgt(TEMP oprnd1,int immed,String label)
+	{
+		fileWriter.format("\tbgt %s,%s,%s\n",oprnd1.toString(),immed,label);
+	}
+	public void jal(String inlabel)
+	{
+		fileWriter.format("\tjal %s\n",inlabel);
 	}
 	public void dataSection() { fileWriter.format(".data\n"); }
 	public void textSection(){
