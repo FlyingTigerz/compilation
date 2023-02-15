@@ -1,4 +1,6 @@
 package AST;
+import IR.*;
+import TEMP.*;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
@@ -47,6 +49,17 @@ public class AST_STMT_IF extends AST_STMT
 		TYPE_LIST bodyType = body.SemantMe();
 
 		SYMBOL_TABLE.getInstance().endScope();
+		return null;
+	}
+	
+	public TEMP IRme()
+	{
+		int labelCounter = IR.getInstance().getLabelIndex();
+		String endIfLabel = "IF_FALSE"+labelCounter;
+		TEMP t = cond.IRme();
+		IR.getInstance().Add_IRcommand(new IRcommand_Jump_If_Eq_To_Zero(t, endIfLabel));
+		body.IRme();
+		IR.getInstance().Add_IRcommand(new IRcommand_Label(endIfLabel));
 		return null;
 	}
 

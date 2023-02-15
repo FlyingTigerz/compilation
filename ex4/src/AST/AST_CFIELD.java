@@ -14,6 +14,11 @@ public abstract class AST_CFIELD extends AST_Node
 	{
 		System.out.print("UNKNOWN AST CLASS FIELD NODE");
 	}
-	public TYPE SemantMe() throws semanticExc {return type.SemantMe();}
+	public TYPE SemantMe() throws semanticExc {
+		this.se = type.SemantMe();
+		return this.se;
+		}
+	
+	
 	public TEMP IRme(){return null;}
 }

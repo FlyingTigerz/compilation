@@ -2,6 +2,8 @@ package AST;
 import SYMBOL_TABLE.*;
 import TYPES.*;
 import java.util.Objects;
+import IR.*;
+import TEMP.*;
 
 
 	public class AST_STMT_WHILE extends AST_STMT
@@ -38,6 +40,20 @@ import java.util.Objects;
 		/* end scope */
 		/***************/
 		SYMBOL_TABLE.getInstance().endScope();
+		return null;
+	}
+	
+	public TEMP IRme()
+	{
+		int labelCounter = IR.getInstance().getLabelIndex();
+		String endWhileLabel = "WHILE_FALSE"+labelCounter;
+		String whileLabel = "WHILE_TRUE"+labelCounter;
+		IR.getInstance().Add_IRcommand(new IRcommand_Label(whileLabel));
+		TEMP t1 = cond.IRme();
+		IR.getInstance().Add_IRcommand(new IRcommand_Jump_If_Eq_To_Zero(t1, endWhileLabel));
+		body.IRme();
+		IR.getInstance().Add_IRcommand(new IRcommand_Jump_Label(whileLabel));
+		IR.getInstance().Add_IRcommand(new IRcommand_Label(endWhileLabel));
 		return null;
 	}
 

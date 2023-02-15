@@ -1,7 +1,10 @@
 package AST;
 
+import IR.*;
+import TEMP.*;
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import MIPS.*;
 
 public class AST_DEC_FUNC extends AST_DEC
 {
@@ -128,5 +131,29 @@ public class AST_DEC_FUNC extends AST_DEC
 
 		return returnType;
 	}
+	
+	public TEMP IRme()
+	{
+		// label
+		IR.getInstance().Add_IRcommand(new IRcommand_Label(IR.funcLabelPrefix + name));
+		// prologue
+		TEMP sp = IR.getInstance().sp;
+		TEMP fp = IR.getInstance().fp;
+		TEMP ra = IR.getInstance().ra;
+		
+		
+		IR.getInstance().Add_IRcommand(new IRcommand_Add_Immediate(sp, sp, -sir_MIPS_a_lot.WORD_SIZE));
+		IR.getInstance().Add_IRcommand(new IRcommand_Store_Temp(ra, sp, 0));
+		IR.getInstance().Add_IRcommand(new IRcommand_Add_Immediate(sp, sp, -sir_MIPS_a_lot.WORD_SIZE));
+		IR.getInstance().Add_IRcommand(new IRcommand_Store_Temp(fp, sp, 0));
+		IR.getInstance().Add_IRcommand(new IRcommand_Move(fp, sp));
+		IR.getInstance().Add_IRcommand(new IRcommand_Add_Immediate(sp, sp, sir_MIPS_a_lot.WORD_SIZE * localVarCount));
+
+		body.IRme();
+		if(type.typeName.equals("void")) IR.getInstance().Add_IRcommand(new IRcommand_Return(null));
+
+		return null;
+	}
+	
 	
 }

@@ -78,6 +78,7 @@ public class AST_DEC_CLASS extends AST_DEC
 		/*********************************************************/
 		/* [5] Return value is irrelevant for class declarations */
 		/*********************************************************/
+		this.se = t;
 		return null;		
 	}
 }

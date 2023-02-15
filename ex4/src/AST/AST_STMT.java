@@ -1,5 +1,6 @@
 package AST;
 import TYPES.*;
+import TEMP.*;
 import SYMBOL_TABLE.*;
 
 public abstract class AST_STMT extends AST_Node
@@ -13,7 +14,7 @@ public abstract class AST_STMT extends AST_Node
 	/* The default message for an unknown AST statement node */
 	/*********************************************************/
 
-
+	public TEMP IRme(){return null;}
 
 
 }
