@@ -1,5 +1,8 @@
 package AST;
 
+import IR.*;
+import TEMP.*;
+import TYPES.*;
 import TYPES.TYPE;
 
 public class AST_DEC_NEW extends AST_DEC{
@@ -60,6 +63,14 @@ public class AST_DEC_NEW extends AST_DEC{
             if (fd != null)return fd.SemantMe();
             if (cd != null) return cd.SemantMe();
             return atd.SemantMe();
+        }
+        
+        public TEMP IRMe() {
+            if (vd != null)return vd.IRMe();
+            if (fd != null)return fd.IRMe();
+            if (cd != null) return cd.IRMe();
+            return atd.IRMe();
+            
         }
 
 }

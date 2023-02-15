@@ -8,7 +8,7 @@ public class AST_CFIELD_DEC_VAR extends AST_CFIELD
 	/*  var := exp */
 	/***************/
 	public AST_EXP exp;
-	
+	public int offset;
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
@@ -86,6 +86,7 @@ public class AST_CFIELD_DEC_VAR extends AST_CFIELD
 		/* [2] Enter the Function Type to the Symbol Table */
 		/***************************************************/
 		SYMBOL_TABLE.getInstance().enter(name, t);
+		this.offset = SYMBOL_TABLE.getInstance().find(name).offset;
 		if(exp != null && exp.SemantMe().name=="null" &&t.name!="int"&&t.name!="string")
 		{
 		return null;
@@ -108,6 +109,9 @@ public class AST_CFIELD_DEC_VAR extends AST_CFIELD
 		/*********************************************************/
 		/* [4] Return value is irrelevant for class declarations */
 		/*********************************************************/
+		
+		//This line might need to be :   " this.se = t; "
+		this.se = new TYPE_CLASS_VAR_DEC(t,name);
 		return new TYPE_CLASS_VAR_DEC(t,name) ;
 	}
 }

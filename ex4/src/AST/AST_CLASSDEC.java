@@ -153,6 +153,7 @@ public class AST_CLASSDEC extends AST_DEC
 		/*********************************************************/
 		/* [5] Return value is irrelevant for class declarations */
 		/*********************************************************/
+		this.se = t;
 		return null;
 	}
 	public void ourfunc(int line)throws semanticExc{

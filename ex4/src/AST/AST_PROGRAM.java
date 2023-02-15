@@ -1,4 +1,7 @@
 package AST;
+import IR.*;
+import TEMP.TEMP;
+import TYPES.*;
 
 import TYPES.TYPE;
 
@@ -6,6 +9,7 @@ public class AST_PROGRAM extends AST_Node
 {
 	public AST_DEC d;
 	public AST_PROGRAM p;
+	static public boolean root = true;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -57,4 +61,28 @@ public class AST_PROGRAM extends AST_Node
 
 		return null;
 	}
+	
+	public TEMP IRme()
+	{
+		boolean imRoot = false;
+		if(root) {
+			imRoot = true;
+			root = false;
+		}
+		/* IR Prefix */
+		if(imRoot) {
+			IR.getInstance().Add_IRcommand(new IRcommand_Jump_Label("main"));
+		}
+		/* IR Body */
+		if (d != null) head.IRme();
+		if (p != null) tail.IRme();
+
+		/* IR Suffix */
+		if(imRoot) {
+			IR.getInstance().Add_IRcommand(new IRcommand_Label("main"));
+			IR.getInstance().Add_IRcommand(new IRcommand_Jump_And_Link(IR.funcLabelPrefix + "main"));
+		}
+		return null;
+	}
+
 }

@@ -57,7 +57,7 @@ public class AST_VAR_LIST extends AST_Node
 	public TYPE SemantMe() throws semanticExc {
 		if (typename != null) typename.SemantMe();
 		if (restoflist != null) restoflist.SemantMe();
-
+		this.se = null;
 		return null;
 	}
 }

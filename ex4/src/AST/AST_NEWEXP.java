@@ -1,6 +1,9 @@
 package AST;
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import TEMP.*;
+import IR.*;
+
 
 import java.util.Objects;
 
@@ -57,12 +60,26 @@ public class AST_NEWEXP extends AST_EXP
 	
 	public TYPE SemantMe() throws semanticExc {
 		if(e == null) {
-			return t.SemantMe();
+			this.se = t.SemantMe();
+			return this.se;
 		}
 		else{
-
+			this.se = new TYPE_ARRAY(t.SemantMe());
 			return new TYPE_ARRAY(t.SemantMe());
 		}
 	}
+	
+	public TEMP IRme(){
+		TEMP dest = TEMP_FACTORY.getInstance().getFreshTEMP();
+		if(e == null) {
+			IR.getInstance().Add_IRcommand(new IRcommand_New_Class(dest, se));
+		}
+		else{
+			IR.getInstance().Add_IRcommand(new IRcommand_New_Array(dest, e.IRme()));
+		}
+		return dest;
+	}
+	
+	
 	
 }

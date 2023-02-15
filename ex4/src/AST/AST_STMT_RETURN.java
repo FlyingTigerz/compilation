@@ -1,7 +1,8 @@
 package AST;
 import TYPES.*;
 import SYMBOL_TABLE.*;
-
+import TEMP.*;
+import IR.*;
 import java.util.Objects;
 
 public class AST_STMT_RETURN extends AST_STMT
@@ -45,6 +46,13 @@ public class AST_STMT_RETURN extends AST_STMT
 		return condType;
 	}
 
-
+	public TEMP IRme(){
+		TEMP res = null;
+		if(cond!=null){
+			res = cond.IRme();
+		}
+		IR.getInstance().Add_IRcommand(new IRcommand_Return(res));
+		return res;
+	}
 
 }

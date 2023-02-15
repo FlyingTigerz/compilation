@@ -2,6 +2,8 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import IR.*;
+import TEMP.*;
 
 public class AST_DEC_VAR extends AST_DEC
 {
@@ -54,7 +56,6 @@ public class AST_DEC_VAR extends AST_DEC
 
 	public TYPE SemantMe() throws semanticExc
 	{
-		System.out.print(">> we hereeeeeeeeeeeeeeeee\n");
 
 		TYPE t = type.SemantMe();
 		if(t.name.equals("nil"))
@@ -107,7 +108,25 @@ public class AST_DEC_VAR extends AST_DEC
 		/*********************************************************/
 		/* [4] Return value is irrelevant for class declarations */
 		/*********************************************************/
+		this.se = t;
 		return null;
+	}
+	
+	public TEMP IRme()
+	{
+		TEMP dataStorage = TEMP_FACTORY.getInstance().getFreshNamedTEMP(IR.globalVarPrefix + name);
+		if(exp != null) {
+			TEMP t = exp.IRme();
+			if(exp instanceof AST_EXP_INT){
+				IR.getInstance().Add_IRdata(new IRdata_Global_Var(dataStorage, ""+((AST_EXP_INT)exp).value));
+			}
+			else {
+				IR.getInstance().Add_IRdata(new IRdata_Global_Var(dataStorage, t.toString()));
+			}
+		}
+		
+		
+		return dataStorage;
 	}
 	
 }

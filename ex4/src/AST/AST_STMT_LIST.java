@@ -1,5 +1,7 @@
 package AST;
 import TYPES.*;
+import IR.*;
+import TEMP.TEMP;
 import SYMBOL_TABLE.*;
 
 import java.util.Objects;
@@ -78,5 +80,15 @@ public class AST_STMT_LIST extends AST_Node
 		};
 		return new TYPE_LIST(rtype,prev);
 	}
+	
+	public TEMP IRme()
+	{
+		if (head != null) head.IRme();
+		if (tail != null) tail.IRme();
+
+		return null;
+	}
+	
+	
 
 }

@@ -144,6 +144,12 @@ public class AST_CFIELD_DEC_FUNC extends AST_CFIELD
 		/*********************************************************/
 		/* [6] Return value is irrelevant for class declarations */
 		/*********************************************************/
+		
+		
+		//this migh need to be changes
+		System.out.print("====================== AST_CFIELD_DEC_FUNC , might be problem here \n");
+
+		this.se = new TYPE_FUNCTION(returnType, returnType.name,null);
 		return new TYPE_CLASS_VAR_DEC(new TYPE_FUNCTION(returnType, returnType.name,null),name);
 	}
 
