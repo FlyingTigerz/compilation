@@ -1,7 +1,7 @@
 package AST;
 import TYPES.*;
 import IR.*;
-import MIPS.sir_MIPS_a_lot;
+import MIPS.MIPSGenerator;
 import TEMP.*;
 import SYMBOL_TABLE.*;
 

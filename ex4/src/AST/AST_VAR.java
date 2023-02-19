@@ -1,7 +1,8 @@
 
 package AST;
-        import TYPES.*;
-        import SYMBOL_TABLE.*;
+import TYPES.*;
+import TEMP.*;
+import SYMBOL_TABLE.*;
 
 public abstract class AST_VAR extends AST_Node
 {

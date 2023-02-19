@@ -66,10 +66,10 @@ public class AST_DEC_NEW extends AST_DEC{
         }
         
         public TEMP IRMe() {
-            if (vd != null)return vd.IRMe();
-            if (fd != null)return fd.IRMe();
-            if (cd != null) return cd.IRMe();
-            return atd.IRMe();
+            if (vd != null)return vd.IRme();
+            if (fd != null)return fd.IRme();
+            if (cd != null) return cd.IRme();
+            return atd.IRme();
             
         }
 

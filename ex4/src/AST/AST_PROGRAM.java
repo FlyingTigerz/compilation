@@ -74,8 +74,8 @@ public class AST_PROGRAM extends AST_Node
 			IR.getInstance().Add_IRcommand(new IRcommand_Jump_Label("main"));
 		}
 		/* IR Body */
-		if (d != null) head.IRme();
-		if (p != null) tail.IRme();
+		if (d != null) d.IRme();
+		if (p != null) p.IRme();
 
 		/* IR Suffix */
 		if(imRoot) {

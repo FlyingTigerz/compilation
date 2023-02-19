@@ -112,6 +112,7 @@ public class AST_DEC_VAR extends AST_DEC
 		return null;
 	}
 	
+	@Override
 	public TEMP IRme()
 	{
 		TEMP dataStorage = TEMP_FACTORY.getInstance().getFreshNamedTEMP(IR.globalVarPrefix + name);

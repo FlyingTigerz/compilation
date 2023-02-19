@@ -81,8 +81,8 @@ public class AST_CFIELD_LIST extends AST_Node
 	
 	public TEMP_LIST IRme(){
 		TEMP_LIST field_temps=new TEMP_LIST();
-		for(AST_CFIELD_LIST it;it!=null;it=it.tail){
-			field_temps.append(it.head.IRme());
+		for(AST_CFIELD_LIST it;it!=null;it=it.restoflist){
+			field_temps.append(it.first.IRme());
 		}
 		return field_temps;
 	}

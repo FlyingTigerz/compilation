@@ -1,5 +1,5 @@
 package AST;
-
+import TEMP.*;
 import SYMBOL_TABLE.*;
 import TYPES.*;
 
@@ -33,7 +33,7 @@ public class AST_TYPE extends AST_Node
 		this.LineNum=++LineNum;
 		
 		
-		switch (typeName) {
+		switch (name) {
 		case "void":
 			this.type = TYPE_VOID.getInstance();
 			break;
