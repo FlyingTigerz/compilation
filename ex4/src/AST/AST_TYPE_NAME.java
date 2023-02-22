@@ -32,7 +32,7 @@ public class AST_TYPE_NAME extends AST_Node
 		this.type = type;
 	}
 	public TYPE SemantMe() throws semanticExc {
-		SYMBOL_TABLE.getInstance().enter(name, type.SemantMe());
+		SYMBOL_TABLE.getInstance().enter(name, type.SemantMe(),2);
 		SYMBOL_TABLE_ENTRY prevDec = SYMBOL_TABLE.getInstance().find(name);
 		offset = prevDec.offset;
 		this.se = null;

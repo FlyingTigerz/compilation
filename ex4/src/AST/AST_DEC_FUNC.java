@@ -46,7 +46,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		if (returnTypeName != null) returnTypeName.PrintMe();
 		if(params!=null)params.PrintMe();
 		if(body!=null)body.PrintMe();
-		System.out.format("AST FUNC DEC ( %s )\n",name);
+		System.out.format("AST FUNC DEC aaaaaaaaaaaaaaaaaaaaa ( %s )\n",name);
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 				SerialNumber,
@@ -118,13 +118,14 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*****************/
 		/* [4] End Scope */
 		/*****************/
+		localVarCount = ((TYPE_FOR_SCOPE_BOUNDARIES)SYMBOL_TABLE.getInstance().getScope().type).getVarCount();
 		SYMBOL_TABLE.getInstance().endScope();
 		SYMBOL_TABLE.getInstance().cur_func=func_t;
 
 		/*********************************************************/
 		/* [6] Return value is irrelevant for class declarations */
 		/*********************************************************/
-
+		
 		func_t=new TYPE_FUNCTION(returnType,name,type_list);
 
 		
@@ -135,7 +136,6 @@ public class AST_DEC_FUNC extends AST_DEC
 	
 	public TEMP IRme()
 	{
-		
 		// label
 		IR.getInstance().Add_IRcommand(new IRcommand_Label(IR.funcLabelPrefix + name));
 		// prologue

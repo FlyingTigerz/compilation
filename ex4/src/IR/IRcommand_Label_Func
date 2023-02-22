@@ -13,15 +13,15 @@ package IR;
 import TEMP.*;
 import MIPS.*;
 
-public class IRcommand_Label extends IRcommand
+public class IRcommand_Label_Func extends IRcommand
 {
 	String label_name;
-	
-	public IRcommand_Label(String label_name)
+
+	public IRcommand_Label_Func(String label_name)
 	{
 		this.label_name = label_name;
 	}
-	
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/
@@ -29,4 +29,6 @@ public class IRcommand_Label extends IRcommand
 	{
 		MIPSGenerator.getInstance().label(label_name);
 	}
+
+	public void printMe() { IR.getInstance().fileNewLine(true); IR.getInstance().filePrintln("" + label_name  + ":"); }
 }

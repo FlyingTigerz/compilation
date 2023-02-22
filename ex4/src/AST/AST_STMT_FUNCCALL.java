@@ -3,6 +3,7 @@ import TYPES.*;
 import IR.*;
 import TEMP.*;
 import SYMBOL_TABLE.*;
+import TYPES.TYPE_FUNCTION;
 
 import java.util.Objects;
 public class AST_STMT_FUNCCALL extends AST_STMT
@@ -80,9 +81,9 @@ public class AST_STMT_FUNCCALL extends AST_STMT
 			if(func == null || !(func.type instanceof TYPE_FUNCTION)){
 				System.out.format(">> ERROR [%d:%d] can't find function %s\n",2,2, fname);
 				throw new semanticExc(this.LineNum);}
-			
+
 			TYPE returnType =  (TYPE_FUNCTION)func.type;
-			functionType = (TYPE_FUNCTION) func.type;
+			functionType=(TYPE_FUNCTION) func.type;
 			TYPE_LIST expectedParams = ((TYPE_FUNCTION) func.type).params;
 			for (AST_EXP_LIST it=l; it != null; it=it.restoflist) {
 				if (expectedParams == null) {

@@ -44,39 +44,78 @@ public class MIPSGenerator
 	/***********************/
 	public void finalizeFile()
 	{
-		fileWriter.print("\tli $v0,10\n");
-		fileWriter.print("\tsyscall\n");
 		fileWriter.close();
 	}
+	/* TODO: there shouldn't be a dedicated print_int function.
+	 *   instead, we should have a generic syscall function that
+	 *   receives the syscall type as an argument*/
 	public void print_int(TEMP t)
 	{
-		int idx=t.getSerialNumber();
-		// fileWriter.format("\taddi $a0,Temp_%d,0\n",idx);
-		fileWriter.format("\tmove $a0,Temp_%d\n",idx);
-		fileWriter.format("\tli $v0,1\n");
-		fileWriter.format("\tsyscall\n");
-		fileWriter.format("\tli $a0,32\n");
-		fileWriter.format("\tli $v0,11\n");
+		// li $a0, t
+		if(t.toString().contains("$")) {
+			fileWriter.format("\tmove %s, %s\n",IR.getInstance().a0, t);
+		}
+		else {
+			fileWriter.format("\tla %s, %s\n", IR.getInstance().a0, t);
+		}
+		// li $v0, 1
+		fileWriter.format("\tli %s, %s\n",IR.getInstance().v0, 1);
+		// syscall
 		fileWriter.format("\tsyscall\n");
 	}
-	//public TEMP addressLocalVar(int serialLocalVarNum)
-	//{
-	//	TEMP t  = TEMP_FACTORY.getInstance().getFreshTEMP();
-	//	int idx = t.getSerialNumber();
-	//
-	//	fileWriter.format("\taddi Temp_%d,$fp,%d\n",idx,-serialLocalVarNum*WORD_SIZE);
-	//	
-	//	return t;
-	//}
+	public void print_string(TEMP t)
+	{
+		// li $a0, t
+		if(t.toString().contains("$")) {
+			fileWriter.format("\tmove %s, %s\n",IR.getInstance().a0, t);
+		}
+		else {
+			fileWriter.format("\tlw %s, %s\n", IR.getInstance().a0, t);
+		}
+		// li $v0, 4
+		fileWriter.format("\tli %s, %s\n",IR.getInstance().v0, 4);
+		// syscall
+		fileWriter.format("\tsyscall\n");
+	}
+	public void print_trace(TEMP t)
+	{
+	}
+	public void exit()
+	{
+		// li $v0, 10
+		fileWriter.format("\tli %s, %d\n",IR.getInstance().v0, 10);
+		// syscall
+		fileWriter.format("\tsyscall\n");
+	}
+	public void syscall(){
+		fileWriter.format("\tsyscall\n");
+	}
+	/***********************/
+	/* Sections */
+	/***********************/
+	public void dataSection() { fileWriter.format(".data\n"); }
+	public void textSection(){
+		fileWriter.format(".text\n");
+	}
+	public void finalizeTextSection(){
+		// exit gracefully
+		fileWriter.println(endProgLabel + ":\n\tli $v0, 10\n\tsyscall");
+		// exit on access violation
+		fileWriter.println(EXIT_AccessViolation + ":\n\tla $a0, " + ERR_AccessViolation + "\n\tli $v0, 4\n\tsyscall\n\tli $v0, 10\n\tsyscall");
+		// exit on zero division
+		fileWriter.println(EXIT_ZeroDiv + ":\n\tla $a0, " + ERR_ZeroDiv + "\n\tli $v0, 4\n\tsyscall\n\tli $v0, 10\n\tsyscall");
+		// exit on invalid pointer
+		fileWriter.println(EXIT_InvalidPointer + ":\n\tla $a0, " + ERR_InvalidPointer + "\n\tli $v0, 4\n\tsyscall\n\tli $v0, 10\n\tsyscall");
+	}
+	public void storeGlobalVariable(TEMP label, String word){
+		fileWriter.format("\t%s: .word %s\n", label, word);
+	}
+	public void storeString(TEMP label, String str){
+		fileWriter.format("\t%s: .asciiz \"%s\"\n", label, str);
+	}
 	public void allocate(String var_name)
 	{
-		fileWriter.format(".data\n");
 		fileWriter.format("\tglobal_%s: .word 721\n",var_name);
-	}
-	public void load(TEMP dst,String var_name)
-	{
-		int idxdst=dst.getSerialNumber();
-		fileWriter.format("\tlw Temp_%d,global_%s\n",idxdst,var_name);
 	}
 	public void load(TEMP dst, TEMP src, int offset)
 	{
@@ -94,11 +133,6 @@ public class MIPSGenerator
 	public void load(String dst, TEMP src, int offset)
 	{
 		fileWriter.format("\tlw %s, %d(%s)\n", dst, offset * WORD_SIZE, src.toString());
-	}
-	public void store(String var_name,TEMP src)
-	{
-		int idxsrc=src.getSerialNumber();
-		fileWriter.format("\tsw Temp_%d,global_%s\n",idxsrc,var_name);		
 	}
 	public void store(TEMP src, TEMP dst, int offset)
 	{
@@ -119,58 +153,58 @@ public class MIPSGenerator
 	}
 	public void li(TEMP t,int value)
 	{
-		int idx=t.getSerialNumber();
-		fileWriter.format("\tli Temp_%d,%d\n",idx,value);
+		fileWriter.format("\tli %s,%d\n",t.toString(),value);
 	}
-	public void add(TEMP dst,TEMP oprnd1,TEMP oprnd2)
+	public void la(TEMP dst, TEMP src)
 	{
-		int i1 =oprnd1.getSerialNumber();
-		int i2 =oprnd2.getSerialNumber();
-		int dstidx=dst.getSerialNumber();
-
-		fileWriter.format("\tadd Temp_%d,Temp_%d,Temp_%d\n",dstidx,i1,i2);
-	}
-	public void addi(TEMP dst,TEMP oprnd1,int value)
-	{
-		fileWriter.format("\taddi %s, %s, %d\n",dst.toString(),oprnd1.toString(),value);
-	}
-	public void mul(TEMP dst,TEMP oprnd1,TEMP oprnd2)
-	{
-		int i1 =oprnd1.getSerialNumber();
-		int i2 =oprnd2.getSerialNumber();
-		int dstidx=dst.getSerialNumber();
-
-		fileWriter.format("\tmul Temp_%d,Temp_%d,Temp_%d\n",dstidx,i1,i2);
-	}
-	public void div(TEMP dst,TEMP oprnd1,TEMP oprnd2)
-	{
-		fileWriter.format("\tdiv %s,%s,%s\n",dst.toString(),oprnd1.toString(),oprnd2.toString());
-	}
-	public void label(String inlabel)
-	{
-		if (inlabel.equals("main"))
-		{
-			fileWriter.format(".text\n");
-			fileWriter.format("%s:\n",inlabel);
-		}
-		else
-		{
-			fileWriter.format("%s:\n",inlabel);
-		}
-	}
-	public void bltz(TEMP oprnd1,String label)
-	{
-		fileWriter.format("\tbltz %s, %s\n",oprnd1.toString(),label);
+		fileWriter.format("\tla %s,0(%s)\n",dst.toString(),src.toString());
 	}
 	public void move(TEMP dst, TEMP src)
 	{
 		fileWriter.format("\tmove %s, %s\n",dst.toString(), src.toString());
 	}
+	public void lb(TEMP dst,TEMP src)
+	{
+		fileWriter.format("\tlb %s,0(%s)\n",dst.toString(),src.toString());
+	}
+	public void add(TEMP dst,TEMP oprnd1,TEMP oprnd2)
+	{
+		fileWriter.format("\tadd %s,%s,%s\n",dst.toString(),oprnd1.toString(),oprnd2.toString());
+	}
+	public void sub(TEMP dst,TEMP oprnd1,TEMP oprnd2)
+	{
+		fileWriter.format("\tsub %s,%s,%s\n",dst.toString(),oprnd1.toString(),oprnd2.toString());
+	}
+	public void mul(TEMP dst,TEMP oprnd1,TEMP oprnd2)
+	{
+		fileWriter.format("\tmul %s,%s,%s\n",dst.toString(),oprnd1.toString(),oprnd2.toString());
+	}
+	public void div(TEMP dst,TEMP oprnd1,TEMP oprnd2)
+	{
+		fileWriter.format("\tdiv %s,%s,%s\n",dst.toString(),oprnd1.toString(),oprnd2.toString());
+	}
+
+	public void addi(TEMP dst,TEMP oprnd1,int value)
+	{
+		fileWriter.format("\taddi %s, %s, %d\n",dst.toString(),oprnd1.toString(),value);
+	}
+
+	public void label(String inlabel)
+	{
+		fileWriter.format("%s:\n",inlabel);
+	}
 	public void jump(String inlabel)
 	{
 		fileWriter.format("\tj %s\n",inlabel);
-	}	
-
+	}
+	public void jal(String inlabel)
+	{
+		fileWriter.format("\tjal %s\n",inlabel);
+	}
+	public void slt(TEMP dst,TEMP oprnd1,TEMP oprnd2)
+	{
+		fileWriter.format("\tslt %s,%s,%s\n",dst.toString(),oprnd1.toString(),oprnd2.toString());
+	}
 	public void blt(TEMP oprnd1,TEMP oprnd2,String label)
 	{
 		fileWriter.format("\tblt %s,%s,%s\n",oprnd1.toString(),oprnd2.toString(),label);
@@ -179,32 +213,37 @@ public class MIPSGenerator
 	{
 		fileWriter.format("\tblt %s,%s,%s\n",oprnd1.toString(),immed,label);
 	}
+	public void bgt(TEMP oprnd1,TEMP oprnd2,String label)
+	{
+		fileWriter.format("\tbgt %s,%s,%s\n",oprnd1.toString(),oprnd2.toString(),label);
+	}
+	public void bgt(TEMP oprnd1,int immed,String label)
+	{
+		fileWriter.format("\tbgt %s,%s,%s\n",oprnd1.toString(),immed,label);
+	}
+	public void bltz(TEMP oprnd1,String label)
+	{
+		fileWriter.format("\tbltz %s, %s\n",oprnd1.toString(),label);
+	}
 	public void bge(TEMP oprnd1,TEMP oprnd2,String label)
 	{
-		int i1 =oprnd1.getSerialNumber();
-		int i2 =oprnd2.getSerialNumber();
-		
-		fileWriter.format("\tbge Temp_%d,Temp_%d,%s\n",i1,i2,label);				
+		fileWriter.format("\tbge %s,%s,%s\n",oprnd1.toString(),oprnd2.toString(),label);
 	}
 	public void bne(TEMP oprnd1,TEMP oprnd2,String label)
 	{
-		int i1 =oprnd1.getSerialNumber();
-		int i2 =oprnd2.getSerialNumber();
-		
-		fileWriter.format("\tbne Temp_%d,Temp_%d,%s\n",i1,i2,label);				
+		fileWriter.format("\tbne %s,%s,%s\n",oprnd1.toString(),oprnd2.toString(),label);
 	}
 	public void beq(TEMP oprnd1,TEMP oprnd2,String label)
 	{
-		int i1 =oprnd1.getSerialNumber();
-		int i2 =oprnd2.getSerialNumber();
-		
-		fileWriter.format("\tbeq Temp_%d,Temp_%d,%s\n",i1,i2,label);				
+		fileWriter.format("\tbeq %s,%s,%s\n",oprnd1.toString(),oprnd2.toString(),label);
+	}
+	public void ble(TEMP oprnd1, TEMP oprnd2, String label)
+	{
+		fileWriter.format("\tble %s,%s,%s\n",oprnd1.toString(),oprnd2.toString(),label);
 	}
 	public void beqz(TEMP oprnd1,String label)
 	{
-		int i1 =oprnd1.getSerialNumber();
-				
-		fileWriter.format("\tbeq Temp_%d,$zero,%s\n",i1,label);				
+		fileWriter.format("\tbeq %s,$zero,%s\n",oprnd1.toString(),label);
 	}
 	public void ret(TEMP res)
 	{
@@ -218,80 +257,9 @@ public class MIPSGenerator
 		fileWriter.format("\taddi $sp, $sp, 8\n");
 		fileWriter.format("\tjr $ra\n");
 	}
-	public void syscall(){
-		fileWriter.format("\tsyscall\n");
-	}
-	public void storeString(TEMP label, String str){
-		fileWriter.format("\t%s: .asciiz \"%s\"\n", label, str);
-	}
-	public void storeGlobalVariable(TEMP label, String word){
-		fileWriter.format("\t%s: .word %s\n", label, word);
-	}
 
-	public void la(TEMP dst, TEMP src)
-	{
-		fileWriter.format("\tla %s,0(%s)\n",dst.toString(),src.toString());
-	}
-	public void lb(TEMP dst,TEMP src)
-	{
-		fileWriter.format("\tlb %s,0(%s)\n",dst.toString(),src.toString());
-	}
-	public void slt(TEMP dst,TEMP oprnd1,TEMP oprnd2)
-	{
-		fileWriter.format("\tslt %s,%s,%s\n",dst.toString(),oprnd1.toString(),oprnd2.toString());
-	}
-	public void sub(TEMP dst,TEMP oprnd1,TEMP oprnd2)
-	{
-		fileWriter.format("\tsub %s,%s,%s\n",dst.toString(),oprnd1.toString(),oprnd2.toString());
-	}
-	public void exit()
-	{
-		// li $v0, 10
-		fileWriter.format("\tli %s, %d\n",IR.getInstance().v0, 10);
-		// syscall
-		fileWriter.format("\tsyscall\n");
-	}
-	public void print_string(TEMP t)
-	{
-		// li $a0, t
-		if(t.toString().contains("$")) {
-			fileWriter.format("\tmove %s, %s\n",IR.getInstance().a0, t);
-		}
-		else {
-			fileWriter.format("\tlw %s, %s\n", IR.getInstance().a0, t);
-		}
-		// li $v0, 4
-		fileWriter.format("\tli %s, %s\n",IR.getInstance().v0, 4);
-		// syscall
-		fileWriter.format("\tsyscall\n");
-	}
-	public void bgt(TEMP oprnd1,TEMP oprnd2,String label)
-	{
-		fileWriter.format("\tbgt %s,%s,%s\n",oprnd1.toString(),oprnd2.toString(),label);
-	}
-	public void bgt(TEMP oprnd1,int immed,String label)
-	{
-		fileWriter.format("\tbgt %s,%s,%s\n",oprnd1.toString(),immed,label);
-	}
-	public void jal(String inlabel)
-	{
-		fileWriter.format("\tjal %s\n",inlabel);
-	}
-	public void dataSection() { fileWriter.format(".data\n"); }
-	public void textSection(){
-		fileWriter.format(".text\n");
-	}
-	public void finalizeTextSection(){
-		// exit gracefully
-		fileWriter.println(endProgLabel + ":\n\tli $v0, 10\n\tsyscall");
-		// exit on access violation
-		fileWriter.println(EXIT_AccessViolation + ":\n\tla $a0, " + ERR_AccessViolation + "\n\tli $v0, 4\n\tsyscall\n\tli $v0, 10\n\tsyscall");
-		// exit on zero division
-		fileWriter.println(EXIT_ZeroDiv + ":\n\tla $a0, " + ERR_ZeroDiv + "\n\tli $v0, 4\n\tsyscall\n\tli $v0, 10\n\tsyscall");
-		// exit on invalid pointer
-		fileWriter.println(EXIT_InvalidPointer + ":\n\tla $a0, " + ERR_InvalidPointer + "\n\tli $v0, 4\n\tsyscall\n\tli $v0, 10\n\tsyscall");
-	}
-	
+
+
 	/**************************************/
 	/* USUAL SINGLETON IMPLEMENTATION ... */
 	/**************************************/
@@ -331,14 +299,6 @@ public class MIPSGenerator
 			{
 				e.printStackTrace();
 			}
-
-			/*****************************************************/
-			/* [3] Print data section with error message strings */
-			/*****************************************************/
-			instance.fileWriter.print(".data\n");
-			instance.fileWriter.print("string_access_violation: .asciiz \"Access Violation\"\n");
-			instance.fileWriter.print("string_illegal_div_by_0: .asciiz \"Illegal Division By Zero\"\n");
-			instance.fileWriter.print("string_invalid_ptr_dref: .asciiz \"Invalid Pointer Dereference\"\n");
 		}
 		return instance;
 	}

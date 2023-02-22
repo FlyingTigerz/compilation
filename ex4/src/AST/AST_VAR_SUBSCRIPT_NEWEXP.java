@@ -1,13 +1,14 @@
 package AST;
-
+import IR.*;
+import TEMP.*;
 import TYPES.*;
 import SYMBOL_TABLE.*;
-
 public class AST_VAR_SUBSCRIPT_NEWEXP extends AST_STMT
 {
 	public AST_VAR var;
 	public AST_EXP e;
 	public AST_NEWEXP newe;
+		private int offset;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -76,6 +77,7 @@ public class AST_VAR_SUBSCRIPT_NEWEXP extends AST_STMT
 		}
 		if(e==null){
 			TYPE ex = newe.SemantMe();
+//			this.offset = SYMBOL_TABLE.getInstance().find(name).offset;
 			if (!ex.isInstanceOf(v))
 			{
 				System.out.format(">> ERROR [%d:%d] illegal type cast from %s to %s\n", 2, 2, ex.name, v.name);
@@ -83,8 +85,9 @@ public class AST_VAR_SUBSCRIPT_NEWEXP extends AST_STMT
 			}
 		}
 		if (newe==null){
-
+			
 			TYPE ex = e.SemantMe();
+		this.offset = SYMBOL_TABLE.getInstance().find(ex.name).offset;
 			if(ex.isArray()&&v.isArray()){
 				System.out.format(">> ---------------------------------  to %s\n", ex.name);
 				System.out.format(">> -------------------------------- %s\n",v.name);
@@ -104,5 +107,15 @@ public class AST_VAR_SUBSCRIPT_NEWEXP extends AST_STMT
 			}
 		}
 		return v;
+	}
+	public TEMP IRme()
+	{
+		TEMP dst = IR.getInstance().fp;
+		if(e != null) {
+			TEMP src = e.IRme();
+			IR.getInstance().Add_IRcommand(new IRcommand_Store_Temp(src, dst, this.offset));
+		}
+
+		return null;
 	}
 }

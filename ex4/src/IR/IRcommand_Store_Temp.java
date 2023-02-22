@@ -23,7 +23,7 @@ public class IRcommand_Store_Temp extends IRcommand
 	TEMP dst;
 	TEMP src;
 	int offset;
-	
+
 	public IRcommand_Store_Temp(TEMP src, TEMP dst, int offset)
 	{
 		this.src = src;
@@ -37,13 +37,13 @@ public class IRcommand_Store_Temp extends IRcommand
 		return used_regs;
 	}
 	public TEMP modifiedReg() { return dst;}
-	
+
 	/***************/
 	/* MIPS me !!! */
 	/***************/
 	public void MIPSme()
 	{
-		MIPSGenerator.getInstance().store(src, dst, offset);
+		MIPS.MIPSGenerator.getInstance().store(src, dst, offset);
 	}
 
 	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("" + offset * WORD_SIZE + "(" +dst + ") = " + src); }

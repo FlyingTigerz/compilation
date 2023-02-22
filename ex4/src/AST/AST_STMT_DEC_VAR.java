@@ -90,7 +90,7 @@ public class AST_STMT_DEC_VAR extends AST_STMT
 		/***************************************************/
 		/* [2] Enter the Function Type to the Symbol Table */
 		/***************************************************/
-		SYMBOL_TABLE.getInstance().enter(name, t);
+		SYMBOL_TABLE.getInstance().enter(name, t,1);
 		this.offset = SYMBOL_TABLE.getInstance().find(name).offset;
 		/***************************************************/
 		/* [3] check assigned expression type validity */

@@ -85,7 +85,7 @@ public class AST_CFIELD_DEC_VAR extends AST_CFIELD
 		/***************************************************/
 		/* [2] Enter the Function Type to the Symbol Table */
 		/***************************************************/
-		SYMBOL_TABLE.getInstance().enter(name, t);
+		SYMBOL_TABLE.getInstance().enter(name, t,3);
 		this.offset = SYMBOL_TABLE.getInstance().find(name).offset;
 		if(exp != null && exp.SemantMe().name=="null" &&t.name!="int"&&t.name!="string")
 		{
