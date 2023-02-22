@@ -69,7 +69,7 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		this.se = prevDec.type;
 		this.offset = prevDec.offset;
 		this.isGlobal = prevDec.isGlobal;
-		return this.se;
+		return new TYPE_VAR(name,this.se.name);
 	}
 	
 	public TEMP IRme(){

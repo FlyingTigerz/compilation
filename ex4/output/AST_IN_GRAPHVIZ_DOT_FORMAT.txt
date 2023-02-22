@@ -2,7 +2,7 @@ digraph
 {
 graph [ordering = "out"]
 v0 [label = "TYPE
-...->TYPES.TYPE_INT@3feba861"];
+...->TYPES.TYPE_INT@6f496d9f"];
 v2 [label = "ARGUMENT type p
 "];
 v3 [label = "VAR
@@ -10,14 +10,14 @@ LIST
 "];
 v3 -> v2;
 v4 [label = "TYPE
-...->TYPES.TYPE_INT@3feba861"];
+...->TYPES.TYPE_INT@6f496d9f"];
 v5 [label = "INT(2)"];
 v6 [label = "DEC
 type i = exp;"];
 v6 -> v4;
 v6 -> v5;
 v7 [label = "TYPE
-...->TYPES.TYPE_INT@3feba861"];
+...->TYPES.TYPE_INT@6f496d9f"];
 v8 [label = "INT(2)"];
 v9 [label = "DEC
 type j = exp;"];
@@ -54,7 +54,7 @@ v64 -> v3;
 v65 [label = "DECNEW"];
 v65 -> v64;
 v66 [label = "TYPE
-...->TYPES.TYPE_VOID@5b480cf9"];
+...->TYPES.TYPE_VOID@723279cf"];
 v68 [label = "ARGUMENT type start
 "];
 v70 [label = "ARGUMENT type end
@@ -69,7 +69,7 @@ LIST
 v72 -> v68;
 v72 -> v71;
 v73 [label = "TYPE
-...->TYPES.TYPE_INT@3feba861"];
+...->TYPES.TYPE_INT@6f496d9f"];
 v74 [label = "SIMPLE
 VAR
 (start)"];
@@ -97,7 +97,7 @@ v107 -> v72;
 v108 [label = "DECNEW"];
 v108 -> v107;
 v109 [label = "TYPE
-...->TYPES.TYPE_VOID@5b480cf9"];
+...->TYPES.TYPE_VOID@723279cf"];
 v110 [label = "INT(2)"];
 v111 [label = "INT(100)"];
 v112 [label = "EXP

@@ -26,7 +26,7 @@
 26.	$t2 = lt $t3, $t4
 27.	jifz $t2, WHILE_FALSE1
 28.	$t5 = 2
-29.	0($fp) = $t5
+29.	-8($fp) = $t5
 30.  WHILE_TRUE2:
 31.	$t7 = -8($fp)
 32.	$t8 = 0(GLOBAL_VAR_p)
@@ -61,7 +61,7 @@
 61.  OVERFLOW_5:
 62.	$t15 = 32767
 63.  INBOUNDS_5:
-64.	0($fp) = $t15
+64.	-8($fp) = $t15
 65.	jmp WHILE_TRUE2
 66.  WHILE_FALSE2:
 67.	$t19 = -4($fp)
@@ -76,7 +76,7 @@
 76.  OVERFLOW_6:
 77.	$t18 = 32767
 78.  INBOUNDS_6:
-79.	0($fp) = $t18
+79.	-4($fp) = $t18
 80.	jmp WHILE_TRUE1
 81.  WHILE_FALSE1:
 82.	$t21 = 1
@@ -124,7 +124,7 @@
 124.  OVERFLOW_10:
 125.	$t32 = 32767
 126.  INBOUNDS_10:
-127.	0($fp) = $t32
+127.	-4($fp) = $t32
 128.	jmp WHILE_TRUE7
 129.  WHILE_FALSE7:
 130.	return 
