@@ -5,13 +5,14 @@ import TEMP.*;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 import MIPS.*;
-
+import java.util.Objects;
 public class AST_DEC_FUNC extends AST_DEC
 {
 	public AST_TYPE returnTypeName;
 	public String name;
 	public AST_VAR_LIST params;
 	public AST_STMT_LIST body;
+	private int localVarCount = 0;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -134,6 +135,7 @@ public class AST_DEC_FUNC extends AST_DEC
 	
 	public TEMP IRme()
 	{
+		
 		// label
 		IR.getInstance().Add_IRcommand(new IRcommand_Label(IR.funcLabelPrefix + name));
 		// prologue
@@ -150,7 +152,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		IR.getInstance().Add_IRcommand(new IRcommand_Add_Immediate(sp, sp, MIPSGenerator.WORD_SIZE * localVarCount));
 
 		body.IRme();
-		if(type.typeName.equals("void")) IR.getInstance().Add_IRcommand(new IRcommand_Return(null));
+		if(returnTypeName.name.equals("void")) IR.getInstance().Add_IRcommand(new IRcommand_Return(null));
 
 		return null;
 	}

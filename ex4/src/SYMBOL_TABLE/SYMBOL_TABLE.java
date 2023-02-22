@@ -7,6 +7,7 @@ package SYMBOL_TABLE;
 /* GENERAL IMPORTS */
 /*******************/
 import java.io.PrintWriter;
+import java.util.Objects;
 
 /*******************/
 /* PROJECT IMPORTS */
@@ -19,6 +20,8 @@ import TYPES.*;
 public class SYMBOL_TABLE
 {
 	private int hashArraySize = 32;
+		public TYPE_FUNCTION cur_func=null;
+	public TYPE_FUNCTION prev_func=null;
 	
 	/**********************************************/
 	/* The actual symbol table data structure ... */
@@ -26,8 +29,6 @@ public class SYMBOL_TABLE
 	private SYMBOL_TABLE_ENTRY[] table = new SYMBOL_TABLE_ENTRY[hashArraySize];
 	private SYMBOL_TABLE_ENTRY top;
 	private int top_index = 0;
-	public TYPE_FUNCTION cur_func=null;
-	public TYPE_FUNCTION prev_func=null;
 	
 	/**************************************************************/
 	/* A very primitive hash function for exposition purposes ... */
@@ -44,10 +45,12 @@ public class SYMBOL_TABLE
 	/****************************************************************************/
 	/* Enter a variable, function, class type or array type to the symbol table */
 	/****************************************************************************/
-	public void enter(String name,TYPE t)
+	public void enter(String name, TYPE t){
+		enter(name, t, 0);
+	}
+	public void enter(String name, TYPE t, int annotationMode)
 	{
-
-
+		/* annotationMode: 0 = global, 1 = local variable, 2 = argument
 		/*************************************************/
 		/* [1] Compute the hash value for this new entry */
 		/*************************************************/
@@ -58,11 +61,26 @@ public class SYMBOL_TABLE
 		/*     NOTE: this entry can very well be null, but the behaviour is identical */
 		/******************************************************************************/
 		SYMBOL_TABLE_ENTRY next = table[hashValue];
+
+		int offset = 0;
+		boolean isGlobal = false;
+		if(annotationMode == 0){
+			isGlobal = true;
+		}
+		else if(annotationMode == 1){
+			offset = ((TYPE_FOR_SCOPE_BOUNDARIES) getScope().type).getVarOffsetInc();
+		}
+		else if(annotationMode == 2){
+			offset = ((TYPE_FOR_SCOPE_BOUNDARIES) getScope().type).getArgOffsetInc();
+		}
+		else if(annotationMode == 3){
+			offset = ((TYPE_FOR_SCOPE_BOUNDARIES) getScope().type).getFieldOffsetInc();
+		}
 	
 		/**************************************************************************/
 		/* [3] Prepare a new symbol table entry with name, type, next and prevtop */
 		/**************************************************************************/
-		SYMBOL_TABLE_ENTRY e = new SYMBOL_TABLE_ENTRY(name,t,hashValue,next,top,top_index++);
+		SYMBOL_TABLE_ENTRY e = new SYMBOL_TABLE_ENTRY(name, t, hashValue, next, top, top_index++, offset, isGlobal);
 
 		/**********************************************/
 		/* [4] Update the top of the symbol table ... */
@@ -80,7 +98,6 @@ public class SYMBOL_TABLE
 		PrintMe();
 	}
 
-
 	/***********************************************/
 	/* Find the inner-most scope element with name */
 	/***********************************************/
@@ -90,14 +107,12 @@ public class SYMBOL_TABLE
 				
 		for (e = table[hash(name)]; e != null; e = e.next)
 		{
-
-		System.out.println(e.name);
 			if (name.equals(e.name))
 			{
-
 				return e;
 			}
 		}
+		
 		return null;
 	}
 
@@ -129,16 +144,15 @@ public class SYMBOL_TABLE
 	 * @return******************************************************************************/
 	public SYMBOL_TABLE_ENTRY getScope()
 	{
+		SYMBOL_TABLE_ENTRY deepest = top;
 		/**************************************************************************/
 		/* Pop elements from the symbol table stack until a SCOPE-BOUNDARY is hit */
 		/**************************************************************************/
-		while (top != null && top.name != "SCOPE-BOUNDARY")
+		while (deepest != null && !Objects.equals(deepest.name, "SCOPE-BOUNDARY"))
 		{
-			table[top.index] = top.next;
-			top_index = top_index-1;
-			top = top.prevtop;
+			deepest = deepest.prevtop;
 		}
-		return top;
+		return deepest;
 	}
 
 	/********************************************************************************/
@@ -161,7 +175,15 @@ public class SYMBOL_TABLE
 		/**************************************/
 		table[top.index] = top.next;
 		top_index = top_index-1;
+		/**************************************/
+		/* add counters from inner scope to outerscope
+		e.g. the local variable count in a function should include variables
+		 declares inside a while{} or if{} block*/
+		/**************************************/
+		TYPE_FOR_SCOPE_BOUNDARIES closedScope = (TYPE_FOR_SCOPE_BOUNDARIES)top.type;
 		top = top.prevtop;
+		TYPE_FOR_SCOPE_BOUNDARIES currScope = ((TYPE_FOR_SCOPE_BOUNDARIES) getScope().type);
+		currScope.incrementOffsetsFromInnerQuotes(closedScope);
 
 		/*********************************************/
 		/* Print the symbol table after every change */		
@@ -268,7 +290,7 @@ public class SYMBOL_TABLE
 			/* [0] The instance itself ... */
 			/*******************************/
 			instance = new SYMBOL_TABLE();
-
+			instance.beginScope();
 			/*****************************************/
 			/* [1] Enter primitive types int, string */
 			/*****************************************/
@@ -279,31 +301,46 @@ public class SYMBOL_TABLE
 
 
 			/***************************************/
-			/* [3] Enter library function PrintInt */
+			/* [3.1] Enter library function PrintInt */
 			/***************************************/
 			instance.enter(
 				"PrintInt",
 				new TYPE_FUNCTION(
 					TYPE_VOID.getInstance(),
 					"PrintInt",
+					1,
 					new TYPE_LIST(
 						TYPE_INT.getInstance(),
 						null)));
 
 			/***************************************/
-			/* [4] Enter library function PrintString */
+			/* [3.2] Enter library function PrintString */
 			/***************************************/
 			instance.enter(
 				"PrintString",
 				new TYPE_FUNCTION(
 					TYPE_VOID.getInstance(),
 					"PrintString",
+					4,
 					new TYPE_LIST(
 						TYPE_STRING.getInstance(),
 						null)));
 
 			/***************************************/
-			/* [5] Enter library function PrintTrace */
+			/* [3.3] Enter library function Exit */
+			/***************************************/
+			instance.enter(
+					"Exit",
+					new TYPE_FUNCTION(
+							TYPE_VOID.getInstance(),
+							"Exit",
+							10,
+							new TYPE_LIST(
+									TYPE_INT.getInstance(),
+									null)));
+
+			/***************************************/
+			/* [3.5] Enter library function PrintTrace */
 			/***************************************/
 			instance.enter(
 				"PrintTrace",

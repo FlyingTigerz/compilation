@@ -116,10 +116,10 @@ public class AST_DEC_VAR extends AST_DEC
 	public TEMP IRme()
 	{
 		TEMP dataStorage = TEMP_FACTORY.getInstance().getFreshNamedTEMP(IR.globalVarPrefix + name);
-		if(exp != null) {
-			TEMP t = exp.IRme();
-			if(exp instanceof AST_EXP_INT){
-				IR.getInstance().Add_IRdata(new IRdata_Global_Var(dataStorage, ""+((AST_EXP_INT)exp).value));
+		if(initialValue != null) {
+			TEMP t = initialValue.IRme();
+			if(initialValue instanceof AST_EXP_INT){
+				IR.getInstance().Add_IRdata(new IRdata_Global_Var(dataStorage, ""+((AST_EXP_INT)initialValue).value));
 			}
 			else {
 				IR.getInstance().Add_IRdata(new IRdata_Global_Var(dataStorage, t.toString()));

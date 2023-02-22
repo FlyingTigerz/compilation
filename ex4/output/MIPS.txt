@@ -3,134 +3,195 @@ string_access_violation: .asciiz "Access Violation"
 string_illegal_div_by_0: .asciiz "Illegal Division By Zero"
 string_invalid_ptr_dref: .asciiz "Invalid Pointer Dereference"
 .data
-	global_i: .word 721
-.data
-	global_j: .word 721
-.data
-	global_p: .word 721
-.data
-	global_start: .word 721
-.data
-	global_end: .word 721
-.data
-	global_isPrime: .word 721
-.data
-	global_copyp: .word 721
-.data
-	global_copyisPrime: .word 721
+	CONST_MAX_INT: .word 32767
+	CONST_MIN_INT: .word -32768
+	DATA_STR_CONST_SPACE: .asciiz " "
+	DATA_STR_ERR_ACCESS_VIOLATION: .asciiz "Access Violation"
+	DATA_STR_ERR_ZERO_DIV: .asciiz "Illegal Division By Zero"
+	DATA_STR_ERR_INVALID_POINTER: .asciiz "Invalid Pointer Dereference"
+	CONST_SPACE: .word DATA_STR_CONST_SPACE
+	ERR_ACCESS_VIOLATION: .word DATA_STR_ERR_ACCESS_VIOLATION
+	ERR_ZERO_DIV: .word DATA_STR_ERR_ZERO_DIV
+	ERR_INVALID_POINTER: .word DATA_STR_ERR_INVALID_POINTER
 .text
-main:
+	j main
+FUNC_LABEL_IsPrime:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	addi $sp, $sp, -4
+	sw $fp, 0($sp)
+	move $fp, $sp
+	addi $sp, $sp, 0
 	li Temp_0,2
-	sw Temp_0,global_p
+	sw $t0, 0($fp)
 	li Temp_1,2
-	sw Temp_1,global_start
-	li Temp_2,100
-	sw Temp_2,global_end
-Label_1_start:
-	lw Temp_4,global_p
-	lw Temp_6,global_end
-	li Temp_7,1
-	add Temp_5,Temp_6,Temp_7
-	blt Temp_4,Temp_5,Label_11_AssignOne
-	bge Temp_4,Temp_5,Label_12_AssignZero
-Label_11_AssignOne:
-	li Temp_3,1
-	j Label_10_end
-Label_12_AssignZero:
-	li Temp_3,0
-	j Label_10_end
-Label_10_end:
-	beq Temp_3,$zero,Label_0_end
-	li Temp_8,2
-	sw Temp_8,global_i
-	li Temp_9,2
-	sw Temp_9,global_j
+	sw $t0, 0($fp)
+WHILE_TRUE1:
+	lw $t0, 0($t3)
+	lw $t1, 0($t4)
+	slt $t0,$t0,$t1
+	beq Temp_2,$zero,WHILE_FALSE1
+WHILE_TRUE2:
+	lw $t8, 0($t2)
+	lw $t6, 0($t5)
+	slt $t6,$t8,$t6
+	beq Temp_5,$zero,WHILE_FALSE2
+	lw $t8, 0($t7)
+	lw $t9, 0($t1)
+	lw $t6, 0($t0)
+	beq Temp_11,Temp_12,Label_1_EQAssignOne
+	bne Temp_11,Temp_12,Label_2_EQAssignZero
+Label_1_EQAssignOne:
 	li Temp_10,1
-	sw Temp_10,global_isPrime
-Label_3_start:
-	lw Temp_12,global_i
-	lw Temp_13,global_p
-	blt Temp_12,Temp_13,Label_14_AssignOne
-	bge Temp_12,Temp_13,Label_15_AssignZero
-Label_14_AssignOne:
-	li Temp_11,1
-	j Label_13_end
-Label_15_AssignZero:
-	li Temp_11,0
-	j Label_13_end
-Label_13_end:
-	beq Temp_11,$zero,Label_2_end
-	li Temp_14,2
-	sw Temp_14,global_j
-Label_5_start:
-	lw Temp_16,global_j
-	lw Temp_17,global_p
-	blt Temp_16,Temp_17,Label_17_AssignOne
-	bge Temp_16,Temp_17,Label_18_AssignZero
-Label_17_AssignOne:
-	li Temp_15,1
-	j Label_16_end
-Label_18_AssignZero:
-	li Temp_15,0
-	j Label_16_end
-Label_16_end:
-	beq Temp_15,$zero,Label_4_end
-	lw Temp_18,global_p
-	sw Temp_18,global_copyp
-Label_7_start:
-	lw Temp_21,global_i
-	lw Temp_22,global_j
-	mul Temp_20,Temp_21,Temp_22
-	lw Temp_23,global_copyp
-	beq Temp_20,Temp_23,Label_20_AssignOne
-	bne Temp_20,Temp_23,Label_21_AssignZero
-Label_20_AssignOne:
-	li Temp_19,1
-	j Label_19_end
-Label_21_AssignZero:
-	li Temp_19,0
-	j Label_19_end
-Label_19_end:
-	beq Temp_19,$zero,Label_6_end
-	li Temp_24,0
-	sw Temp_24,global_isPrime
-	li Temp_25,0
-	sw Temp_25,global_copyp
-	j Label_7_start
-Label_6_end:
-	lw Temp_27,global_j
-	li Temp_28,1
-	add Temp_26,Temp_27,Temp_28
-	sw Temp_26,global_j
-	j Label_5_start
-Label_4_end:
-	lw Temp_30,global_i
-	li Temp_31,1
-	add Temp_29,Temp_30,Temp_31
-	sw Temp_29,global_i
-	j Label_3_start
-Label_2_end:
-	lw Temp_32,global_isPrime
-	sw Temp_32,global_copyisPrime
-Label_9_start:
-	lw Temp_33,global_copyisPrime
-	beq Temp_33,$zero,Label_8_end
-	lw Temp_34,global_p
-	move $a0,Temp_34
+	j Label_0_EQend
+Label_2_EQAssignZero:
+	li Temp_10,0
+	j Label_0_EQend
+Label_0_EQend:
+	mul Temp_8,Temp_9,Temp_10
+	blt $t6,-32768,UNDERFLOW_4
+	bgt $t6,32767,OVERFLOW_4
+	j INBOUNDS_4
+UNDERFLOW_4:
+	li Temp_8,-32768
+	j INBOUNDS_4
+OVERFLOW_4:
+	li Temp_8,32767
+INBOUNDS_4:
+	beq Temp_8,$zero,IF_FALSE3
+	li Temp_13,0
+	move $v0 $t0
+	move $sp, $fp
+	lw $fp, 0($sp)
+	lw $ra, 4($sp)
+	addi $sp, $sp, 8
+	jr $ra
+IF_FALSE3:
+	j WHILE_TRUE2
+WHILE_FALSE2:
+	j WHILE_TRUE1
+WHILE_FALSE1:
+	li Temp_14,1
+	move $v0 $t0
+	move $sp, $fp
+	lw $fp, 0($sp)
+	lw $ra, 4($sp)
+	addi $sp, $sp, 8
+	jr $ra
+FUNC_LABEL_PrintPrimes:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	addi $sp, $sp, -4
+	sw $fp, 0($sp)
+	move $fp, $sp
+	addi $sp, $sp, 0
+	lw $t0, 0($t1)
+	sw $t0, 0($fp)
+WHILE_TRUE5:
+	lw $t2, 0($t4)
+	lw $t5, 0($t1)
+	li Temp_20,1
+	add Temp_18,Temp_19,Temp_20
+	blt $t5,-32768,UNDERFLOW_6
+	bgt $t5,32767,OVERFLOW_6
+	j INBOUNDS_6
+UNDERFLOW_6:
+	li Temp_18,-32768
+	j INBOUNDS_6
+OVERFLOW_6:
+	li Temp_18,32767
+INBOUNDS_6:
+	slt $t2,$t2,$t5
+	beq Temp_16,$zero,WHILE_FALSE5
+	lw $t2, 0($t3)
+	addi $sp, $sp, -20
+	sw $t3, 16($sp)
+	sw $t2, 12($sp)
+	sw $t1, 8($sp)
+	sw $t4, 4($sp)
+	sw $t0, 0($sp)
+	addi $sp, $sp, -4
+	sw $t2, 0($sp)
+	jal FUNC_LABEL_IsPrime
+	addi $sp, $sp, 4
+	lw $t3, 16($sp)
+	lw $t2, 12($sp)
+	lw $t1, 8($sp)
+	lw $t4, 4($sp)
+	lw $t0, 0($sp)
+	addi $sp, $sp, 20
+	move $t2, $v0
+	beq Temp_22,$zero,IF_FALSE7
+	lw $t0, 0($t0)
+	move $a0,Temp_23
 	li $v0,1
 	syscall
 	li $a0,32
 	li $v0,11
 	syscall
-	li Temp_35,0
-	sw Temp_35,global_copyisPrime
-	j Label_9_start
-Label_8_end:
-	lw Temp_37,global_p
-	li Temp_38,1
-	add Temp_36,Temp_37,Temp_38
-	sw Temp_36,global_p
-	j Label_1_start
-Label_0_end:
+	lw $a0, CONST_SPACE
+	li $v0, 4
+	syscall
+IF_FALSE7:
+	j WHILE_TRUE5
+WHILE_FALSE5:
+	move $sp, $fp
+	lw $fp, 0($sp)
+	lw $ra, 4($sp)
+	addi $sp, $sp, 8
+	jr $ra
+FUNC_LABEL_main:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	addi $sp, $sp, -4
+	sw $fp, 0($sp)
+	move $fp, $sp
+	addi $sp, $sp, 0
+	li Temp_25,2
+	li Temp_26,100
+	addi $sp, $sp, -12
+	sw $t2, 8($sp)
+	sw $t0, 4($sp)
+	sw $t1, 0($sp)
+	addi $sp, $sp, -4
+	sw $t2, 0($sp)
+	addi $sp, $sp, -4
+	sw $t0, 0($sp)
+	jal FUNC_LABEL_PrintPrimes
+	addi $sp, $sp, 8
+	lw $t2, 8($sp)
+	lw $t0, 4($sp)
+	lw $t1, 0($sp)
+	addi $sp, $sp, 12
+	move $t0, $v0
+	move $sp, $fp
+	lw $fp, 0($sp)
+	lw $ra, 4($sp)
+	addi $sp, $sp, 8
+	jr $ra
+.text
+main:
+	jal FUNC_LABEL_main
+END_PROGRAM:
+	li $v0, 10
+	syscall
+EXIT_ACCESS_VIOLATION:
+	la $a0, ERR_ACCESS_VIOLATION
+	li $v0, 4
+	syscall
+	li $v0, 10
+	syscall
+EXIT_ZERO_DIV:
+	la $a0, ERR_ZERO_DIV
+	li $v0, 4
+	syscall
+	li $v0, 10
+	syscall
+EXIT_INVALID_POINTER:
+	la $a0, ERR_INVALID_POINTER
+	li $v0, 4
+	syscall
+	li $v0, 10
+	syscall
 	li $v0,10
 	syscall

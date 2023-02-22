@@ -255,7 +255,7 @@ public class IR
 			instance.s1 = TEMP_FACTORY.getInstance().getFreshNamedTEMP("$s1");
 
 			// output setup
-			String dirname="./FOLDER_5_OUTPUT/";
+			String dirname="./output/";
 			String filename=String.format("IR.txt");
 			try { instance.fileWriter = new PrintWriter(dirname+filename); }
 			catch (Exception e) { e.printStackTrace(); }

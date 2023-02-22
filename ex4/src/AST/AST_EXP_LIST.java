@@ -4,9 +4,7 @@ import TEMP.TEMP;
 import TEMP.TEMP_LIST;
 import TYPES.*;
 import SYMBOL_TABLE.*;
-import TYPES.TYPE;
-
-public class AST_EXP_LIST extends AST_EXP
+public class AST_EXP_LIST extends AST_Node
 {
 	AST_EXP first;
 	AST_EXP_LIST restoflist;

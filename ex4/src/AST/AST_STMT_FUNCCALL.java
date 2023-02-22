@@ -80,9 +80,9 @@ public class AST_STMT_FUNCCALL extends AST_STMT
 			if(func == null || !(func.type instanceof TYPE_FUNCTION)){
 				System.out.format(">> ERROR [%d:%d] can't find function %s\n",2,2, fname);
 				throw new semanticExc(this.LineNum);}
-
-			functionType = (TYPE_FUNCTION) func;
+			
 			TYPE returnType =  (TYPE_FUNCTION)func.type;
+			functionType = (TYPE_FUNCTION) func.type;
 			TYPE_LIST expectedParams = ((TYPE_FUNCTION) func.type).params;
 			for (AST_EXP_LIST it=l; it != null; it=it.restoflist) {
 				if (expectedParams == null) {
@@ -123,6 +123,7 @@ public class AST_STMT_FUNCCALL extends AST_STMT
 				System.out.format(">> ERROR [%d:%d] function %s expect more arguments\n",2,2, fname);
 				throw new semanticExc(this.LineNum);
 			}
+			this.se=returnType;
 			return returnType;
 
 		}

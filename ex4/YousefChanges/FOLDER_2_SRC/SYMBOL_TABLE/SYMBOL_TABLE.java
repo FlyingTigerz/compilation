@@ -20,6 +20,8 @@ import TYPES.*;
 public class SYMBOL_TABLE
 {
 	private int hashArraySize = 32;
+		public TYPE_FUNCTION cur_func=null;
+	public TYPE_FUNCTION prev_func=null;
 	
 	/**********************************************/
 	/* The actual symbol table data structure ... */

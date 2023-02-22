@@ -65,7 +65,7 @@ public class AST_DEC_NEW extends AST_DEC{
             return atd.SemantMe();
         }
         
-        public TEMP IRMe() {
+        public TEMP IRme() {
             if (vd != null)return vd.IRme();
             if (fd != null)return fd.IRme();
             if (cd != null) return cd.IRme();

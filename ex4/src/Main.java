@@ -1,4 +1,3 @@
-   
 import java.io.*;
 import java.io.PrintWriter;
 import java_cup.runtime.Symbol;
@@ -13,7 +12,7 @@ public class Main
 		Lexer l;
 		Parser p;
 		Symbol s;
-		AST_DEC_LIST AST;
+		AST_PROGRAM AST;
 		FileReader file_reader;
 		PrintWriter file_writer;
 		String inputFilename = argv[0];
@@ -44,7 +43,7 @@ public class Main
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
 			/***********************************/
-			AST = (AST_DEC_LIST) p.parse().value;
+			AST = (AST_PROGRAM) p.parse().value;
 			
 			/*************************/
 			/* [6] Print the AST ... */
@@ -56,28 +55,39 @@ public class Main
 			/**************************/
 			AST.SemantMe();
 
+			/**************************************/
+			/* [8] Finalize AST GRAPHIZ DOT file */
+			/**************************************/
+			AST_GRAPHVIZ.getInstance().finalizeFile();
+
 			/**********************/
-			/* [8] IR the AST ... */
+			/* [9] IR the AST ... */
 			/**********************/
 			AST.IRme();
-			
+
 			/***********************/
-			/* [9] MIPS the IR ... */
+			/* [9.5] Print  IR ... */
+			/***********************/
+			IR.getInstance().printMe();
+			IR.getInstance().genRegAlloc();
+
+			/***********************/
+			/* [10] MIPS the IR ... */
 			/***********************/
 			IR.getInstance().MIPSme();
 
-			/**************************************/
-			/* [10] Finalize AST GRAPHIZ DOT file */
-			/**************************************/
-			AST_GRAPHVIZ.getInstance().finalizeFile();			
+			/***************************/
+			/* [11] Finalize IR file */
+			/***************************/
+			IR.getInstance().finalizeFile();
 
 			/***************************/
-			/* [11] Finalize MIPS file */
+			/* [12] Finalize MIPS file */
 			/***************************/
 			MIPSGenerator.getInstance().finalizeFile();			
 
 			/**************************/
-			/* [12] Close output file */
+			/* [13] Close output file */
 			/**************************/
 			file_writer.close();
     	}

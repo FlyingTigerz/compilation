@@ -1,0 +1,102 @@
+1.	CONST_MAX_INT : 32767
+2.	CONST_MIN_INT : -32768
+3.	DATA_STR_CONST_SPACE :  
+4.	DATA_STR_ERR_ACCESS_VIOLATION : Access Violation
+5.	DATA_STR_ERR_ZERO_DIV : Illegal Division By Zero
+6.	DATA_STR_ERR_INVALID_POINTER : Invalid Pointer Dereference
+7.	CONST_SPACE : DATA_STR_CONST_SPACE
+8.	ERR_ACCESS_VIOLATION : DATA_STR_ERR_ACCESS_VIOLATION
+9.	ERR_ZERO_DIV : DATA_STR_ERR_ZERO_DIV
+10.	ERR_INVALID_POINTER : DATA_STR_ERR_INVALID_POINTER
+11.	jmp main
+12.  FUNC_LABEL_IsPrime:
+13.	$sp = addi $sp, -4
+14.	0($sp) = $ra
+15.	$sp = addi $sp, -4
+16.	0($sp) = $fp
+17.	$fp = move $sp
+18.	$sp = addi $sp, 0
+19.	$t0 = 2
+20.	0($fp) = $t0
+21.	$t1 = 2
+22.	0($fp) = $t1
+23.  WHILE_TRUE1:
+24.	$t3 = 0(GLOBAL_VAR_i)
+25.	$t4 = 0(GLOBAL_VAR_p)
+26.	$t2 = lt $t3, $t4
+27.	jifz $t2, WHILE_FALSE1
+28.  WHILE_TRUE2:
+29.	$t6 = 0(GLOBAL_VAR_j)
+30.	$t7 = 0(GLOBAL_VAR_p)
+31.	$t5 = lt $t6, $t7
+32.	jifz $t5, WHILE_FALSE2
+33.	$t9 = 0(GLOBAL_VAR_i)
+34.	$t11 = 0(GLOBAL_VAR_j)
+35.	$t12 = 0(GLOBAL_VAR_p)
+36.	$t8 = mul $t9, $t10
+37.	jilt $t8, -32768, UNDERFLOW_4
+38.	jigt $t8, 32767, OVERFLOW_4
+39.	jmp INBOUNDS_4
+40.  UNDERFLOW_4:
+41.	$t8 = -32768
+42.	jmp INBOUNDS_4
+43.  OVERFLOW_4:
+44.	$t8 = 32767
+45.  INBOUNDS_4:
+46.	jifz $t8, IF_FALSE3
+47.	$t13 = 0
+48.	return $t13
+49.  IF_FALSE3:
+50.	jmp WHILE_TRUE2
+51.  WHILE_FALSE2:
+52.	jmp WHILE_TRUE1
+53.  WHILE_FALSE1:
+54.	$t14 = 1
+55.	return $t14
+56.  FUNC_LABEL_PrintPrimes:
+57.	$sp = addi $sp, -4
+58.	0($sp) = $ra
+59.	$sp = addi $sp, -4
+60.	0($sp) = $fp
+61.	$fp = move $sp
+62.	$sp = addi $sp, 0
+63.	$t15 = 0(GLOBAL_VAR_start)
+64.	0($fp) = $t15
+65.  WHILE_TRUE5:
+66.	$t17 = 0(GLOBAL_VAR_p)
+67.	$t19 = 0(GLOBAL_VAR_end)
+68.	$t20 = 1
+69.	$t18 = add $t19, $t20
+70.	jilt $t18, -32768, UNDERFLOW_6
+71.	jigt $t18, 32767, OVERFLOW_6
+72.	jmp INBOUNDS_6
+73.  UNDERFLOW_6:
+74.	$t18 = -32768
+75.	jmp INBOUNDS_6
+76.  OVERFLOW_6:
+77.	$t18 = 32767
+78.  INBOUNDS_6:
+79.	$t16 = lt $t17, $t18
+80.	jifz $t16, WHILE_FALSE5
+81.	$t21 = 0(GLOBAL_VAR_p)
+82.	$t22 = call IsPrime $t21
+83.	jifz $t22, IF_FALSE7
+84.	$t23 = 0(GLOBAL_VAR_p)
+85.	$t24 = call PrintInt $t23
+86.  IF_FALSE7:
+87.	jmp WHILE_TRUE5
+88.  WHILE_FALSE5:
+89.	return 
+90.  FUNC_LABEL_main:
+91.	$sp = addi $sp, -4
+92.	0($sp) = $ra
+93.	$sp = addi $sp, -4
+94.	0($sp) = $fp
+95.	$fp = move $sp
+96.	$sp = addi $sp, 0
+97.	$t25 = 2
+98.	$t26 = 100
+99.	$t27 = call PrintPrimes $t25, $t26
+100.	return 
+101.  main:
+102.	jal FUNC_LABEL_main

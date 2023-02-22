@@ -24,4 +24,12 @@ public class TYPE_FUNCTION extends TYPE
 		this.returnType = returnType;
 		this.params = params;
 	}
+public TYPE_FUNCTION(TYPE returnType, String name, int sysCallNum, TYPE_LIST params)
+	{
+		this.name = name;
+		this.returnType = returnType;
+		this.params = params;
+		this.isSysCall = true;
+		this.sysCallNum = sysCallNum;
+	}
 }
