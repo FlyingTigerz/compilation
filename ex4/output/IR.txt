@@ -22,19 +22,19 @@
 22.	-8($fp) = $t1
 23.  WHILE_TRUE1:
 24.	$t3 = -4($fp)
-25.	$t4 = 0(GLOBAL_VAR_p)
+25.	$t4 = 8($fp)
 26.	$t2 = lt $t3, $t4
 27.	jifz $t2, WHILE_FALSE1
 28.	$t5 = 2
 29.	-8($fp) = $t5
 30.  WHILE_TRUE2:
 31.	$t7 = -8($fp)
-32.	$t8 = 0(GLOBAL_VAR_p)
+32.	$t8 = 8($fp)
 33.	$t6 = lt $t7, $t8
 34.	jifz $t6, WHILE_FALSE2
 35.	$t10 = -4($fp)
 36.	$t12 = -8($fp)
-37.	$t13 = 0(GLOBAL_VAR_p)
+37.	$t13 = 8($fp)
 38.	$t9 = mul $t10, $t11
 39.	jilt $t9, -32768, UNDERFLOW_4
 40.	jigt $t9, 32767, OVERFLOW_4
@@ -88,11 +88,11 @@
 88.	0($sp) = $fp
 89.	$fp = move $sp
 90.	$sp = addi $sp, -4
-91.	$t22 = 0(GLOBAL_VAR_start)
+91.	$t22 = 8($fp)
 92.	-4($fp) = $t22
 93.  WHILE_TRUE7:
 94.	$t24 = -4($fp)
-95.	$t26 = 0(GLOBAL_VAR_end)
+95.	$t26 = 12($fp)
 96.	$t27 = 1
 97.	$t25 = add $t26, $t27
 98.	jilt $t25, -32768, UNDERFLOW_8

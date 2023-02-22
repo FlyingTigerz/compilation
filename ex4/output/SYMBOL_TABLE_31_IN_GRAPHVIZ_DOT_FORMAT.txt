@@ -91,10 +91,13 @@ node_24_0 [label="<f0>string|<f1>string|<f2>prevtop=2|<f3>next"];
 hashTable:f26 -> node_26_0:f0;
 node_26_0 [label="<f0>PrintPrimes|<f1>PrintPrimes|<f2>prevtop=12|<f3>next"];
 hashTable:f27 -> node_27_0:f0;
-node_27_0 [label="<f0>start|<f1>int|<f2>prevtop=10|<f3>next"];
+node_27_0 [label="<f0>start|<f1>int|<f2>prevtop=14|<f3>next"];
 node_27_0 -> node_27_1 [style=invis,weight=10];
 node_27_0:f3 -> node_27_1:f0;
-node_27_1 [label="<f0>void|<f1>nil|<f2>prevtop=3|<f3>next"];
+node_27_1 [label="<f0>start|<f1>int|<f2>prevtop=10|<f3>next"];
+node_27_1 -> node_27_2 [style=invis,weight=10];
+node_27_1:f3 -> node_27_2:f0;
+node_27_2 [label="<f0>void|<f1>nil|<f2>prevtop=3|<f3>next"];
 hashTable:f31 -> node_31_0:f0;
 node_31_0 [label="<f0>PrintTrace|<f1>PrintTrace|<f2>prevtop=7|<f3>next"];
 }
