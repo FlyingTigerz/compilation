@@ -134,6 +134,10 @@ public class MIPSGenerator
 	{
 		fileWriter.format("\tlw %s, %d(%s)\n", dst, offset * WORD_SIZE, src.toString());
 	}
+	public void custom(String msg)
+	{
+		fileWriter.format("\t %s !!!! [Custom Message]\n", msg);
+	}
 	public void store(TEMP src, TEMP dst, int offset)
 	{
 		if(dst.toString().contains("$")) {

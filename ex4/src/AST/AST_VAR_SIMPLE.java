@@ -73,6 +73,7 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	}
 	
 	public TEMP IRme(){
+IR.getInstance().Add_IRcommand(new IRcommand_Custom(" === var simple"));
 		return this.IRme(true);
 	}
 	

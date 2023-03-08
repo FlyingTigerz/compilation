@@ -175,6 +175,7 @@ explist 		::=		exp:e COMMA explist:et 				{: RESULT = new AST_EXP_LIST(eleft, e,
 exp			::=		var:v						{: RESULT = new AST_EXP_VAR(vleft, v);   :}
 					| LPAREN exp:e RPAREN				{: RESULT = new AST_EXP_BAREXP(eleft, e);   :}
 					| exp:e1 BINOP:OP exp:e2 			{: RESULT = new AST_EXP_BINOP(e1left, e1,e2,OP.OP);   :}
+| exp:e1 EQ exp:e2 			{: RESULT = new AST_EXP_BINOP(e1left, e1,e2,6);   :}
 					| ID:name LPAREN RPAREN				{: RESULT = new AST_EXP_ID(nameleft, name);      :}
 					| ID:name LPAREN explist:et RPAREN		{: RESULT = new AST_EXPLST_VAR_ID(etleft, null,et,name); 	:}
 					| var:v DOT ID:name LPAREN RPAREN		{: RESULT = new AST_EXPLST_VAR_ID(vleft, v,null,name);     :}
@@ -230,7 +231,7 @@ BINOP			::=		PLUS						{: RESULT = new AST_BINOP(0);       :}
 					| DIVIDE					{: RESULT = new AST_BINOP(3);       :}
 					| LT						{: RESULT = new AST_BINOP(4);       :}
 					| GT						{: RESULT = new AST_BINOP(5);       :}
-					| EQ						{: RESULT = new AST_BINOP(6);       :}
+					
 					;
 
 
