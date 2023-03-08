@@ -120,7 +120,7 @@ public class AST_STMT_DEC_VAR extends AST_STMT
 		/*********************************************************/
 		/* [4] Return value is irrelevant for class declarations */
 		/*********************************************************/
-		return t;
+		return new TYPE_VAR(name,t.name);
 	}
 	
 	public TEMP IRme()

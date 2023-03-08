@@ -107,7 +107,7 @@ public class AST_DEC_FUNC extends AST_DEC
 			it.typename.SemantMe();
 			arg_type = it.typename.type.SemantMe();
 			reverse_type_list = new TYPE_LIST(arg_type,reverse_type_list);
-			SYMBOL_TABLE.getInstance().enter(it.typename.name, arg_type);
+			//SYMBOL_TABLE.getInstance().enter(it.typename.name, arg_type,2);
 		}
 		sym.params=type_list;
 		/*******************/

@@ -2,7 +2,7 @@ digraph
 {
 graph [ordering = "out"]
 v0 [label = "TYPE
-...->TYPES.TYPE_INT@3feba861"];
+...->TYPES.TYPE_INT@10f87f48"];
 v2 [label = "ARGUMENT type p
 "];
 v3 [label = "VAR
@@ -10,126 +10,126 @@ LIST
 "];
 v3 -> v2;
 v4 [label = "TYPE
-...->TYPES.TYPE_INT@3feba861"];
+...->TYPES.TYPE_INT@10f87f48"];
 v5 [label = "INT(2)"];
 v6 [label = "DEC
 type i = exp;"];
 v6 -> v4;
 v6 -> v5;
 v7 [label = "TYPE
-...->TYPES.TYPE_INT@3feba861"];
+...->TYPES.TYPE_INT@10f87f48"];
 v8 [label = "INT(2)"];
 v9 [label = "DEC
 type j = exp;"];
 v9 -> v7;
 v9 -> v8;
-v58 [label = "INT(1)"];
-v59 [label = "Return
+v57 [label = "INT(1)"];
+v58 [label = "Return
 statement"];
+v58 -> v57;
+v59 [label = "STMT
+LIST
+"];
 v59 -> v58;
 v60 [label = "STMT
 LIST
 "];
+v60 -> v0;
 v60 -> v59;
 v61 [label = "STMT
 LIST
 "];
-v61 -> v0;
+v61 -> v9;
 v61 -> v60;
 v62 [label = "STMT
 LIST
 "];
-v62 -> v9;
+v62 -> v6;
 v62 -> v61;
-v63 [label = "STMT
+v63 [label = "DEC
+type IsPrime(args){stmtLst}"];
+v63 -> v0;
+v63 -> v62;
+v63 -> v3;
+v64 [label = "DECNEW"];
+v64 -> v63;
+v65 [label = "TYPE
+...->TYPES.TYPE_VOID@b4c966a"];
+v67 [label = "ARGUMENT type start
+"];
+v69 [label = "ARGUMENT type end
+"];
+v70 [label = "VAR
 LIST
 "];
-v63 -> v6;
-v63 -> v62;
-v64 [label = "DEC
-type IsPrime(args){stmtLst}"];
-v64 -> v0;
-v64 -> v63;
-v64 -> v3;
-v65 [label = "DECNEW"];
-v65 -> v64;
-v66 [label = "TYPE
-...->TYPES.TYPE_VOID@5b480cf9"];
-v68 [label = "ARGUMENT type start
-"];
-v70 [label = "ARGUMENT type end
-"];
+v70 -> v69;
 v71 [label = "VAR
 LIST
 "];
+v71 -> v67;
 v71 -> v70;
-v72 [label = "VAR
-LIST
-"];
-v72 -> v68;
-v72 -> v71;
-v73 [label = "TYPE
-...->TYPES.TYPE_INT@3feba861"];
-v74 [label = "SIMPLE
+v72 [label = "TYPE
+...->TYPES.TYPE_INT@10f87f48"];
+v73 [label = "SIMPLE
 VAR
 (start)"];
-v75 [label = "EXP
+v74 [label = "EXP
 VAR"];
-v75 -> v74;
-v76 [label = "DEC
+v74 -> v73;
+v75 [label = "DEC
 type p = exp;"];
-v76 -> v73;
-v76 -> v75;
+v75 -> v72;
+v75 -> v74;
+v104 [label = "STMT
+LIST
+"];
+v104 -> v0;
 v105 [label = "STMT
 LIST
 "];
-v105 -> v0;
-v106 [label = "STMT
+v105 -> v75;
+v105 -> v104;
+v106 [label = "DEC
+type PrintPrimes(args){stmtLst}"];
+v106 -> v65;
+v106 -> v105;
+v106 -> v71;
+v107 [label = "DECNEW"];
+v107 -> v106;
+v108 [label = "TYPE
+...->TYPES.TYPE_VOID@b4c966a"];
+v109 [label = "INT(2)"];
+v110 [label = "INT(100)"];
+v111 [label = "EXP
 LIST
 "];
-v106 -> v76;
-v106 -> v105;
-v107 [label = "DEC
-type PrintPrimes(args){stmtLst}"];
-v107 -> v66;
-v107 -> v106;
-v107 -> v72;
-v108 [label = "DECNEW"];
-v108 -> v107;
-v109 [label = "TYPE
-...->TYPES.TYPE_VOID@5b480cf9"];
-v110 [label = "INT(2)"];
-v111 [label = "INT(100)"];
+v111 -> v110;
 v112 [label = "EXP
 LIST
 "];
+v112 -> v109;
 v112 -> v111;
-v113 [label = "EXP
-LIST
-"];
-v113 -> v110;
+v113 [label = "FUNCCALL(PrintPrimes)"];
 v113 -> v112;
-v114 [label = "FUNCCALL(PrintPrimes)"];
-v114 -> v113;
-v115 [label = "STMT
+v114 [label = "STMT
 LIST
 "];
-v115 -> v114;
-v116 [label = "DEC
+v114 -> v113;
+v115 [label = "DEC
 type main(args){stmtLst}"];
-v116 -> v109;
+v115 -> v108;
+v115 -> v114;
+v116 [label = "DECNEW"];
 v116 -> v115;
-v117 [label = "DECNEW"];
+v117 [label = "PROGRAM
+"];
 v117 -> v116;
 v118 [label = "PROGRAM
 "];
+v118 -> v107;
 v118 -> v117;
 v119 [label = "PROGRAM
 "];
-v119 -> v108;
+v119 -> v64;
 v119 -> v118;
-v120 [label = "PROGRAM
-"];
-v120 -> v65;
-v120 -> v119;
 }

@@ -23,40 +23,59 @@ FUNC_LABEL_IsPrime:
 	li $t0,2
 	sw $t0, -8($fp)
 WHILE_TRUE1:
+	  === doing left of : < !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
 	lw $t0, -4($fp)
-	lw $t1, 0($t1)
+	  === doing right of : < !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
+	lw $t1, 8($fp)
+	  === doing SOP  which is : < !!!! [Custom Message]
 	slt $t0,$t0,$t1
 	beq $t0,$zero,WHILE_FALSE1
 	li $t0,2
-	sw $t0, 0($fp)
+	sw $t0, -8($fp)
 WHILE_TRUE2:
-	lw $t4, -8($fp)
-	lw $t3, 0($t0)
-	slt $t3,$t4,$t3
-	beq $t3,$zero,WHILE_FALSE2
-	lw $t4, -4($fp)
-	lw $t5, -8($fp)
-	lw $t3, 0($t2)
-	beq $t5,$t3,Label_1_EQAssignOne
-	bne $t5,$t3,Label_2_EQAssignZero
+	  === doing left of : < !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
+	lw $t1, -8($fp)
+	  === doing right of : < !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
+	lw $t0, 8($fp)
+	  === doing SOP  which is : < !!!! [Custom Message]
+	slt $t0,$t1,$t0
+	beq $t0,$zero,WHILE_FALSE2
+	  === doing left of : * !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
+	lw $t0, -4($fp)
+	  === doing right of : * !!!! [Custom Message]
+	  === doing left of : = !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
+	lw $t2, -8($fp)
+	  === doing right of : = !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
+	lw $t1, 8($fp)
+	  === doing SOP  which is : = !!!! [Custom Message]
+	beq $t2,$t1,Label_1_EQAssignOne
+	bne $t2,$t1,Label_2_EQAssignZero
 Label_1_EQAssignOne:
-	li $t3,1
+	li $t1,1
 	j Label_0_EQend
 Label_2_EQAssignZero:
-	li $t3,0
+	li $t1,0
 	j Label_0_EQend
 Label_0_EQend:
-	mul $t3,$t4,$t3
-	blt $t3,-32768,UNDERFLOW_4
-	bgt $t3,32767,OVERFLOW_4
+	  === doing SOP  which is : * !!!! [Custom Message]
+	mul $t0,$t0,$t1
+	blt $t0,-32768,UNDERFLOW_4
+	bgt $t0,32767,OVERFLOW_4
 	j INBOUNDS_4
 UNDERFLOW_4:
-	li $t3,-32768
+	li $t0,-32768
 	j INBOUNDS_4
 OVERFLOW_4:
-	li $t3,32767
+	li $t0,32767
 INBOUNDS_4:
-	beq $t3,$zero,IF_FALSE3
+	beq $t0,$zero,IF_FALSE3
 	li $t0,0
 	move $v0 $t0
 	move $sp, $fp
@@ -65,24 +84,32 @@ INBOUNDS_4:
 	addi $sp, $sp, 8
 	jr $ra
 IF_FALSE3:
-	lw $t3, -8($fp)
-	li $t4,1
-	add $t3,$t3,$t4
-	blt $t3,-32768,UNDERFLOW_5
-	bgt $t3,32767,OVERFLOW_5
+	  === doing left of : + !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
+	lw $t0, -8($fp)
+	  === doing right of : + !!!! [Custom Message]
+	li $t1,1
+	  === doing SOP  which is : + !!!! [Custom Message]
+	add $t0,$t0,$t1
+	blt $t0,-32768,UNDERFLOW_5
+	bgt $t0,32767,OVERFLOW_5
 	j INBOUNDS_5
 UNDERFLOW_5:
-	li $t3,-32768
+	li $t0,-32768
 	j INBOUNDS_5
 OVERFLOW_5:
-	li $t3,32767
+	li $t0,32767
 INBOUNDS_5:
-	sw $t3, 0($fp)
+	sw $t0, -8($fp)
 	j WHILE_TRUE2
 WHILE_FALSE2:
-	lw $t0, -4($fp)
-	li $t2,1
-	add $t0,$t0,$t2
+	  === doing left of : + !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
+	lw $t1, -4($fp)
+	  === doing right of : + !!!! [Custom Message]
+	li $t0,1
+	  === doing SOP  which is : + !!!! [Custom Message]
+	add $t0,$t1,$t0
 	blt $t0,-32768,UNDERFLOW_6
 	bgt $t0,32767,OVERFLOW_6
 	j INBOUNDS_6
@@ -92,7 +119,7 @@ UNDERFLOW_6:
 OVERFLOW_6:
 	li $t0,32767
 INBOUNDS_6:
-	sw $t0, 0($fp)
+	sw $t0, -4($fp)
 	j WHILE_TRUE1
 WHILE_FALSE1:
 	li $t0,1
@@ -109,37 +136,46 @@ FUNC_LABEL_PrintPrimes:
 	sw $fp, 0($sp)
 	move $fp, $sp
 	addi $sp, $sp, -4
-	lw $t0, 0($t0)
+	  === var simple !!!! [Custom Message]
+	lw $t0, 8($fp)
 	sw $t0, -4($fp)
 WHILE_TRUE7:
-	lw $t1, -4($fp)
-	lw $t3, 0($t0)
+	  === doing left of : < !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
+	lw $t0, -4($fp)
+	  === doing right of : < !!!! [Custom Message]
+	  === doing left of : + !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
+	lw $t1, 12($fp)
+	  === doing right of : + !!!! [Custom Message]
 	li $t2,1
-	add $t2,$t3,$t2
-	blt $t2,-32768,UNDERFLOW_8
-	bgt $t2,32767,OVERFLOW_8
+	  === doing SOP  which is : + !!!! [Custom Message]
+	add $t1,$t1,$t2
+	blt $t1,-32768,UNDERFLOW_8
+	bgt $t1,32767,OVERFLOW_8
 	j INBOUNDS_8
 UNDERFLOW_8:
-	li $t2,-32768
+	li $t1,-32768
 	j INBOUNDS_8
 OVERFLOW_8:
-	li $t2,32767
+	li $t1,32767
 INBOUNDS_8:
-	slt $t1,$t1,$t2
-	beq $t1,$zero,WHILE_FALSE7
-	lw $t1, -4($fp)
-	addi $sp, $sp, -8
-	sw $t1, 4($sp)
+	  === doing SOP  which is : < !!!! [Custom Message]
+	slt $t0,$t0,$t1
+	beq $t0,$zero,WHILE_FALSE7
+	  === var simple !!!! [Custom Message]
+	lw $t0, -4($fp)
+	addi $sp, $sp, -4
 	sw $t0, 0($sp)
 	addi $sp, $sp, -4
-	sw $t1, 0($sp)
+	sw $t0, 0($sp)
 	jal FUNC_LABEL_IsPrime
 	addi $sp, $sp, 4
-	lw $t1, 4($sp)
 	lw $t0, 0($sp)
-	addi $sp, $sp, 8
-	move $t1, $v0
-	beq $t1,$zero,IF_FALSE9
+	addi $sp, $sp, 4
+	move $t0, $v0
+	beq $t0,$zero,IF_FALSE9
+	  === var simple !!!! [Custom Message]
 	lw $t0, -4($fp)
 	move $a0, $t0
 	li $v0, 1
@@ -148,19 +184,23 @@ INBOUNDS_8:
 	li $v0, 4
 	syscall
 IF_FALSE9:
+	  === doing left of : + !!!! [Custom Message]
+	  === var simple !!!! [Custom Message]
 	lw $t1, -4($fp)
-	li $t2,1
-	add $t1,$t1,$t2
-	blt $t1,-32768,UNDERFLOW_10
-	bgt $t1,32767,OVERFLOW_10
+	  === doing right of : + !!!! [Custom Message]
+	li $t0,1
+	  === doing SOP  which is : + !!!! [Custom Message]
+	add $t0,$t1,$t0
+	blt $t0,-32768,UNDERFLOW_10
+	bgt $t0,32767,OVERFLOW_10
 	j INBOUNDS_10
 UNDERFLOW_10:
-	li $t1,-32768
+	li $t0,-32768
 	j INBOUNDS_10
 OVERFLOW_10:
-	li $t1,32767
+	li $t0,32767
 INBOUNDS_10:
-	sw $t1, 0($fp)
+	sw $t0, -4($fp)
 	j WHILE_TRUE7
 WHILE_FALSE7:
 	move $sp, $fp
@@ -175,22 +215,20 @@ FUNC_LABEL_main:
 	sw $fp, 0($sp)
 	move $fp, $sp
 	addi $sp, $sp, 0
-	li $t2,2
-	li $t1,100
-	addi $sp, $sp, -12
-	sw $t1, 8($sp)
-	sw $t0, 4($sp)
-	sw $t2, 0($sp)
+	li $t1,2
+	li $t0,100
+	addi $sp, $sp, -8
+	sw $t1, 4($sp)
+	sw $t0, 0($sp)
+	addi $sp, $sp, -4
+	sw $t0, 0($sp)
 	addi $sp, $sp, -4
 	sw $t1, 0($sp)
-	addi $sp, $sp, -4
-	sw $t2, 0($sp)
 	jal FUNC_LABEL_PrintPrimes
 	addi $sp, $sp, 8
-	lw $t1, 8($sp)
-	lw $t0, 4($sp)
-	lw $t2, 0($sp)
-	addi $sp, $sp, 12
+	lw $t1, 4($sp)
+	lw $t0, 0($sp)
+	addi $sp, $sp, 8
 	move $t0, $v0
 	move $sp, $fp
 	lw $fp, 0($sp)

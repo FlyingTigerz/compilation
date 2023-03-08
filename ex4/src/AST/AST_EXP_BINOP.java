@@ -99,6 +99,7 @@ public class AST_EXP_BINOP extends AST_EXP
 				System.out.format(">> ERROR [%d:%d] cannot perform operation on types %s %s %s\n",2,2,left_type.name, sOP, right_type.name);
 				throw new semanticExc(this.LineNum);
 			}
+
 		}
 		/****************************************/
 		/* Type check for addition/concatenation */
@@ -149,10 +150,11 @@ public class AST_EXP_BINOP extends AST_EXP
 		TEMP t1 = null;
 		TEMP t2 = null;
 		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
-
+		IR.getInstance().Add_IRcommand(new IRcommand_Custom(" === doing left of : " + this.sOP));
 		if (left  != null) t1 = left.IRme();
+		IR.getInstance().Add_IRcommand(new IRcommand_Custom(" === doing right of : "+ this.sOP));
 		if (right != null) t2 = right.IRme();
-
+		IR.getInstance().Add_IRcommand(new IRcommand_Custom(" === doing SOP  which is : "+ this.sOP));
 		if (OP == 0)
 		{
 			if (leftType.isInstanceOf(TYPE_STRING.getInstance()) && rightType.isInstanceOf(TYPE_STRING.getInstance())){

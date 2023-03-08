@@ -36,7 +36,7 @@ public class AST_TYPE_NAME extends AST_Node
 		SYMBOL_TABLE_ENTRY prevDec = SYMBOL_TABLE.getInstance().find(name);
 		offset = prevDec.offset;
 		this.se = null;
-		return null;
+		return new TYPE_VAR(name,type.name);
 	}
 
 	/************************************************/

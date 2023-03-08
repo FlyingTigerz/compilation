@@ -68,8 +68,12 @@ public class AST_VAR_SUBSCRIPT_NEWEXP extends AST_STMT
 	}
 	public TYPE SemantMe() throws semanticExc{
 		TYPE v;
+
 		v = var.SemantMe();
 
+		TYPE_VAR t=(TYPE_VAR)v;
+
+		this.offset=SYMBOL_TABLE.getInstance().find(t.varname).offset;
 		if (v == null)
 		{
 			System.out.format(">> ERROR [%d:%d] non existent identifier\n",2,2);
@@ -85,9 +89,7 @@ public class AST_VAR_SUBSCRIPT_NEWEXP extends AST_STMT
 			}
 		}
 		if (newe==null){
-			
 			TYPE ex = e.SemantMe();
-		this.offset = SYMBOL_TABLE.getInstance().find(ex.name).offset;
 			if(ex.isArray()&&v.isArray()){
 				System.out.format(">> ---------------------------------  to %s\n", ex.name);
 				System.out.format(">> -------------------------------- %s\n",v.name);
