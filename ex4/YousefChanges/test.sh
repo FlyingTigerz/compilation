@@ -1,8 +1,8 @@
 #!/bin/bash
 echo "========== Running Tests =========="
-SEMANTIC_OUTPUT=./FOLDER_5_OUTPUT/SemanticStatus.txt
-MIPS_OUTPUT=./FOLDER_5_OUTPUT/MIPS_OUTPUT.txt
-MIPS=./FOLDER_5_OUTPUT/MIPS.txt
+SEMANTIC_OUTPUT=./output/SemanticStatus.txt
+MIPS_OUTPUT=./output/MIPS_OUTPUT.txt
+MIPS=./output/MIPS.txt
 passed=0
 total=0
 for INPUT in ./FOLDER_4_INPUT/*
