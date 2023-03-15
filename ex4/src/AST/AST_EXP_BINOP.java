@@ -1,23 +1,26 @@
 package AST;
+
 import TYPES.*;
 import SYMBOL_TABLE.*;
-import TEMP.*;
 import IR.*;
+import TEMP.*;
+import MIPS.MIPSGenerator;
 
-import java.util.Objects;
 public class AST_EXP_BINOP extends AST_EXP
 {
-	int OP;
-	String sOP;
+	public char OP;
 	public AST_EXP left;
 	public AST_EXP right;
-	TYPE leftType ;
-	TYPE rightType;
+	public int line_number;
+	boolean stringsOperator;
+
+
+	public boolean IS_BINOP(){return true;}
 
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_BINOP(int LineNum,AST_EXP left,AST_EXP right,int OP)
+	public AST_EXP_BINOP(AST_EXP left,AST_EXP right,char OP,int line_number)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -28,33 +31,24 @@ public class AST_EXP_BINOP extends AST_EXP
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
 		System.out.print("====================== exp -> exp BINOP exp\n");
+
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.LineNum = ++LineNum;
 		this.left = left;
 		this.right = right;
 		this.OP = OP;
-		this.leftType = null;
-		this.rightType = null;
-		
-		if (OP == 0) {sOP = "+";}
-		if (OP == 1) {sOP = "-";}
-		if (OP == 2) {sOP = "*";}
-		if (OP == 3) {sOP = "/";}
-		if (OP == 4) {sOP = "<";}
-		if (OP == 5) {sOP = ">";}
-		if (OP == 6) {sOP = "=";}
+		this.line_number = line_number;
+		this.stringsOperator = false;
 	}
-	
+
 	/*************************************************/
 	/* The printing message for a binop exp AST node */
 	/*************************************************/
 	public void PrintMe()
 	{
-		
 		/*************************************/
-		/* AST NODE TYPE = AST BINOP EXP */
+		/* AST NODE TYPE = AST SUBSCRIPT VAR */
 		/*************************************/
 		System.out.print("AST NODE BINOP EXP\n");
 
@@ -62,6 +56,7 @@ public class AST_EXP_BINOP extends AST_EXP
 		/* RECURSIVELY PRINT left + right ... */
 		/**************************************/
 		if (left != null) left.PrintMe();
+		//if (OP != null) OP.PrintMe();
 		if (right != null) right.PrintMe();
 
 		/***************************************/
@@ -69,148 +64,121 @@ public class AST_EXP_BINOP extends AST_EXP
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 				SerialNumber,
-				String.format("BINOP(%s)",sOP));
+				"exp BINOP exp\n");
 
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (left  != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,left.SerialNumber);
+		//if (OP  != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,OP.SerialNumber);
 		if (right != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,right.SerialNumber);
 	}
-	public TYPE SemantMe() throws semanticExc
-	{	
 
-		TYPE left_type = left.SemantMe();
-		TYPE right_type = right.SemantMe();
-		
-		leftType = left_type;
-		rightType = right_type;
-		this.se = TYPE_INT.getInstance();
-		/****************************************/
-		/* Type check for equality testing */
-		/****************************************/
-		if(Objects.equals(sOP, "=")){
-			if(!left_type.isInstanceOf(right_type)){
-				System.out.format(">> ERROR [%d:%d] cannot perform operation on types %s %s %s\n",2,2,left_type.name, sOP, right_type.name);
-				throw new semanticExc(this.LineNum);
-			}
+	public TYPE SemantMe() throws RuntimeException
+	{
+		TYPE t1 = null;
+		TYPE t2 = null;
 
-			if((left_type.isArray()&&right_type.isArray())&&!left_type.name.equals(right_type.name)){
-				System.out.format(">> ERROR [%d:%d] cannot perform operation on types %s %s %s\n",2,2,left_type.name, sOP, right_type.name);
-				throw new semanticExc(this.LineNum);
-			}
+		if (left  != null) t1 = left.SemantMe();
+		if (right != null) t2 = right.SemantMe();
+		System.out.println(this.OP);
+		if(t1 == null ){
+			throw new RuntimeException(String.valueOf(this.line_number));
+		}
 
+		if ((t1 == TYPE_INT.getInstance()) && (t2 == TYPE_INT.getInstance()) )
+		{
+			return TYPE_INT.getInstance();
 		}
-		/****************************************/
-		/* Type check for addition/concatenation */
-		/****************************************/
-		else if(Objects.equals(sOP, "+")){
-			if(
-					!(left_type.isInstanceOf(TYPE_INT.getInstance()) && right_type.isInstanceOf(TYPE_INT.getInstance()))
-					&& !(left_type.isInstanceOf(TYPE_STRING.getInstance()) && right_type.isInstanceOf(TYPE_STRING.getInstance()))
-			){
-				System.out.format(">> ERROR [%d:%d] cannot perform operation on types %s %s %s\n",2,2,left_type.name, sOP, right_type.name);
-				throw new semanticExc(this.LineNum);
-			}
-			if(left_type.isInstanceOf(TYPE_STRING.getInstance()) && right_type.isInstanceOf(TYPE_STRING.getInstance())){
-				this.se = TYPE_STRING.getInstance();
-			}
-		}
-		/****************************************/
-		/* Type check for all other BINOPs */
-		/****************************************/
-		else{
-
-			if(left_type == null){
-				System.out.print("");
-			}
-			if(
-					!(left_type.isInstanceOf(TYPE_INT.getInstance()) && right_type.isInstanceOf(TYPE_INT.getInstance()))
-			){
-				System.out.format(">> ERROR [%d:%d] cannot perform operation on types %s %s %s\n",2,2,left_type.name, sOP, right_type.name);
-				throw new semanticExc(this.LineNum);
-			}
-		}
-		/****************************************/
-		/* Division by 0 check */
-		/****************************************/
-		if(Objects.equals(sOP, "/")){
-			if(right instanceof AST_EXP_INT){
-				if(((AST_EXP_INT) right).value == 0){
-					System.out.format(">> ERROR [%d:%d] division by 0\n",2,2);
-					throw new semanticExc(this.LineNum);
-				}
-			}
-		}
-		return this.se;
+		else if(t1 == TYPE_STRING.getInstance() && t2 == TYPE_STRING.getInstance() && OP == '+'){
+			this.stringsOperator = true;
+			return TYPE_STRING.getInstance();
+		}else if((OP == '=') && (t1 == t2 ||
+				(t1.isClass() && t2.isClass() &&
+						(((TYPE_CLASS)t1).isAncestor((TYPE_CLASS)t2) || ((TYPE_CLASS)t2).isAncestor((TYPE_CLASS)t1))))){
+			return TYPE_INT.getInstance();
+		}else if((OP == '=') && (((t1.isArray() ||t1.isClass()) && t2 == TYPE_NIL.getInstance()) ||
+				((t2.isArray() ||t2.isClass()) && t1 == TYPE_NIL.getInstance()))){
+			return TYPE_INT.getInstance();
+		}else if((OP == '=') && t1.isArray() && t2.isArray() && ((TYPE_ARRAY)t1).type == ((TYPE_ARRAY)t2).type)
+			return TYPE_INT.getInstance();
+		throw new RuntimeException(String.valueOf(this.line_number));
 	}
-	
+
 	public TEMP IRme()
 	{
+		System.out.println("IRME IN AST_EXP_BINOP");
+
+
 		TEMP t1 = null;
 		TEMP t2 = null;
 		TEMP dst = TEMP_FACTORY.getInstance().getFreshTEMP();
-		IR.getInstance().Add_IRcommand(new IRcommand_Custom(" === doing left of : " + this.sOP));
+
 		if (left  != null) t1 = left.IRme();
-		IR.getInstance().Add_IRcommand(new IRcommand_Custom(" === doing right of : "+ this.sOP));
 		if (right != null) t2 = right.IRme();
-		IR.getInstance().Add_IRcommand(new IRcommand_Custom(" === doing SOP  which is : "+ this.sOP));
-		if (OP == 0)
+
+
+		if (OP == '+')
 		{
-			if (leftType.isInstanceOf(TYPE_STRING.getInstance()) && rightType.isInstanceOf(TYPE_STRING.getInstance())){
-/*
+			if (!this.stringsOperator) {
 				IR.
 						getInstance().
-						Add_IRcommand(new IRcommand_Binop_Concatenate_Strings(dst,t1,t2));*/
+						Add_IRcommand(new IRcommand_Binop_Add_Integers(dst,t1,t2));
 			}
-			else{
-				IR.getInstance().Add_IRcommand(new IRcommand_Binop_Add_Integers(dst,t1,t2));
-				IR.getInstance().truncate_int(dst);
+			else {
+				IR.
+						getInstance().
+						Add_IRcommand(new IRcommand_Binop_Concat_String(dst, t1, t2));
 			}
+		}
+		else if (OP == '-') // -
+		{
+			IR.
+					getInstance().
+					Add_IRcommand(new IRcommand_Binop_Sub_Integers(dst,t1,t2));
+		}
 
-		}
-		if (OP == 1)
+		else if (OP == '*') // *
 		{
-			IR.getInstance().Add_IRcommand(new IRcommand_Binop_Sub_Integers(dst,t1,t2));
-			IR.getInstance().truncate_int(dst);
+			IR.
+					getInstance().
+					Add_IRcommand(new IRcommand_Binop_Mul_Integers(dst,t1,t2));
 		}
-		if (OP == 2)
-		{
-			IR.getInstance().Add_IRcommand(new IRcommand_Binop_Mul_Integers(dst,t1,t2));
-			IR.getInstance().truncate_int(dst);
-		}
-		if (OP == 3)
+		else if (OP == '/') // /
 		{
 			IR.
 					getInstance().
 					Add_IRcommand(new IRcommand_Binop_Div_Integers(dst,t1,t2));
 		}
-		if (OP == 4)
+		else if (OP == '<') // <
 		{
 			IR.
 					getInstance().
 					Add_IRcommand(new IRcommand_Binop_LT_Integers(dst,t1,t2));
 		}
-		if (OP == 5)
+		else if (OP == '>') // >
 		{
 			IR.
 					getInstance().
 					Add_IRcommand(new IRcommand_Binop_GT_Integers(dst,t1,t2));
 		}
-		if (OP == 6) {
-			if (leftType.isInstanceOf(TYPE_STRING.getInstance()) && rightType.isInstanceOf(TYPE_STRING.getInstance())) {
-
+		else if (OP == '=')
+		{
+			if (!this.stringsOperator) {
 				IR.
 						getInstance().
-						Add_IRcommand(new IRcommand_Binop_EQ_Strings(dst, t1, t2));
-			} else {
+						Add_IRcommand(new IRcommand_Binop_EQ_Integers(dst,t1,t2));
+			}
+			else {
 				IR.
 						getInstance().
-						Add_IRcommand(new IRcommand_Binop_EQ_Integers(dst, t1, t2));
+						Add_IRcommand(new IRcommand_Binop_EQ_String(dst, t1, t2));
 			}
 		}
 
 		return dst;
 	}
+
+
 
 }

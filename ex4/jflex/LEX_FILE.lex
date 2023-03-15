@@ -1,4 +1,3 @@
-
 /***************************/
 /* FILE NAME: LEX_FILE.lex */
 /***************************/
@@ -17,11 +16,11 @@ import java_cup.runtime.*;
 /************************************/
 /* OPTIONS AND DECLARATIONS SECTION */
 /************************************/
-   
-/*****************************************************/ 
+
+/*****************************************************/
 /* Lexer is the name of the class JFlex will create. */
 /* The code will be written to the file Lexer.java.  */
-/*****************************************************/ 
+/*****************************************************/
 %class Lexer
 
 /********************************************************************/
@@ -40,20 +39,16 @@ import java_cup.runtime.*;
 /* CUP compatibility mode interfaces with a CUP generated parser. */
 /******************************************************************/
 %cup
-/******************************************************************/
-/* An exception is thrown when input cannot be matched 					  */
-/******************************************************************/
-%yylexthrow Exception
 
 /****************/
 /* DECLARATIONS */
 /****************/
-/*****************************************************************************/   
+/*****************************************************************************/
 /* Code between %{ and %}, both of which must be at the beginning of a line, */
 /* will be copied verbatim (letter to letter) into the Lexer class code.     */
 /* Here you declare member variables and functions that are used inside the  */
-/* scanner actions.                                                          */  
-/*****************************************************************************/   
+/* scanner actions.                                                          */
+/*****************************************************************************/
 %{
 	/*********************************************************************************/
 	/* Create a new java_cup.runtime.Symbol with information about the current token */
@@ -61,40 +56,43 @@ import java_cup.runtime.*;
 	private Symbol symbol(int type)               {return new Symbol(type, yyline, yycolumn);}
 	private Symbol symbol(int type, Object value) {return new Symbol(type, yyline, yycolumn, value);}
 
-	/**********************************************/
-	/* Enable token position extraction from main */
-	/**********************************************/
-	public int getTokenStartPosition() { return yycolumn + 1; } 
-
 	/*******************************************/
 	/* Enable line number extraction from main */
 	/*******************************************/
-	public int getLine()    { return yyline + 1; } 
-	public int getCharPos() { return yycolumn;   } 
+	public int getLine() { return yyline + 1; }
+
+	/**********************************************/
+	/* Enable token position extraction from main */
+	/**********************************************/
+	public int getCharPos() { return yycolumn + 1; }
+
+
 %}
 
 /***********************/
 /* MACRO DECALARATIONS */
 /***********************/
-LineTerminator	= \r|\n|\r\n
-InputCharacter = [^\r\n]
-WhiteSpace		= {LineTerminator} | [ \t\f]
-INTEGER			= 0 | [1-9][0-9]*
-ID = [a-zA-Z][a-zA-Z0-9]*
-Strings = \"[a-zA-Z]*\"
-SINGLELINECOMMENT       ="//"({InputCharacter}*{LineTerminator})
-MULTILINECOMMENT        ="/*" [^*] ~"*/" | "/*" "*"+ "/"
-COMMENT=({SINGLELINECOMMENT}|{MULTILINECOMMENT})
-COMMENTERROR	= "/*" | "//"
-IDERROR         =  [^ID]
-invalidint = [000*][1-9]*0* | [0-9]*[a-zA-Z] 
-
-/******************************/
-/* DOLAR DOLAR - DON'T TOUCH! */
-/******************************/
+Letter			        = [a-zA-Z]
+ID				        = {Letter}([a-zA-Z0-9]*)
+INT 		            = 0 | [1-9]([0-9]*)
+Bad_Int                 = 0([0-9]+)
+LineTerminator	        = \r | \n | \r\n
+WhiteSpace		        = {LineTerminator} | [ \t\f]
+Bracket                 = [\(\)\[\]\{\}]
+QEMark                  = [\!\?]
+CalculationOp           = [\+\-\*\/]
+One_Line_Comment_Table  = {Letter} | [0-9] | [ \t\f]| {Bracket} | {QEMark} | {CalculationOp} | \. | \;
+Multiple_Lines_Table    = {Letter} | [0-9] | {WhiteSpace} | {Bracket} | {QEMark} |  [\+ \-] | \/ | \*[^\/] | \. | \;
+One_Line_Comment        =  \/\/{One_Line_Comment_Table}*{LineTerminator}
+Multiple_Lines_Comment  =  \/\* (({Multiple_Lines_Table}*(\*)+) | (\*+)) \/
+Bad_Multiple_Lines_Comment =  \/\* (.[^(\*\/)])* [^(\*\/)]
+Bad_One_Line_Comment    =  \/\/ (.*) {LineTerminator}
+Bad_Comment             = {Bad_Multiple_Lines_Comment} | {Bad_One_Line_Comment}
+COMMENT                 = {One_Line_Comment} | {Multiple_Lines_Comment}
+STRING                  = \"[a-zA-Z]*\"
+RestWords               = .
 
 %%
-
 /************************************************************/
 /* LEXER matches regular expressions to actions (Java code) */
 /************************************************************/
@@ -106,45 +104,41 @@ invalidint = [000*][1-9]*0* | [0-9]*[a-zA-Z]
 /**************************************************************/
 
 <YYINITIAL> {
-"("					{ return symbol(TokenNames.LPAREN);}
-")"					{ return symbol(TokenNames.RPAREN);}
-"["					{ return symbol(TokenNames.LBRACK);}
-"]"					{ return symbol(TokenNames.RBRACK);}
-"{"					{ return symbol(TokenNames.LBRACE);}
-"}"					{ return symbol(TokenNames.RBRACE);}
-"nil"				{ return symbol(TokenNames.NIL);}
-"*"					{ return symbol(TokenNames.TIMES);}
+{WhiteSpace}		{ /* just skip what was found, do nothing */ }
+{COMMENT}           { /* just skip what was found, do nothing */}
+{Bad_Comment}       { return  symbol(TokenNames.error);}
+"int"               { return symbol(TokenNames.TYPE_INT);}
+"nil"               { return symbol(TokenNames.NIL);}
+"array"             { return symbol(TokenNames.ARRAY);}
+"class"             { return symbol(TokenNames.CLASS);}
+"extends"           { return symbol(TokenNames.EXTENDS);}
+"while"             { return symbol(TokenNames.WHILE);}
+"if"                { return symbol(TokenNames.IF);}
+"new"               { return symbol(TokenNames.NEW);}
+"string"            { return symbol(TokenNames.TYPE_STRING);}
+"void"              { return symbol(TokenNames.TYPE_VOID);}
+"return"            { return symbol(TokenNames.RETURN);}
 "+"					{ return symbol(TokenNames.PLUS);}
 "-"					{ return symbol(TokenNames.MINUS);}
-"/"					{ return symbol(TokenNames.DIVIDE);}
-","					{ return symbol(TokenNames.COMMA);}
-"."					{ return symbol(TokenNames.DOT);}
-";"					{ return symbol(TokenNames.SEMICOLON);}
-"int"				{ return symbol(TokenNames.TYPE_INT);}
-"void"				{ return symbol(TokenNames.TYPE_VOID);}
-":="				{ return symbol(TokenNames.ASSIGN);}
-"="					{ return symbol(TokenNames.EQ);}
-"<"					{ return symbol(TokenNames.LT);}
-">"					{ return symbol(TokenNames.GT);}
-"array"				{ return symbol(TokenNames.ARRAY);}
-"class"				{ return symbol(TokenNames.CLASS);}
-"extends"			{ return symbol(TokenNames.EXTENDS);}
-"return"			{ return symbol(TokenNames.RETURN);}
-"while"				{ return symbol(TokenNames.WHILE);}
-"if"				{ return symbol(TokenNames.IF);}
-"new"				{ return symbol(TokenNames.NEW);}
-"string"			{ return symbol(TokenNames.TYPE_STRING);}
-{INTEGER}			{   int x = new Integer(yytext());
-                     	if(x < 0 || x > 32767) {throw new Exception("LEXICAL TYPE ERROR: invalid comment");}
-                     	return symbol(TokenNames.INT, x);}
-{ID}				{ return symbol(TokenNames.ID,   new String( yytext()));}
-{Strings}			{ return symbol(TokenNames.STRING,   new String( yytext()));}
-{WhiteSpace}		{ /* just skip what was found, do nothing */ }
-{COMMENT}		{ /* just skip what was found, do nothing */ }
-{COMMENTERROR}			{throw new Exception("LEXICAL TYPE ERROR: invalid comment");}
-{IDERROR}         		{throw new Exception("LEXICAL TYPE ERROR: invalid comment");} 
-{invalidint}         		{throw new Exception("LEXICAL TYPE ERROR: id comment");} 
+"*"				    { return symbol(TokenNames.TIMES);}
+"/"                 { return symbol(TokenNames.DIVIDE);}
+"("					{ return symbol(TokenNames.LPAREN);}
+")"					{ return symbol(TokenNames.RPAREN);}
+"["                 { return symbol(TokenNames.LBRACK);}
+"]"                 { return symbol(TokenNames.RBRACK);}
+"{"                 { return symbol(TokenNames.LBRACE);}
+"}"                 { return symbol(TokenNames.RBRACE);}
+","                 { return symbol(TokenNames.COMMA);}
+"."                 { return symbol(TokenNames.DOT);}
+";"                 { return symbol(TokenNames.SEMICOLON);}
+":="                { return symbol(TokenNames.ASSIGN);}
+"="                 { return symbol(TokenNames.EQ);}
+"<"                 { return symbol(TokenNames.LT);}
+">"                 { return symbol(TokenNames.GT);}
+{Bad_Int}           { return symbol(TokenNames.error);}
+{INT}			    { return symbol(TokenNames.INT,         new Integer(yytext()));}
+{ID}				{ return symbol(TokenNames.ID,          new String( yytext()));}
+{STRING}            { return symbol(TokenNames.STRING,      new String( yytext()));}
+{RestWords}         { return symbol(TokenNames.error);}
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 }
-
-

@@ -13,9 +13,6 @@ package IR;
 import TEMP.*;
 import MIPS.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class IRcommand_Binop_Mul_Integers extends IRcommand
 {
 	public TEMP t1;
@@ -27,32 +24,36 @@ public class IRcommand_Binop_Mul_Integers extends IRcommand
 		this.dst = dst;
 		this.t1 = t1;
 		this.t2 = t2;
-		System.out.println(t2.getSerialNumber());
 	}
-
-	public Set<TEMP> usedRegs() {
-		Set<TEMP> used_regs = new HashSet<TEMP>();
-		used_regs.add(t1);
-		used_regs.add(t2);
-		return used_regs;
-	}
-	public TEMP modifiedReg() { return dst;}
-
 	/***************/
 	/* MIPS me !!! */
 	/***************/
+	
+
 	public void MIPSme()
 	{
-		System.out.format("I AM THE MULTIPLY MASTER DO NOT FUCK WITH ME OK ?????????????/ : "+ t1+t2+dst);
-		System.out.format("I AM THE MULTIPLY MASTER DO NOT FUCK WITH ME OK ?????????????/ : "+ t1+t2+dst);
-		System.out.format("I AM THE MULTIPLY MASTER DO NOT FUCK WITH ME OK ?????????????/ : "+ t1+t2+dst);
-		System.out.format("I AM THE MULTIPLY MASTER DO NOT FUCK WITH ME OK ?????????????/ : "+ t1+t2+dst);
-		System.out.format("I AM THE MULTIPLY MASTER DO NOT FUCK WITH ME OK ?????????????/ : "+ t1+t2+dst);
-		System.out.format("I AM THE MULTIPLY MASTER DO NOT FUCK WITH ME OK ?????????????/ : "+ t1+t2+dst);
-		System.out.format("I AM THE MULTIPLY MASTER DO NOT FUCK WITH ME OK ?????????????/ : "+ t1+t2+dst);
-		System.out.format("I AM THE MULTIPLY MASTER DO NOT FUCK WITH ME OK ?????????????/ : "+ t1+t2+dst);
-		MIPSGenerator.getInstance().mul(dst,t1,t2);
-	}
+		MIPSGenerator.getInstance().mul(dst, t1, t2);
 
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(dst + " = mul " + t1 + ", " + t2); }
+		TEMP intMin = TEMP_FACTORY.getInstance().getFreshTEMP();
+		MIPSGenerator.getInstance().li(intMin, -32767);
+		String label_underflow = getFreshLabel("UNDERFLOW");
+		MIPSGenerator.getInstance().blt(dst, intMin, label_underflow);
+
+		TEMP intMax = TEMP_FACTORY.getInstance().getFreshTEMP();
+		MIPSGenerator.getInstance().li(intMax, 32767);
+		String label_overflow = getFreshLabel("OVERFLOW");
+		MIPSGenerator.getInstance().blt(intMax,dst, label_overflow);
+
+		String label_end = getFreshLabel("MUL_END");
+		MIPSGenerator.getInstance().jump(label_end);
+
+		MIPSGenerator.getInstance().label(label_underflow);
+		MIPSGenerator.getInstance().li(dst, -32768);
+		MIPSGenerator.getInstance().jump(label_end);
+
+		MIPSGenerator.getInstance().label(label_overflow);
+		MIPSGenerator.getInstance().li(dst, 32767);
+
+		MIPSGenerator.getInstance().label(label_end);
+	}
 }

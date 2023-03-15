@@ -1,3 +1,4 @@
+   
 import java.io.*;
 import java.io.PrintWriter;
 import java_cup.runtime.Symbol;
@@ -38,7 +39,7 @@ public class Main
 			/*******************************/
 			/* [4] Initialize a new parser */
 			/*******************************/
-			p = new Parser(l);
+			p = new Parser(l,file_writer);
 
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
@@ -55,39 +56,32 @@ public class Main
 			/**************************/
 			AST.SemantMe();
 
-			/**************************************/
-			/* [8] Finalize AST GRAPHIZ DOT file */
-			/**************************************/
-			AST_GRAPHVIZ.getInstance().finalizeFile();
-
 			/**********************/
-			/* [9] IR the AST ... */
+			/* [8] IR the AST ... */
 			/**********************/
+			System.out.println("start IRMe >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 			AST.IRme();
-
+			
 			/***********************/
-			/* [9.5] Print  IR ... */
-			/***********************/
-			IR.getInstance().printMe();
-			IR.getInstance().genRegAlloc();
-
-			/***********************/
-			/* [10] MIPS the IR ... */
+			/* [9] MIPS the IR ... */
 			/***********************/
 			IR.getInstance().MIPSme();
 
-			/***************************/
-			/* [11] Finalize IR file */
-			/***************************/
-			IR.getInstance().finalizeFile();
+			CONTROL_FLOW.CFG.colorMe(MIPSGenerator.commandList);
+
+
+			/**************************************/
+			/* [10] Finalize AST GRAPHIZ DOT file */
+			/**************************************/
+			AST_GRAPHVIZ.getInstance().finalizeFile();			
 
 			/***************************/
-			/* [12] Finalize MIPS file */
+			/* [11] Finalize MIPS file */
 			/***************************/
 			MIPSGenerator.getInstance().finalizeFile();			
 
 			/**************************/
-			/* [13] Close output file */
+			/* [12] Close output file */
 			/**************************/
 			file_writer.close();
     	}

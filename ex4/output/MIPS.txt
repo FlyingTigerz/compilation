@@ -1,260 +1,260 @@
 .data
-	CONST_MAX_INT: .word 32767
-	CONST_MIN_INT: .word -32768
-	DATA_STR_CONST_SPACE: .asciiz " "
-	DATA_STR_ERR_ACCESS_VIOLATION: .asciiz "Access Violation"
-	DATA_STR_ERR_ZERO_DIV: .asciiz "Illegal Division By Zero"
-	DATA_STR_ERR_INVALID_POINTER: .asciiz "Invalid Pointer Dereference"
-	CONST_SPACE: .word DATA_STR_CONST_SPACE
-	ERR_ACCESS_VIOLATION: .word DATA_STR_ERR_ACCESS_VIOLATION
-	ERR_ZERO_DIV: .word DATA_STR_ERR_ZERO_DIV
-	ERR_INVALID_POINTER: .word DATA_STR_ERR_INVALID_POINTER
+string_access_violation: .asciiz "Access Violation"
+string_illegal_div_by_0: .asciiz "Illegal Division By Zero"
+string_invalid_ptr_dref: .asciiz "Invalid Pointer Dereference"
+func_go: .asciiz "go"
+func_main: .asciiz "main"
+string_0: .asciiz "RUN"
+string_1: .asciiz "go"
+string_2: .asciiz "no"
+Label_1_Dog_funcs: .word Label_3_go
+Label_6_SmallDog_funcs: .word Label_8_go
+Label_5_SmallDog_fields: .word 8, 0, 0
+Label_0_Dog_fields: .word 8, 0
 .text
-	j main
-FUNC_LABEL_IsPrime:
-	addi $sp, $sp, -4
-	sw $ra, 0($sp)
-	addi $sp, $sp, -4
-	sw $fp, 0($sp)
-	move $fp, $sp
-	addi $sp, $sp, -8
-	li $t0,2
-	sw $t0, -4($fp)
-	li $t0,2
-	sw $t0, -8($fp)
-WHILE_TRUE1:
-	  === doing left of : < !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t0, -4($fp)
-	  === doing right of : < !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t1, 8($fp)
-	  === doing SOP  which is : < !!!! [Custom Message]
-	slt $t0,$t0,$t1
-	beq $t0,$zero,WHILE_FALSE1
-	li $t0,2
-	sw $t0, -8($fp)
-WHILE_TRUE2:
-	  === doing left of : < !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t1, -8($fp)
-	  === doing right of : < !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t0, 8($fp)
-	  === doing SOP  which is : < !!!! [Custom Message]
-	slt $t0,$t1,$t0
-	beq $t0,$zero,WHILE_FALSE2
-	  === doing left of : * !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t0, -4($fp)
-	  === doing right of : * !!!! [Custom Message]
-	  === doing left of : = !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t2, -8($fp)
-	  === doing right of : = !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t1, 8($fp)
-	  === doing SOP  which is : = !!!! [Custom Message]
-	beq $t2,$t1,Label_1_EQAssignOne
-	bne $t2,$t1,Label_2_EQAssignZero
-Label_1_EQAssignOne:
-	li $t1,1
-	j Label_0_EQend
-Label_2_EQAssignZero:
-	li $t1,0
-	j Label_0_EQend
-Label_0_EQend:
-	  === doing SOP  which is : * !!!! [Custom Message]
-	mul $t0,$t0,$t1
-	blt $t0,-32768,UNDERFLOW_4
-	bgt $t0,32767,OVERFLOW_4
-	j INBOUNDS_4
-UNDERFLOW_4:
-	li $t0,-32768
-	j INBOUNDS_4
-OVERFLOW_4:
-	li $t0,32767
-INBOUNDS_4:
-	beq $t0,$zero,IF_FALSE3
-	li $t0,0
-	move $v0 $t0
-	move $sp, $fp
-	lw $fp, 0($sp)
-	lw $ra, 4($sp)
-	addi $sp, $sp, 8
+PrintInt:
+	lw $a0,4($fp)
+	li $v0,1
+	syscall
+	li $a0,32
+	li $v0,11
+	syscall
 	jr $ra
-IF_FALSE3:
-	  === doing left of : + !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t0, -8($fp)
-	  === doing right of : + !!!! [Custom Message]
-	li $t1,1
-	  === doing SOP  which is : + !!!! [Custom Message]
+PrintString:
+	lw $a0,4($fp)
+	li $v0,4
+	syscall
+	jr $ra
+Label_3_go:
+	addi $sp,$sp,-4
+	addi $sp,$sp,-44
+	sw $fp,0($sp)
+	la $t0,PrintString
+	sw $t0,-4($fp)
+	la $t0, string_1
+	sw $t0,4($sp)
+	sw $ra,8($sp)
+	sw $t0,12($sp)
+	sw $t1,16($sp)
+	sw $t2,20($sp)
+	sw $t3,24($sp)
+	sw $t4,28($sp)
+	sw $t5,32($sp)
+	sw $t6,36($sp)
+	sw $t7,40($sp)
+	sw $ra,8($sp)
+	sw $t0,12($sp)
+	sw $t1,16($sp)
+	sw $t2,20($sp)
+	sw $t3,24($sp)
+	sw $t4,28($sp)
+	sw $t5,32($sp)
+	sw $t6,36($sp)
+	sw $t7,40($sp)
+	addi $fp,$sp,0
+	jal PrintString
+	lw $ra,8($fp)
+	lw $t0,12($fp)
+	lw $t1,16($fp)
+	lw $t2,20($fp)
+	lw $t3,24($fp)
+	lw $t4,28($fp)
+	lw $t5,32($fp)
+	lw $t6,36($fp)
+	lw $t7,40($fp)
+	addi $sp,$fp,44
+	lw $fp,0($fp)
+	li $t0,2
+	li $t1,666
 	add $t0,$t0,$t1
-	blt $t0,-32768,UNDERFLOW_5
-	bgt $t0,32767,OVERFLOW_5
-	j INBOUNDS_5
-UNDERFLOW_5:
-	li $t0,-32768
-	j INBOUNDS_5
-OVERFLOW_5:
-	li $t0,32767
-INBOUNDS_5:
-	sw $t0, -8($fp)
-	j WHILE_TRUE2
-WHILE_FALSE2:
-	  === doing left of : + !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t1, -4($fp)
-	  === doing right of : + !!!! [Custom Message]
-	li $t0,1
-	  === doing SOP  which is : + !!!! [Custom Message]
-	add $t0,$t1,$t0
-	blt $t0,-32768,UNDERFLOW_6
-	bgt $t0,32767,OVERFLOW_6
-	j INBOUNDS_6
-UNDERFLOW_6:
-	li $t0,-32768
-	j INBOUNDS_6
-OVERFLOW_6:
-	li $t0,32767
-INBOUNDS_6:
-	sw $t0, -4($fp)
-	j WHILE_TRUE1
-WHILE_FALSE1:
-	li $t0,1
-	move $v0 $t0
-	move $sp, $fp
-	lw $fp, 0($sp)
-	lw $ra, 4($sp)
-	addi $sp, $sp, 8
-	jr $ra
-FUNC_LABEL_PrintPrimes:
-	addi $sp, $sp, -4
-	sw $ra, 0($sp)
-	addi $sp, $sp, -4
-	sw $fp, 0($sp)
-	move $fp, $sp
-	addi $sp, $sp, -4
-	  === var simple !!!! [Custom Message]
-	lw $t0, 8($fp)
-	sw $t0, -4($fp)
-WHILE_TRUE7:
-	  === doing left of : < !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t0, -4($fp)
-	  === doing right of : < !!!! [Custom Message]
-	  === doing left of : + !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t1, 12($fp)
-	  === doing right of : + !!!! [Custom Message]
-	li $t2,1
-	  === doing SOP  which is : + !!!! [Custom Message]
-	add $t1,$t1,$t2
-	blt $t1,-32768,UNDERFLOW_8
-	bgt $t1,32767,OVERFLOW_8
-	j INBOUNDS_8
-UNDERFLOW_8:
-	li $t1,-32768
-	j INBOUNDS_8
-OVERFLOW_8:
+	li $t1,-32767
+	blt $t0,$t1,Label_11_UNDERFLOW
 	li $t1,32767
-INBOUNDS_8:
-	  === doing SOP  which is : < !!!! [Custom Message]
-	slt $t0,$t0,$t1
-	beq $t0,$zero,WHILE_FALSE7
-	  === var simple !!!! [Custom Message]
-	lw $t0, -4($fp)
-	addi $sp, $sp, -4
-	sw $t0, 0($sp)
-	addi $sp, $sp, -4
-	sw $t0, 0($sp)
-	jal FUNC_LABEL_IsPrime
-	addi $sp, $sp, 4
-	lw $t0, 0($sp)
-	addi $sp, $sp, 4
-	move $t0, $v0
-	beq $t0,$zero,IF_FALSE9
-	  === var simple !!!! [Custom Message]
-	lw $t0, -4($fp)
-	move $a0, $t0
-	li $v0, 1
-	syscall
-	lw $a0, CONST_SPACE
-	li $v0, 4
-	syscall
-IF_FALSE9:
-	  === doing left of : + !!!! [Custom Message]
-	  === var simple !!!! [Custom Message]
-	lw $t1, -4($fp)
-	  === doing right of : + !!!! [Custom Message]
-	li $t0,1
-	  === doing SOP  which is : + !!!! [Custom Message]
-	add $t0,$t1,$t0
-	blt $t0,-32768,UNDERFLOW_10
-	bgt $t0,32767,OVERFLOW_10
-	j INBOUNDS_10
-UNDERFLOW_10:
+	blt $t1,$t0,Label_12_OVERFLOW
+	j Label_13_PLUS_END
+Label_11_UNDERFLOW:
 	li $t0,-32768
-	j INBOUNDS_10
-OVERFLOW_10:
+	j Label_13_PLUS_END
+Label_12_OVERFLOW:
 	li $t0,32767
-INBOUNDS_10:
-	sw $t0, -4($fp)
-	j WHILE_TRUE7
-WHILE_FALSE7:
-	move $sp, $fp
-	lw $fp, 0($sp)
-	lw $ra, 4($sp)
-	addi $sp, $sp, 8
-	jr $ra
-FUNC_LABEL_main:
-	addi $sp, $sp, -4
-	sw $ra, 0($sp)
-	addi $sp, $sp, -4
-	sw $fp, 0($sp)
-	move $fp, $sp
-	addi $sp, $sp, 0
+Label_13_PLUS_END:
 	li $t1,2
-	li $t0,100
-	addi $sp, $sp, -8
-	sw $t1, 4($sp)
-	sw $t0, 0($sp)
-	addi $sp, $sp, -4
-	sw $t0, 0($sp)
-	addi $sp, $sp, -4
-	sw $t1, 0($sp)
-	jal FUNC_LABEL_PrintPrimes
-	addi $sp, $sp, 8
-	lw $t1, 4($sp)
-	lw $t0, 0($sp)
-	addi $sp, $sp, 8
-	move $t0, $v0
-	move $sp, $fp
-	lw $fp, 0($sp)
-	lw $ra, 4($sp)
-	addi $sp, $sp, 8
+	sub $t0,$t0,$t1
+	li $t1,-32767
+	blt $t0,$t1,Label_14_UNDERFLOW
+	li $t1,32767
+	blt $t1,$t0,Label_15_OVERFLOW
+	j Label_16_SUB_END
+Label_14_UNDERFLOW:
+	li $t0,-32768
+	j Label_16_SUB_END
+Label_15_OVERFLOW:
+	li $t0,32767
+Label_16_SUB_END:
+	move $v0,$t0
+	j Label_4_go_end
+Label_4_go_end:
+	addi $sp,$sp,4
+	jr $ra
+Label_2_Dog:
+	addi $sp,$sp,0
+	li $t0,12
+	move $a0,$t0
+	li $v0,9
+	syscall
+	move $t0,$v0
+	la $t1, Label_1_Dog_funcs
+	sw $t1,0($t0)
+	addi $t1, $t0, 4
+	la $t3, Label_0_Dog_fields
+	lw $t2,0($t3)
+	sw $t2,0($t1)
+	addi $t1, $t1, 4
+	lw $t2,4($t3)
+	sw $t2,0($t1)
+	move $v0,$t0
+	j Label_2_Dog_end
+Label_2_Dog_end:
+	addi $sp,$sp,0
+	jr $ra
+Label_8_go:
+	addi $sp,$sp,-4
+	addi $sp,$sp,-44
+	sw $fp,0($sp)
+	la $t0,PrintString
+	sw $t0,-4($fp)
+	la $t0, string_2
+	sw $t0,4($sp)
+	sw $ra,8($sp)
+	sw $t0,12($sp)
+	sw $t1,16($sp)
+	sw $t2,20($sp)
+	sw $t3,24($sp)
+	sw $t4,28($sp)
+	sw $t5,32($sp)
+	sw $t6,36($sp)
+	sw $t7,40($sp)
+	sw $ra,8($sp)
+	sw $t0,12($sp)
+	sw $t1,16($sp)
+	sw $t2,20($sp)
+	sw $t3,24($sp)
+	sw $t4,28($sp)
+	sw $t5,32($sp)
+	sw $t6,36($sp)
+	sw $t7,40($sp)
+	addi $fp,$sp,0
+	jal PrintString
+	lw $ra,8($fp)
+	lw $t0,12($fp)
+	lw $t1,16($fp)
+	lw $t2,20($fp)
+	lw $t3,24($fp)
+	lw $t4,28($fp)
+	lw $t5,32($fp)
+	lw $t6,36($fp)
+	lw $t7,40($fp)
+	addi $sp,$fp,44
+	lw $fp,0($fp)
+	li $t0,0
+	move $v0,$t0
+	j Label_9_go_end
+Label_9_go_end:
+	addi $sp,$sp,4
+	jr $ra
+Label_7_SmallDog:
+	addi $sp,$sp,0
+	li $t0,16
+	move $a0,$t0
+	li $v0,9
+	syscall
+	move $t0,$v0
+	la $t1, Label_6_SmallDog_funcs
+	sw $t1,0($t0)
+	addi $t1, $t0, 4
+	la $t3, Label_5_SmallDog_fields
+	lw $t2,0($t3)
+	sw $t2,0($t1)
+	addi $t1, $t1, 4
+	lw $t2,4($t3)
+	sw $t2,0($t1)
+	addi $t1, $t1, 4
+	lw $t2,8($t3)
+	sw $t2,0($t1)
+	move $v0,$t0
+	j Label_7_SmallDog_end
+Label_7_SmallDog_end:
+	addi $sp,$sp,0
+	jr $ra
+user_main:
+	addi $fp,$sp,0
+	sw $zero,0($fp)
+	addi $sp,$sp,-8
+	addi $t0,$fp,-8
+	addi $sp,$sp,-40
+	sw $fp,0($sp)
+	sw $ra,4($sp)
+	sw $t0,8($sp)
+	sw $t1,12($sp)
+	sw $t2,16($sp)
+	sw $t3,20($sp)
+	sw $t4,24($sp)
+	sw $t5,28($sp)
+	sw $t6,32($sp)
+	sw $t7,36($sp)
+	addi $fp,$sp,0
+	jal Label_7_SmallDog
+	lw $ra,4($fp)
+	lw $t0,8($fp)
+	lw $t1,12($fp)
+	lw $t2,16($fp)
+	lw $t3,20($fp)
+	lw $t4,24($fp)
+	lw $t5,28($fp)
+	lw $t6,32($fp)
+	lw $t7,36($fp)
+	addi $sp,$fp,40
+	lw $fp,0($fp)
+	move $t1,$v0
+	sw $t1,0($t0)
+	addi $sp,$sp,-40
+	sw $fp,0($sp)
+	la $t0,func_go
+	sw $t0,-4($fp)
+	sw $ra,4($sp)
+	sw $t0,8($sp)
+	sw $t1,12($sp)
+	sw $t2,16($sp)
+	sw $t3,20($sp)
+	sw $t4,24($sp)
+	sw $t5,28($sp)
+	sw $t6,32($sp)
+	sw $t7,36($sp)
+	sw $ra,4($sp)
+	sw $t0,8($sp)
+	sw $t1,12($sp)
+	sw $t2,16($sp)
+	sw $t3,20($sp)
+	sw $t4,24($sp)
+	sw $t5,28($sp)
+	sw $t6,32($sp)
+	sw $t7,36($sp)
+	addi $fp,$sp,0
+	jal Label_8_go
+	lw $ra,4($fp)
+	lw $t0,8($fp)
+	lw $t1,12($fp)
+	lw $t2,16($fp)
+	lw $t3,20($fp)
+	lw $t4,24($fp)
+	lw $t5,28($fp)
+	lw $t6,32($fp)
+	lw $t7,36($fp)
+	addi $sp,$fp,40
+	lw $fp,0($fp)
+Label_10_main_end:
 	jr $ra
 main:
-	jal FUNC_LABEL_main
-END_PROGRAM:
-	li $v0, 10
-	syscall
-EXIT_ACCESS_VIOLATION:
-	la $a0, ERR_ACCESS_VIOLATION
-	li $v0, 4
-	syscall
-	li $v0, 10
-	syscall
-EXIT_ZERO_DIV:
-	la $a0, ERR_ZERO_DIV
-	li $v0, 4
-	syscall
-	li $v0, 10
-	syscall
-EXIT_INVALID_POINTER:
-	la $a0, ERR_INVALID_POINTER
-	li $v0, 4
-	syscall
-	li $v0, 10
+	jal user_main
+	li $v0,10
 	syscall

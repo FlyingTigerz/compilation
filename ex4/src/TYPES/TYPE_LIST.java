@@ -1,5 +1,5 @@
 package TYPES;
-import java.util.Objects;
+
 public class TYPE_LIST
 {
 	/****************/
@@ -16,4 +16,5 @@ public class TYPE_LIST
 		this.head = head;
 		this.tail = tail;
 	}
+	public int getType() {return 8;}
 }

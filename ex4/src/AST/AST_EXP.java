@@ -1,15 +1,20 @@
 package AST;
+
 import TYPES.*;
-import SYMBOL_TABLE.*;
-import TEMP.TEMP;
+import IR.*;
+import TEMP.*;
+import MIPS.MIPSGenerator;
 
 public abstract class AST_EXP extends AST_Node
 {
-	public AST_TYPE type;
-	public TYPE SemantMe() throws semanticExc {
-return null;}
-	public TEMP IRme()
+	public int moish;
+
+	public abstract TEMP IRme();
+
+	public boolean IS_BINOP(){return false;}
+
+	public void PrintMe()
 	{
-		return null;
+		System.out.print("UNKNOWN AST EXP NODE");
 	}
 }

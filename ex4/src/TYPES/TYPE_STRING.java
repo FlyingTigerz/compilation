@@ -12,6 +12,8 @@ public class TYPE_STRING extends TYPE
 	/*****************************/
 	protected TYPE_STRING() {}
 
+	public boolean isString() {return false;}
+
 	/******************************/
 	/* GET SINGLETON INSTANCE ... */
 	/******************************/
@@ -24,4 +26,6 @@ public class TYPE_STRING extends TYPE
 		}
 		return instance;
 	}
+
+	public int getType() {return 10;}
 }

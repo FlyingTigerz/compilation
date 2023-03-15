@@ -1,88 +1,112 @@
 package AST;
-import IR.*;
-import TEMP.TEMP;
-import TYPES.*;
 
-import TYPES.TYPE;
+import TYPES.*;
+import SYMBOL_TABLE.*;
+import IR.*;
+import TEMP.*;
+import MIPS.MIPSGenerator;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class AST_PROGRAM extends AST_Node
 {
-	public AST_DEC d;
-	public AST_PROGRAM p;
-	static public boolean root = true;
+	/****************/
+	/* DATA MEMBERS */
+	/****************/
+	public AST_DEC_LIST dlist;
+	int line_number;
+	public ArrayList<AST_DEC_VAR> globals = new ArrayList<>();
 
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_PROGRAM(int LineNum,AST_DEC d, AST_PROGRAM p)
+	public AST_PROGRAM(AST_DEC_LIST dlist,int line_number)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
-
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
+		if (dlist != null) System.out.print("====================== Program -> decs\n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.d = d;
-		this.p=p;
-		this.LineNum=++LineNum;
+		this.dlist = dlist;
+		this.line_number = line_number;
 	}
 
-	/***********************************************/
-	/* The default message for an exp var AST node */
-	/***********************************************/
+	/******************************************************/
+	/* The printing message for a Program AST node */
+	/******************************************************/
 	public void PrintMe()
 	{
+		/**************************************/
+		/* AST NODE TYPE = AST PROGRAM */
+		/**************************************/
+		System.out.print("AST NODE PROGRAM\n");
 
-		/*****************************/
-		/* RECURSIVELY PRINT var ... */
-		/*****************************/
-		if (d != null) d.PrintMe();
-		if (p != null) p.PrintMe();
+		/*************************************/
+		/* RECURSIVELY PRINT DECLIST ... */
+		/*************************************/
+		if (dlist != null) dlist.PrintMe();
 
+		/**********************************/
+		/* PRINT to AST GRAPHVIZ DOT file */
+		/**********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-				SerialNumber,
-				"PROGRAM\n");
-
+			SerialNumber,
+			"PROGRAM\n");
+		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (d != null){ AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,d.SerialNumber);}
-		if (p != null){ AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,p.SerialNumber);}
-
+		if (dlist != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, dlist.SerialNumber);
 	}
-	public TYPE SemantMe() throws semanticExc
-	{
-		if (d != null) d.SemantMe();
-		if (p != null) p.SemantMe();
 
+	public TYPE SemantMe() throws RuntimeException
+	{
+		dlist.SemantMe();
 		return null;
 	}
+
+	public TEMP IRme() {
+		System.out.println("IRME IN AST_PROGRAM");
+		AST_DEC_FUNC.IRPrintInt();
+		AST_DEC_FUNC.IRPrintString();
+
+
+		AST_DEC_LIST decPtr = dlist;
+
+		while (decPtr != null) {
+			if (decPtr.head instanceof AST_DEC_VAR)
+			{
+				this.globals.add((AST_DEC_VAR)decPtr.head);
+			}
+			else
+			{
+				System.out.println("IRME FOR FUNCTIONS OR CLASSES");
+				decPtr.head.IRme();
+			}
+			decPtr = decPtr.tail;
+		}
+
+		IR.getInstance().Add_IRcommand(new IRcommand_Label("main"));
+
+		for (AST_DEC_VAR globalVar : this.globals)
+		{
+			System.out.println("Add global var");
+			globalVar.IRme();
+		}
+
+		IR.getInstance().Add_IRcommand(new IR_general_jump_command("user_main"));
+		return null;
+	}
+
 	
-	public TEMP IRme()
-	{
-		boolean imRoot = false;
-		if(root) {
-			imRoot = true;
-			root = false;
-		}
-		/* IR Prefix */
-		if(imRoot) {
-			IR.getInstance().Add_IRcommand(new IRcommand_Jump_Label("main"));
-		}
-		/* IR Body */
-		if (d != null) d.IRme();
-		if (p != null) p.IRme();
-
-		/* IR Suffix */
-		if(imRoot) {
-			IR.getInstance().Add_IRcommand(new IRcommand_Label("main"));
-			IR.getInstance().Add_IRcommand(new IRcommand_Jump_And_Link(IR.funcLabelPrefix + "main"));
-		}
-		return null;
-	}
-
 }

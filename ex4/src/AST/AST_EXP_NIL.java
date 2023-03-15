@@ -1,16 +1,16 @@
 package AST;
 
-import TYPES.TYPE;
-import TYPES.TYPE_NIL;
+import TYPES.*;
+import SYMBOL_TABLE.*;
 import IR.*;
 import TEMP.*;
+import MIPS.MIPSGenerator;
+import CONTEXT.*;
 
 public class AST_EXP_NIL extends AST_EXP
 {
 
-	/******************/
-	/* CONSTRUCTOR(S) */
-	/******************/
+
 	public AST_EXP_NIL()
 	{
 		/******************************/
@@ -18,43 +18,37 @@ public class AST_EXP_NIL extends AST_EXP
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
-		/***************************************/
-		/* PRINT CORRESPONDING DERIVATION RULE */
-		/***************************************/
-		System.out.print("====================== exp -> nil\n");
 	}
-	
-	/***********************************************/
-	/* The default message for an exp var AST node */
-	/***********************************************/
+
+
 	public void PrintMe()
 	{
-		/************************************/
-		/* AST NODE TYPE = EXP VAR AST NODE */
-		/************************************/
+		/**************************************/
+		/* AST NODE TYPE = AST STATEMENT LIST */
+		/**************************************/
 		System.out.print("AST NODE EXP NIL\n");
 
-		
-		/*********************************/
-		/* Print to AST GRAPHIZ DOT file */
-		/*********************************/
+		/***************************************/
+		/* PRINT Node to AST GRAPHVIZ DOT file */
+		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"EXP\nNIL");
+			"EXP NIL\n");
 
+		
 	}
-
-	public TYPE SemantMe() {
-		this.se = TYPE_NIL.getInstance();
-		return this.se; 
-		}
-
+	public TYPE SemantMe() throws RuntimeException
+	{
+		return TYPE_NIL.getInstance();
+	}
 	public TEMP IRme()
 	{
-		TEMP null_p = TEMP_FACTORY.getInstance().getFreshTEMP();
-		IR.getInstance().Add_IRcommand(new IRcommandConstInt(null_p,0));
+		System.out.println("IRME IN AST_EXP_NIL");
 
-		return null_p;
+		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
+		IR.getInstance().Add_IRcommand(new IRcommandConstInt(t, 0));
+		return t;
 	}
+
 
 }

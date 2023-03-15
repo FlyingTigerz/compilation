@@ -13,9 +13,6 @@ package IR;
 import TEMP.*;
 import MIPS.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class IRcommand_Binop_EQ_Integers extends IRcommand
 {
 	public TEMP t1;
@@ -28,14 +25,6 @@ public class IRcommand_Binop_EQ_Integers extends IRcommand
 		this.t1 = t1;
 		this.t2 = t2;
 	}
-
-	public Set<TEMP> usedRegs() {
-		Set<TEMP> used_regs = new HashSet<TEMP>();
-		used_regs.add(t1);
-		used_regs.add(t2);
-		return used_regs;
-	}
-	public TEMP modifiedReg() { return dst;}
 	
 	/***************/
 	/* MIPS me !!! */
@@ -45,16 +34,16 @@ public class IRcommand_Binop_EQ_Integers extends IRcommand
 		/*******************************/
 		/* [1] Allocate 3 fresh labels */
 		/*******************************/
-		String label_end        = getFreshLabel("EQend");
-		String label_AssignOne  = getFreshLabel("EQAssignOne");
-		String label_AssignZero = getFreshLabel("EQAssignZero");
+		String label_end        = getFreshLabel("end");
+		String label_AssignOne  = getFreshLabel("AssignOne");
+		String label_AssignZero = getFreshLabel("AssignZero");
 		
 		/******************************************/
 		/* [2] if (t1==t2) goto label_AssignOne;  */
 		/*     if (t1!=t2) goto label_AssignZero; */
 		/******************************************/
-		MIPSGenerator.getInstance().beq(t1,t2,label_AssignOne);
-		MIPSGenerator.getInstance().bne(t1,t2,label_AssignZero);
+		MIPSGenerator.getInstance().beq(t1,t2,label_AssignZero);
+		MIPSGenerator.getInstance().bne(t1,t2,label_AssignOne);
 
 		/************************/
 		/* [3] label_AssignOne: */
@@ -83,5 +72,4 @@ public class IRcommand_Binop_EQ_Integers extends IRcommand
 		/******************/
 		MIPSGenerator.getInstance().label(label_end);
 	}
-
 }

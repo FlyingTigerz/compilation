@@ -30,9 +30,4 @@ public class IRcommandList
 		if (head != null) head.MIPSme();
 		if (tail != null) tail.MIPSme();
 	}
-
-	public void printMe(){
-		if (head != null) head.printMe();
-		if (tail != null) tail.printMe();
-	}
 }

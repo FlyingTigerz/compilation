@@ -11,25 +11,38 @@ public class TYPE_FUNCTION extends TYPE
 	/* types of input params */
 	/*************************/
 	public TYPE_LIST params;
-	public boolean isSysCall = false;
-	public int sysCallNum = 0;
+
+	public TYPE_CLASS belongsToClass;
+	public int virTableOffset = -1 ;
+	public String startLabel = null;
+	public String endLabel = null;
+	public int numberOfLocals = 0;
+	public int numOfParams = 1;
 	
 	/****************/
 	/* CTROR(S) ... */
 	/****************/
-	public boolean isFunction(){ return true;}
 	public TYPE_FUNCTION(TYPE returnType,String name,TYPE_LIST params)
 	{
 		this.name = name;
 		this.returnType = returnType;
 		this.params = params;
 	}
-public TYPE_FUNCTION(TYPE returnType, String name, int sysCallNum, TYPE_LIST params)
-	{
-		this.name = name;
+
+	public TYPE_FUNCTION(TYPE returnType, String name, TYPE_LIST params,
+						 int numOfParams, String startLabel, String endLabel) {
+
 		this.returnType = returnType;
+		this.name = name;
 		this.params = params;
-		this.isSysCall = true;
-		this.sysCallNum = sysCallNum;
+		this.startLabel = startLabel;
+		this.endLabel = endLabel;
+		this.belongsToClass = null;
+		this.virTableOffset = -1;
+		this.numOfParams = numOfParams;
 	}
+
+	public int getType() {return 6;}
+	public boolean isFunc() {return true;}
+
 }

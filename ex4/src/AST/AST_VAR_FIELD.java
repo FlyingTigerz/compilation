@@ -1,20 +1,22 @@
 package AST;
+
 import TYPES.*;
+import SYMBOL_TABLE.*;
 import IR.*;
 import TEMP.*;
-import SYMBOL_TABLE.*;
-
-import java.util.Objects;
+import MIPS.MIPSGenerator;
+import CONTEXT.*;
 
 public class AST_VAR_FIELD extends AST_VAR
 {
 	public AST_VAR var;
 	public String fieldName;
+	int line_number;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_VAR_FIELD(int LineNum,AST_VAR var,String fieldName)
+	public AST_VAR_FIELD(AST_VAR var,String fieldName,int line_number)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -31,7 +33,7 @@ public class AST_VAR_FIELD extends AST_VAR
 		/*******************************/
 		this.var = var;
 		this.fieldName = fieldName;
-		this.LineNum=++LineNum;
+		this.line_number = line_number;
 	}
 
 	/*************************************************/
@@ -62,26 +64,37 @@ public class AST_VAR_FIELD extends AST_VAR
 		/****************************************/
 		if (var != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 	}
-	public TYPE SemantMe() throws semanticExc {
-		/* TODO: add a dedicated AST node for class types*/
-		TYPE_CLASS parent_type = (TYPE_CLASS) var.SemantMe();
-		while(parent_type != null) {
-			for (TYPE_CLASS_VAR_DEC_LIST field = parent_type.data_members; field != null; field = field.tail) {
-				if (Objects.equals(field.head.name, fieldName)) {
-					this.se = field.head.t;
-				}
-			}
-			parent_type = parent_type.father;
+
+	public TYPE SemantMe() throws RuntimeException{
+		TYPE t1 = null;
+		TYPE t2 = null;
+
+		t1 = var.SemantMe();
+
+		if(t1 == null){
+			throw new RuntimeException(String.valueOf(this.line_number));
 		}
-		this.se = null;
-		return null;
+		if(!t1.isClass()){
+			throw new RuntimeException(String.valueOf(SYMBOL_TABLE.getInstance().lineNumber));
+		}
+
+		t2 = ((TYPE_CLASS)t1).findMembers(fieldName, false);
+		if(t2 == null){//if fieldName isnt a dta memeber of our class
+			throw new RuntimeException(String.valueOf(this.line_number));
+		}
+		this.context = ((TYPE_CLASS_VAR_DEC) t2).context;
+
+		//this.context = SYMBOL_TABLE.getInstance().getContext(fieldName);;
+		return ((TYPE_CLASS_VAR_DEC)t2).t;
 	}
-	
-	public TEMP IRme() {
-		TEMP base = var.IRme();
-		TEMP storeTo = TEMP_FACTORY.getInstance().getFreshTEMP();
-		IR.getInstance().Add_IRcommand(new IRcommand_Field_Access(storeTo, base, fieldName));
-		return storeTo;
+
+	public TEMP IRme()
+	{
+		System.out.println("IRME IN AST_VAR_FIELD");
+		TEMP varAddress = this.var.IRme();
+		TEMP res = TEMP_FACTORY.getInstance().getFreshTEMP();
+		System.out.println("IRME IN AST_VAR_FIELD");
+		IR.getInstance().Add_IRcommand(new IRcommand_Load(res, varAddress, 0, this.context, true));
+		return res;
 	}
-	
 }

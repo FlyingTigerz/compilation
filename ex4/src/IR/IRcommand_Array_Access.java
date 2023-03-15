@@ -3,66 +3,31 @@
 /***********/
 package IR;
 
-/*******************/
-/* GENERAL IMPORTS */
-/*******************/
-
-/*******************/
-/* PROJECT IMPORTS */
-/*******************/
-
 import MIPS.MIPSGenerator;
-import TEMP.TEMP;
 
-import java.util.HashSet;
-import java.util.Set;
-/* TODO - copy-pasted from another IRcommand, adjustments required */
+import static java.util.Collections.*;
+import TEMP.*;
 
-public class IRcommand_Array_Access extends IRcommand
-{
-	TEMP dst;
-	TEMP pointer;
-	TEMP offset;
+public class IRcommand_array_access extends IRcommand {
+    TEMP dst;
+    TEMP addr_0;
+    TEMP ind;
 
-	public IRcommand_Array_Access(TEMP dst, TEMP pointer, TEMP offset)
-	{
-		this.dst = dst;
-		this.pointer = pointer;
-		this.offset = offset;
-	}
+    public IRcommand_array_access(TEMP dst, TEMP addr_0, TEMP ind_0) {
+        this.dst = dst;
+        this.addr_0 = addr_0;
+        this.ind = ind_0;
+    }
 
-	public Set<TEMP> usedRegs() {
-		Set<TEMP> used_regs = new HashSet<TEMP>();
-		used_regs.add(pointer);
-		used_regs.add(offset);
-		return used_regs;
-	}
-	public TEMP modifiedReg() { return dst;}
-
-	/***************/
-	/* MIPS me !!! */
-	/***************/
-	public void MIPSme()
-	{
-		TEMP s0 = IR.getInstance().s0;
-		//$t2 = offset, $t1 = pointer, $t0 = dst
-		// bltz $t2, abort (abort if offset < 0)
-		MIPSGenerator.getInstance().bltz(offset, IR.exitOnAccessViolation);
-		// lw $s0, 0($t1)
-		MIPSGenerator.getInstance().load(s0, pointer, 0);
-		// bge $t2, $s0, abort (abort if offset >= len)
-		MIPSGenerator.getInstance().bge(offset, s0, IR.exitOnAccessViolation);
-		// move $s0, $t2
-		MIPSGenerator.getInstance().move(s0, offset);
-		// add $s0, $s0, 1
-		MIPSGenerator.getInstance().addi(s0, s0, 1);
-		// mul $s0, $s0, 4
-		MIPSGenerator.getInstance().mul(s0, s0, IR.getInstance().wordSizeTemp);
-		// add $s0, $t1, $s0
-		MIPSGenerator.getInstance().add(s0, pointer, s0);
-		// lw $t0, 0($s0)
-		MIPSGenerator.getInstance().load(dst, s0, 0);
-	}
-
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(dst + " = array_access " + pointer + "[ " + offset + " ]"); }
+    /***************/
+    /* MIPS me !!! */
+    /***************/
+    public void MIPSme() {
+        MIPSGenerator.getInstance().addi(ind, ind, 1);
+        TEMP t_4 = TEMP_FACTORY.getInstance().getFreshTEMP();
+        TEMP alignedIndex = TEMP_FACTORY.getInstance().getFreshTEMP();
+        MIPSGenerator.getInstance().li(t_4, 4);
+        MIPSGenerator.getInstance().mul(alignedIndex, ind, t_4);
+        MIPSGenerator.getInstance().add(dst, alignedIndex, addr_0);
+    }
 }

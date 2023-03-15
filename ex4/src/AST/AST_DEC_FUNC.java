@@ -1,161 +1,290 @@
 package AST;
 
-import IR.*;
-import TEMP.*;
 import TYPES.*;
 import SYMBOL_TABLE.*;
-import MIPS.*;
-import java.util.Objects;
+import IR.*;
+import TEMP.*;
+import MIPS.MIPSGenerator;
+import CONTEXT.*;
+
 public class AST_DEC_FUNC extends AST_DEC
 {
+	/*****************************/
+	/*  ID ID ([ID ID]*) {stmts} */
+	/*****************************/
 	public AST_TYPE returnTypeName;
-	public String name;
-	public AST_VAR_LIST params;
+	public String func;
+	public AST_PARAM_LIST params;
 	public AST_STMT_LIST body;
-	private int localVarCount = 0;
+	public int line_number;
+	public String startLabel;
+	public String endLabel;
+	public int numOfLocals;
+	private boolean isMainFunction;
+	public static int localVarsCounter = -1;
+	public int _offset = 0;
 
-	/******************/
-	/* CONSTRUCTOR(S) */
-	/******************/
-	public AST_DEC_FUNC(int LineNum,
-						AST_TYPE returnTypeName,
-						String name,
-						AST_VAR_LIST params,
-						AST_STMT_LIST body)
+
+	/*******************/
+	/*  CONSTRUCTOR(S) */
+	/*******************/
+	public AST_DEC_FUNC(AST_TYPE returnTypeName, String func, AST_PARAM_LIST params, AST_STMT_LIST body,int line_number)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
-		this.returnTypeName = returnTypeName;
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
+		if (params != null) System.out.print("====================== dec -> func (params) {body}\n");
+		if (params == null) System.out.print("====================== dec -> func () {body}\n");
 
-		this.name = name;
+		/*******************************/
+		/* COPY INPUT DATA MEMBERS ... */
+		/*******************************/
+		this.returnTypeName = returnTypeName;
+		this.func = func;
 		this.params = params;
 		this.body = body;
-		this.LineNum=++LineNum;
+		this.line_number = line_number;
 	}
 
 	/************************************************************/
 	/* The printing message for a function declaration AST node */
 	/************************************************************/
 	public void PrintMe()
-	{/*****************************/
-		/* RECURSIVELY PRINT typename ... */
-		/*****************************/
+	{
+		/********************************************/
+		/* AST NODE TYPE = AST FUNCTION DECLARATION */
+		/********************************************/
+		System.out.print("AST NODE FUNCTION DEC\n");
+
+		/***********************************/
+		/* RECURSIVELY PRINT MEMBERS ... */
+		/***********************************/
 		if (returnTypeName != null) returnTypeName.PrintMe();
-		if(params!=null)params.PrintMe();
-		if(body!=null)body.PrintMe();
-		System.out.format("AST FUNC DEC aaaaaaaaaaaaaaaaaaaaa ( %s )\n",name);
+		if (params != null) params.PrintMe();
+		if (body != null) body.PrintMe();
+
+		/***************************************/
+		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-				SerialNumber,
-				String.format("DEC\ntype %s(args){stmtLst}",name)
-		);
-
+			SerialNumber,
+			String.format("FUNC DEC\n(%s)\n", func));
+		
+		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (returnTypeName != null){ AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,returnTypeName.SerialNumber);}
-		if (body != null){ AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,body.SerialNumber);}
-		if (params != null){AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,params.SerialNumber);}
+		if (returnTypeName != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,returnTypeName.SerialNumber);
+		if (params != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,params.SerialNumber);
+		if (body != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,body.SerialNumber);
 	}
 
-
-	public TYPE SemantMe() throws semanticExc
+	public TYPE SemantMe() throws RuntimeException
 	{
-		TYPE arg_type;
+		boolean isBelongToClass = AST_DEC_CLASS.fieldsCounter >= 0;
+		TYPE t;
 		TYPE returnType = null;
-		TYPE_LIST reverse_type_list = null;
+		TYPE_LIST reversed_list = null;
 		TYPE_LIST type_list = null;
-		TYPE_FUNCTION func_t=null;
-		func_t=SYMBOL_TABLE.getInstance().cur_func;
+		TYPE funct = null;
 
-		/*******************/
-		/* [0] check return type */
-		/*******************/
-
-		if(returnTypeName != null) {
-			returnType = returnTypeName.SemantMe();
+		if(func != null){
+			if(SYMBOL_TABLE.getInstance().findInScope(func) != null)
+				throw new RuntimeException(String.valueOf(this.line_number));
 		}
 
-		/***************************/
-		/* [2] Semant Input Params */
-		/***************************/
-		for (AST_VAR_LIST it = this.params; it  != null; it = it.restoflist)
-		{
-			it.typename.SemantMe();
-			arg_type = it.typename.type.SemantMe();
-			reverse_type_list = new TYPE_LIST(arg_type,reverse_type_list);
-		}
-		/* reverse type list to preserve original argument order */
-		for (TYPE_LIST it = reverse_type_list; it  != null; it = it.tail) {type_list = new TYPE_LIST(it.head,type_list);}
+		if ("main".equals(this.func)) { this.startLabel = "user_main"; this.isMainFunction = true;}
+		else { this.startLabel = IRcommand.getFreshLabel(this.func); }
 
-		/***************************************************/
-		/* [5] Enter the Function Type to the Symbol Table */
-		/***************************************************/
-		TYPE_FUNCTION sym=new TYPE_FUNCTION(returnType,name,null);
-		SYMBOL_TABLE.getInstance().cur_func=sym;
-		SYMBOL_TABLE.getInstance().enter(name,sym);
+
+
+		/*******************/
+		/* [0] return type */
+		/*******************/
+		returnType = returnTypeName.SemantMe();
+		if(SYMBOL_TABLE.getInstance().func_scope){
+			throw new RuntimeException(String.valueOf(this.line_number));
+		}
+
+		SYMBOL_TABLE.getInstance().funcRetType = returnType;
+		SYMBOL_TABLE.getInstance().func_scope = true;
 
 		/****************************/
 		/* [1] Begin Function Scope */
 		/****************************/
 		SYMBOL_TABLE.getInstance().beginScope();
-		for (AST_VAR_LIST it = this.params; it  != null; it = it.restoflist)
-		{
-			it.typename.SemantMe();
-			arg_type = it.typename.type.SemantMe();
-			reverse_type_list = new TYPE_LIST(arg_type,reverse_type_list);
-			//SYMBOL_TABLE.getInstance().enter(it.typename.name, arg_type,2);
+		this.endLabel = IRcommand.getFreshLabel(this.func + "_end");
+		SYMBOL_TABLE.getInstance().setCurrentEndLabel(endLabel);
+		localVarsCounter = 0;
+		String funcNameDec = "func_" + func + ": .asciiz \"" + func + "\"\n";
+		if (!MIPSGenerator.funcNames.contains(funcNameDec)){
+			MIPSGenerator.funcNames += (funcNameDec);
 		}
-		sym.params=type_list;
+
+
+		/***************************/
+		/* [2] Semant Input Params */
+		/***************************/
+		System.out.println("------------------");
+		AST_PARAM_LIST it = params;
+		int numOPParam = 0;
+		while(it != null)
+		{
+			numOPParam ++;
+			t = it.type.SemantMe();
+			System.out.println("In dec func param name:  "+ it.name);
+			if(t.isArray()){
+				System.out.println("is Array");
+			}
+			if (t == null )
+			{
+				System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,it.type);
+				throw new RuntimeException(String.valueOf(this.line_number));
+			}else if( !(t == TYPE_INT.getInstance() || t == TYPE_STRING.getInstance() ||
+					(t.isClass() && SYMBOL_TABLE.getInstance().find(((TYPE_CLASS)t).name) != null)  ||
+							(t.isArray() && SYMBOL_TABLE.getInstance().find(((TYPE_ARRAY)t).name) != null))){
+				System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,it.type);
+				throw new RuntimeException(String.valueOf(this.line_number));
+			}
+			else
+			{
+				reversed_list = new TYPE_LIST(t,reversed_list);
+				Context context_parm;
+				if(t.isFunc())
+					context_parm = new Func_ParamContext(_offset++, isBelongToClass );
+				else
+					context_parm = new Func_ParamContext(_offset++, false );
+				SYMBOL_TABLE.getInstance().enter(it.name,t, context_parm);
+			}
+			it = it.paramList;
+		}
+
+		for (TYPE_LIST rt = reversed_list; rt != null; rt = rt.tail)
+		{
+			System.out.println("Adding to type list " + rt.head + " named " + rt.head.name);
+			type_list = new TYPE_LIST(rt.head, type_list);
+		}
+
+		// Used so function can call itself
+		SYMBOL_TABLE.getInstance().enter(func,new TYPE_FUNCTION(returnType,func,type_list, numOPParam, startLabel, endLabel));
+
+
+
 		/*******************/
 		/* [3] Semant Body */
 		/*******************/
-		this.body.SemantMe();
-		
+		body.SemantMe();
+
 		/*****************/
 		/* [4] End Scope */
 		/*****************/
-		localVarCount = ((TYPE_FOR_SCOPE_BOUNDARIES)SYMBOL_TABLE.getInstance().getScope().type).getVarCount();
+
+//		if(SYMBOL_TABLE.getInstance().return_exist || returnType == TYPE_VOID.getInstance()){
+//			SYMBOL_TABLE.getInstance().return_exist = false;
+//		}else{
+//			throw new RuntimeException(String.valueOf(SYMBOL_TABLE.getInstance().lineNumber));
+//		}
+
+
+
 		SYMBOL_TABLE.getInstance().endScope();
-		SYMBOL_TABLE.getInstance().cur_func=func_t;
+		SYMBOL_TABLE.getInstance().setCurrentEndLabel(null);
+
+		/***************************************************/
+		/* [5] Enter the Function Type to the Symbol Table */
+		/***************************************************/
+		TYPE func_type = new TYPE_FUNCTION(returnType,func,type_list, numOPParam, startLabel, endLabel);
+		SYMBOL_TABLE.getInstance().enter(func, func_type);
+		this.numOfLocals = localVarsCounter;
+		localVarsCounter = -1;
+
+		SYMBOL_TABLE.getInstance().func_scope = false;
 
 		/*********************************************************/
 		/* [6] Return value is irrelevant for class declarations */
 		/*********************************************************/
-		
-		func_t=new TYPE_FUNCTION(returnType,name,type_list);
-
-		
-		this.se=func_t;
-
-		return returnType;
+		return func_type;//null;
 	}
-	
-	public TEMP IRme()
-	{
-		// label
-		IR.getInstance().Add_IRcommand(new IRcommand_Label(IR.funcLabelPrefix + name));
-		// prologue
-		TEMP sp = IR.getInstance().sp;
-		TEMP fp = IR.getInstance().fp;
-		TEMP ra = IR.getInstance().ra;
-		
-		
-		IR.getInstance().Add_IRcommand(new IRcommand_Add_Immediate(sp, sp, -MIPSGenerator.WORD_SIZE));
-		IR.getInstance().Add_IRcommand(new IRcommand_Store_Temp(ra, sp, 0));
-		IR.getInstance().Add_IRcommand(new IRcommand_Add_Immediate(sp, sp, -MIPSGenerator.WORD_SIZE));
-		IR.getInstance().Add_IRcommand(new IRcommand_Store_Temp(fp, sp, 0));
-		IR.getInstance().Add_IRcommand(new IRcommand_Move(fp, sp));
-		IR.getInstance().Add_IRcommand(new IRcommand_Add_Immediate(sp, sp, MIPSGenerator.WORD_SIZE * localVarCount));
 
-		body.IRme();
-		if(returnTypeName.name.equals("void")) IR.getInstance().Add_IRcommand(new IRcommand_Return(null));
 
+	public TEMP IRme() {
+		System.out.println("IRME IN AST_DEC_FUNC");
+
+		Runnable irBody = () -> { body.IRme(); };
+		IRFuncDec(irBody, this.startLabel, this.numOfLocals, this.endLabel, this.isMainFunction, true);
 		return null;
 	}
-	
-	
+
+
+	public static void IRFuncDec(Runnable irBody, String startLabel, int numOfLocals,
+								 String endLabel, boolean isMainFunction, boolean isFunction) {
+
+		int offset;
+		offset = isFunction ? 1 : 0;
+		IR.getInstance().Add_IRcommand(new IRcommand_Label(startLabel));
+
+		if(isMainFunction) {
+			IR.getInstance().Add_IRcommand(new IR_general_command("addi $fp,$sp,0", null, false));
+			IR.getInstance().Add_IRcommand(new IR_general_command("sw $zero,0($fp)", null, false));
+		}
+
+		String allocate_cmd = String.format("addi $sp,$sp,%d", -4 * (numOfLocals+offset));
+		IR.getInstance().Add_IRcommand(new IR_general_command(allocate_cmd, null, false));
+
+		irBody.run();
+
+		IR.getInstance().Add_IRcommand(new IRcommand_Label(endLabel));
+
+		if(!isMainFunction) {
+			String fold_cmd = String.format("addi $sp,$sp,%d", 4 * (numOfLocals+offset));
+			IR.getInstance().Add_IRcommand(new IR_general_command(fold_cmd, null, false));
+		}
+
+		IR.getInstance().Add_IRcommand(new IR_general_jump_command());
+	}
+
+
+	int findNumOfParams(TYPE_LIST paramTypes){
+
+		int numOfParams = 0;
+
+		for(TYPE_LIST functionParams = paramTypes; functionParams != null; functionParams = functionParams.tail) {
+
+			numOfParams++;
+
+		}
+		return numOfParams;
+	}
+
+	public static void IRPrintInt() {
+
+		IR.getInstance().Add_IRcommand(new IRcommand_Label("PrintInt"));
+
+		IR.getInstance().Add_IRcommand(new IR_general_command("lw $a0,4($fp)", null, false));
+		IR.getInstance().Add_IRcommand(new IR_general_command("li $v0,1", null, false));
+		IR.getInstance().Add_IRcommand(new IR_general_command("syscall", null, false));
+
+		IR.getInstance().Add_IRcommand(new IR_general_command("li $a0,32", null, false));
+		IR.getInstance().Add_IRcommand(new IR_general_command("li $v0,11", null, false));
+		IR.getInstance().Add_IRcommand(new IR_general_command("syscall", null, false));
+
+		IR.getInstance().Add_IRcommand(new IR_general_jump_command());
+	}
+
+	public static void IRPrintString() {
+
+		IR.getInstance().Add_IRcommand(new IRcommand_Label("PrintString"));
+
+		IR.getInstance().Add_IRcommand(new IR_general_command("lw $a0,4($fp)", null, false));
+		IR.getInstance().Add_IRcommand(new IR_general_command("li $v0,4", null, false));
+		IR.getInstance().Add_IRcommand(new IR_general_command("syscall", null, false));
+
+		IR.getInstance().Add_IRcommand(new IR_general_jump_command());
+	}
+
 }

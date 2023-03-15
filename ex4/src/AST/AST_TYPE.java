@@ -1,90 +1,67 @@
 package AST;
-import TEMP.*;
-import SYMBOL_TABLE.*;
+
 import TYPES.*;
+import SYMBOL_TABLE.*;
 
 public class AST_TYPE extends AST_Node
 {
-	/************************/
-	/* simple variable name */
-	/************************/
-	public String name;
-	TYPE type;
 
+    public String name;
+	int line_number;
+	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_TYPE(int LineNum,String name)
+	public AST_TYPE(String name, int line_number)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
-		/***************************************/
-		/* PRINT CORRESPONDING DERIVATION RULE */
-		/***************************************/
-		System.out.format("====================== var -> ID( %s )\n",name);
-
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.name = name;
-		this.LineNum=++LineNum;
-		
-		
-		switch (name) {
-		case "void":
-			this.type = TYPE_VOID.getInstance();
-			break;
-		case "int":
-			this.type = TYPE_INT.getInstance();
-			break;
-		case "string":
-			this.type = TYPE_STRING.getInstance();
-			break;
-			}
-
+		this.line_number = line_number;
 	}
-
-	/**************************************************/
-	/* The printing message for a simple var AST node */
-	/**************************************************/
+	
+	/*************************************************/
+	/* The printing message for a TYPE AST node */
+	/*************************************************/
 	public void PrintMe()
 	{
-		/**********************************/
-		/* AST NODE TYPE = AST TYPE */
-		/**********************************/
-		System.out.format("AST NODE TYPE( %s )\n",name);
 
-		/*********************************/
-		/* Print to AST GRAPHIZ DOT file */
-		/*********************************/
+		
+		/***************************************/
+		/* PRINT Node to AST GRAPHVIZ DOT file */
+		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-				SerialNumber,
-				String.format("TYPE\n...->%s",type));
+			SerialNumber,
+			String.format("NEW TYPE (%s) ", name));	
+		
 	}
-	public TYPE SemantMe() throws semanticExc {
-		SYMBOL_TABLE_ENTRY t;
-		/****************************/
-		/* [1] Check If Type exists */
-		/****************************/
 
+	public TYPE SemantMe() throws RuntimeException
+	{
+		TYPE t1 = null;
 
-		t = SYMBOL_TABLE.getInstance().find(this.name);
-		if(this.name!="null"){
-
-		if (t == null || t.type == null)
+		if(name != null)
 		{
-			System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,this.name);
-			throw new semanticExc(this.LineNum);
-		}
-		}
+			if(name.equals("int")) {
+				System.out.println("int");
+				return TYPE_INT.getInstance();
+			}
+			else if(name.equals("string"))
+				return TYPE_STRING.getInstance();
+			else if(name.equals("void"))
+				return TYPE_VOID.getInstance();
 
-		/** check that this is in fact declarable type (i.e. class, array, string, or int) **/
-		/*********************************************************/
-		/* [4] Return value is irrelevant for class declarations */
-		/*********************************************************/
-		return t.type;
+			t1 =SYMBOL_TABLE.getInstance().find(name);
+		}
+		if( (!t1.isClass() && !t1.isArray() )|| t1 == null){
+			throw new RuntimeException(String.valueOf(this.line_number));
+		}
+		return t1;
 	}
 }

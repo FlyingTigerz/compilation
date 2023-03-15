@@ -12,10 +12,11 @@ package IR;
 /*******************/
 import TEMP.*;
 import MIPS.*;
+/*
+What This IR Command Do ?
+save value to tmp
 
-import java.util.HashSet;
-import java.util.Set;
-
+*/
 public class IRcommandConstInt extends IRcommand
 {
 	TEMP t;
@@ -25,9 +26,8 @@ public class IRcommandConstInt extends IRcommand
 	{
 		this.t = t;
 		this.value = value;
+		System.out.println("value is "+value);
 	}
-
-	public TEMP modifiedReg() { return t;}
 	
 	/***************/
 	/* MIPS me !!! */
@@ -36,6 +36,4 @@ public class IRcommandConstInt extends IRcommand
 	{
 		MIPSGenerator.getInstance().li(t,value);
 	}
-
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln(t + " = " + value); }
 }

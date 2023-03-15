@@ -24,4 +24,7 @@ public class TYPE_INT extends TYPE
 		}
 		return instance;
 	}
+	public boolean isInt() {return true;}
+
+	public int getType() {return 7;}
 }

@@ -1,60 +1,82 @@
 package AST;
 
-import TYPES.TYPE;
-import TYPES.TYPE_STRING;
-import TEMP.*;
+import TYPES.*;
+import SYMBOL_TABLE.*;
 import IR.*;
+import TEMP.*;
+import MIPS.MIPSGenerator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AST_EXP_STRING extends AST_EXP
 {
-	public String s;
-	
+	public String str;
+	public int lineNumber;
+	private static List<String> strings = new ArrayList<>();
+	public String str_label;
+
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_STRING(int LineNum,String s)
+	public AST_EXP_STRING(String str, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
-
-		/***************************************/
-		/* PRINT CORRESPONDING DERIVATION RULE */
-		/***************************************/
-		System.out.format("====================== exp -> STRING( %s )\n", s);
-
-		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
-		/*******************************/
-		this.s = s;
-		this.LineNum=++LineNum;
+		System.out.format("in exp string constructure%s\n", str);
+		this.str = str;
+		this.lineNumber=lineNumber;
 	}
 
-	/************************************************/
-	/* The printing message for an INT EXP AST node */
-	/************************************************/
+
+	/******************************************************/
+	/* The printing message for a STRING EXP AST node */
+	/******************************************************/
 	public void PrintMe()
 	{
 		/*******************************/
-		/* AST NODE TYPE = AST INT EXP */
+		/* AST NODE TYPE = AST STRING EXP */
 		/*******************************/
-		System.out.format("AST NODE STRING( %s )\n",s);
+		System.out.format("AST NODE STRING( %s )\n", str);
 
-		/*********************************/
-		/* Print to AST GRAPHIZ DOT file */
-		/*********************************/
+		/***************************************/
+		/* PRINT Node to AST GRAPHVIZ DOT file */
+		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			String.format("STRING(%s)",s));
+			String.format("STRING\n%s", str.replace('"','\'')));
 	}
-	public TYPE SemantMe() { 
-		this.se = TYPE_STRING.getInstance();
-		return TYPE_STRING.getInstance(); }
 
-	public TEMP IRme(){
-		TEMP dataStorage = TEMP_FACTORY.getInstance().getFreshNamedTEMP(IR.strPrefix + IR.getInstance().getLabelIndex());
-		IR.getInstance().Add_IRdata(new IRdata_Constant_String(dataStorage, s));
-		return dataStorage;
+	public TYPE SemantMe() throws RuntimeException{
+
+		if (this.str.charAt(0) == '"' && this.str.charAt(this.str.length()-1) == '"') {
+			this.str = this.str.substring(1, this.str.length()-1);
+		}
+		this.str_label = getStringLabel(strings.size());
+		strings.add(this.str);
+
+		return TYPE_STRING.getInstance();
+	}
+
+	public static List<String> allStrings() {
+		return strings;
+	}
+
+	public static String getStringLabel(int i) {
+		return String.format("string_%d", i);
+	}
+
+	public boolean isConst() {
+		return true;
+	}
+
+	public TEMP IRme() {
+		System.out.println("IRME IN AST_EXP_STRING");
+
+		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
+		IR.getInstance().Add_IRcommand(new IR_load_address(t, this.str_label));
+		return t;
 	}
 }

@@ -1,46 +1,33 @@
 package TYPES;
 
-import java.util.Objects;
-
 public class TYPE_ARRAY extends TYPE
 {
-	public TYPE arrayType;
+	/*********************************************************************/
+	/* If this class does not extend a father class this should be null  */
+	/*********************************************************************/
+    //TYPE_ARRAY arr;
+	public String name;
 
+	/**************************************************/
+	/* Gather up all data members in one place        */
+	/* Note that data members coming from the AST are */
+	/* packed together with the class methods         */
+	/**************************************************/
+	public TYPE type;
+	
 	/****************/
 	/* CTROR(S) ... */
 	/****************/
-	public TYPE_ARRAY(String name,TYPE arrayType)
+	public TYPE_ARRAY(String name,TYPE type)
 	{
-		this.name = name ;
-		this.arrayType = arrayType;
-	}
-	public TYPE_ARRAY(TYPE arrayType)
-	{
-		this.name = arrayType.name + "[]";
-		this.arrayType = arrayType;
+        //this.arr = arr;
+		this.name = name;
+		this.type = type;
+		
 	}
 
-	public TYPE_ARRAY(TYPE_ARRAY array)
-	{
-		this.name = array.name;
-		this.arrayType = array.arrayType;
-	}
-	/*************/
-	/* isArray() */
-	/*************/
-	public boolean isArray(){ return true;}
-
-	public boolean isInstanceOf(TYPE t){
-		if(t instanceof TYPE_NIL){
-			return true;
-		}
-		if(!(t instanceof TYPE_ARRAY)){
-			return false;
-		}
-		TYPE_ARRAY at = (TYPE_ARRAY) t;
-		if(!(Objects.equals(at.arrayType.name, this.arrayType.name))){
-			return false;
-		}
+	public boolean isArray(){
 		return true;
 	}
+	public int getType() {return 1;}
 }

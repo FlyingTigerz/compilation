@@ -1,65 +1,138 @@
 package AST;
-import IR.*;
-import TEMP.*;
+
 import TYPES.*;
 import SYMBOL_TABLE.*;
-
-import java.util.Objects;
+import IR.*;
+import TEMP.*;
+import MIPS.MIPSGenerator;
 
 public class AST_STMT_IF extends AST_STMT
 {
 	public AST_EXP cond;
 	public AST_STMT_LIST body;
+	int line_number;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_IF(int LineNum,AST_EXP cond,AST_STMT_LIST body)
+	public AST_STMT_IF(AST_EXP cond,AST_STMT_LIST body, int line_number)
 	{
-
+		/******************************/
+		/* SET A UNIQUE SERIAL NUMBER */
+		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
+		System.out.print("====================== stmt -> if_stmt\n");
+				
+		/*******************************/
+		/* COPY INPUT DATA NENBERS ... */
+		/*******************************/
 		this.cond = cond;
 		this.body = body;
-		this.LineNum=++LineNum;
-		System.out.print("====================== stmt -> IF(exp){stmtList}\n");
+		this.line_number = line_number;
 	}
+	
+	
+	/******************************************************/
+	/* The printing message for a statement list AST node */
+	/******************************************************/
 	public void PrintMe()
 	{
-		System.out.print("IF STATEMENT\n");
+		/**************************************/
+		/* AST NODE TYPE = AST IF STMT */
+		/**************************************/
+		System.out.print("AST NODE IF STMT\n");
 
+		/*************************************/
+		/* RECURSIVELY PRINT HEAD + TAIL ... */
+		/*************************************/
 		if (cond != null) cond.PrintMe();
 		if (body != null) body.PrintMe();
 
-
+		/**********************************/
+		/* PRINT to AST GRAPHVIZ DOT file */
+		/**********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-				SerialNumber,
-				String.format("IF\n(cond) {body}"));
+			SerialNumber,
+			"IF\nSTMT\n");
+		
+		/****************************************/
+		/* PRINT Edges to AST GRAPHVIZ DOT file */
+		/****************************************/
 		if (cond != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,cond.SerialNumber);
 		if (body != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,body.SerialNumber);
 	}
-	public TYPE SemantMe() throws semanticExc{
-		TYPE condType = cond.SemantMe();
-		if(!Objects.equals(condType.name, TYPE_INT.getInstance().name)){
-			System.out.format(">> ERROR [%d:%d] invalid condition\n",2,2);
-			throw new semanticExc(this.LineNum);
+
+	public TYPE SemantMe()
+	{
+		/****************************/
+		/* [0] Semant the Condition */
+		/****************************/
+		if (cond.SemantMe() != TYPE_INT.getInstance())
+		{
+			throw new RuntimeException(String.valueOf(this. line_number));
 		}
 
+		/*************************/
+		/* [1] Begin Class Scope */
+		/*************************/
 		SYMBOL_TABLE.getInstance().beginScope();
-		TYPE_LIST bodyType = body.SemantMe();
 
+		/***************************/
+		/* [2] Semant Data Members */
+		/***************************/
+		body.SemantMe();
+
+		/*****************/
+		/* [3] End Scope */
+		/*****************/
 		SYMBOL_TABLE.getInstance().endScope();
+
+		/*********************************************************/
+		/* [4] Return value is irrelevant for class declarations */
+		/*********************************************************/
 		return null;
 	}
-	
+
 	public TEMP IRme()
 	{
-		int labelCounter = IR.getInstance().getLabelIndex();
-		String endIfLabel = "IF_FALSE"+labelCounter;
-		TEMP t = cond.IRme();
-		IR.getInstance().Add_IRcommand(new IRcommand_Jump_If_Eq_To_Zero(t, endIfLabel));
+		System.out.println("IRME IN AST_STMT_IF");
+
+		/*******************************/
+		/* [1] Allocate fresh end labes */
+		/*******************************/
+		String label_end   = IRcommand.getFreshLabel("AFTER_IF");
+
+		/********************/
+		/* [2] cond.IRme(); */
+		/********************/
+		TEMP cond_temp = cond.IRme();
+
+		/****************************************/
+		/* [3] Jump conditionally to the if end */
+		/****************************************/
+		if(cond.IS_BINOP()){
+			IR.getInstance().Add_IRcommand(new IRcommand_Jump_If_NEq_To_Zero(cond_temp,label_end));
+		}else {
+			IR.getInstance().Add_IRcommand(new IRcommand_Jump_If_Eq_To_Zero(cond_temp, label_end));
+		}
+
+		/*******************/
+		/* [4] body.IRme() */
+		/*******************/
 		body.IRme();
-		IR.getInstance().Add_IRcommand(new IRcommand_Label(endIfLabel));
+
+		/**********************/
+		/* [5] Loop end label */
+		/**********************/
+		IR.getInstance().Add_IRcommand(new IRcommand_Label(label_end));
+
+		/*******************/
+		/* [6] return null */
+		/*******************/
 		return null;
 	}
 

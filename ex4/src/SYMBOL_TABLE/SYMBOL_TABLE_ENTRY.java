@@ -7,6 +7,7 @@ package SYMBOL_TABLE;
 /* PROJECT IMPORTS */
 /*******************/
 import TYPES.*;
+import CONTEXT.Context;
 
 /**********************/
 /* SYMBOL TABLE ENTRY */
@@ -23,12 +24,6 @@ public class SYMBOL_TABLE_ENTRY
 	/********/
 	public String name;
 
-	/********/
-	/* offset */
-	/********/
-	public int offset;
-	public boolean isGlobal;
-
 	/******************/
 	/* TYPE value ... */
 	/******************/
@@ -44,7 +39,8 @@ public class SYMBOL_TABLE_ENTRY
 	/* The prevtop_index is just for debug purposes ... */
 	/****************************************************/
 	public int prevtop_index;
-	
+	public Context context;
+
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
@@ -55,8 +51,7 @@ public class SYMBOL_TABLE_ENTRY
 		SYMBOL_TABLE_ENTRY next,
 		SYMBOL_TABLE_ENTRY prevtop,
 		int prevtop_index,
-		int offset,
-		boolean isGlobal)
+		Context context)
 	{
 		this.index = index;
 		this.name = name;
@@ -64,7 +59,6 @@ public class SYMBOL_TABLE_ENTRY
 		this.next = next;
 		this.prevtop = prevtop;
 		this.prevtop_index = prevtop_index;
-		this.offset = offset;
-		this.isGlobal = isGlobal;
+		this.context = context;
 	}
 }

@@ -10,6 +10,12 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
+
+/*
+What This IR Command Do ?
+Jump to label_name
+
+*/
 import TEMP.*;
 import MIPS.*;
 
@@ -29,6 +35,4 @@ public class IRcommand_Jump_Label extends IRcommand
 	{
 		MIPSGenerator.getInstance().jump(label_name);
 	}
-
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("jmp " + label_name); }
 }

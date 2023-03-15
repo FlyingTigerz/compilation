@@ -15,11 +15,6 @@ public class TEMP_FACTORY
 {
 	private int counter=0;
 	
-	public TEMP getFreshNamedTEMP(String name)
-	{
-		return new TEMP(name);
-	}
-	
 	public TEMP getFreshTEMP()
 	{
 		return new TEMP(counter++);

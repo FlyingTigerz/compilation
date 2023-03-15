@@ -1,10 +1,11 @@
 package AST;
+
 import TYPES.*;
 import SYMBOL_TABLE.*;
-import MIPS.MIPSGenerator;
-import TEMP.*;
 import IR.*;
-
+import TEMP.*;
+import MIPS.MIPSGenerator;
+import CONTEXT.*;
 
 public class AST_VAR_SIMPLE extends AST_VAR
 {
@@ -12,14 +13,12 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	/* simple variable name */
 	/************************/
 	public String name;
-	public int offset;
-	public boolean isGlobal;
-	public TEMP base;
+	int line_number;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_VAR_SIMPLE(int LineNum,String name)
+	public AST_VAR_SIMPLE(String name, int line_number)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -30,11 +29,12 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
 		System.out.format("====================== var -> ID( %s )\n",name);
+
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.name = name;
-		this.LineNum=++LineNum;
+		this.line_number = line_number;
 	}
 
 	/**************************************************/
@@ -54,51 +54,37 @@ public class AST_VAR_SIMPLE extends AST_VAR
 			SerialNumber,
 			String.format("SIMPLE\nVAR\n(%s)",name));
 	}
-	public TYPE SemantMe() throws semanticExc {
-		/**************************************/
-		/* [2] Check That Identifier Exists */
-		/**************************************/
-		SYMBOL_TABLE_ENTRY prevDec = SYMBOL_TABLE.getInstance().find(name);
-		if (prevDec == null)
-		{
-			/* print error only if declaration shadows a previous declaration in the same scope*/
-			System.out.format(">> ERROR [%d:%d] variable %s does not exist in scope\n", 2, 2, name);
-			throw new semanticExc(this.LineNum);
+
+	public TYPE SemantMe() throws RuntimeException{
+		TYPE t1 = null;
+
+		t1 = SYMBOL_TABLE.getInstance().find(name);
+
+		if(t1 == null){
+			throw new RuntimeException(String.valueOf(this.line_number));
 		}
-		
-		this.se = prevDec.type;
-		this.offset = prevDec.offset;
-		this.isGlobal = prevDec.isGlobal;
-		return new TYPE_VAR(name,this.se.name);
+		if(t1.isArray()){
+			System.out.println("Array");
+		}
+		if(t1.isClass()){
+			System.out.println("Class");
+		}
+//		this.context = ((TYPE_CLASS_VAR_DEC) t1).context;
+		this.context =  SYMBOL_TABLE.getInstance().getContext(name);
+
+
+		return t1;
 	}
-	
-	public TEMP IRme(){
-IR.getInstance().Add_IRcommand(new IRcommand_Custom(" === var simple"));
-		return this.IRme(true);
+	@Override
+	public TEMP IRme() {
+		System.out.println("IRME IN AST_VAR_SIMPLE");
+		if(context == null)
+			System.out.println("context in AST_VAR is null");
+		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
+		IR.getInstance().Add_IRcommand(new IRcommand_Load(t,null, 0,this.context,true));
+		System.out.println(" END IRME IN AST_VAR_SIMPLE");
+
+		return t;
 	}
-	
-	
-	public TEMP IRme(boolean storeInTemp) {
-		TEMP dest = null;
-		if(storeInTemp) {
-			dest = TEMP_FACTORY.getInstance().getFreshTEMP();
-		}
-		TEMP src;
-		int offset = 0;
-		if(isGlobal){
-			src = TEMP_FACTORY.getInstance().getFreshNamedTEMP(IR.globalVarPrefix + name);
-		}
-		else{
-			src = IR.getInstance().fp;
-			offset = this.offset;
-		}
-		this.base = src;
-		if(storeInTemp) {
-			IR.getInstance().Add_IRcommand(new IRcommand_Load(dest, src, offset));
-			return dest;
-		}
-		return null;
-	}
-	
-	
+
 }

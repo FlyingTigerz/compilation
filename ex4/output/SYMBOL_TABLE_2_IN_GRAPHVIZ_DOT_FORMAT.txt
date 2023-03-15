@@ -27,47 +27,11 @@ hashTable [label="<f0>
 11
 |<f12>
 12
-|<f13>
-13
-|<f14>
-14
-|<f15>
-15
-|<f16>
-16
-|<f17>
-17
-|<f18>
-18
-|<f19>
-19
-|<f20>
-20
-|<f21>
-21
-|<f22>
-22
-|<f23>
-23
-|<f24>
-24
-|<f25>
-25
-|<f26>
-26
-|<f27>
-27
-|<f28>
-28
-|<f29>
-29
-|<f30>
-30
-|<f31>
-31
 "];
-hashTable:f8 -> node_8_0:f0;
-node_8_0 [label="<f0>int|<f1>int|<f2>prevtop=1|<f3>next"];
-hashTable:f10 -> node_10_0:f0;
-node_10_0 [label="<f0>SCOPE-BOUNDARY|<f1>NONE|<f2>prevtop=0|<f3>next"];
+hashTable:f6 -> node_6_0:f0;
+node_6_0 [label="<f0>int|<f1>int|<f2>prevtop=0|<f3>next"];
+hashTable:f9 -> node_9_0:f0;
+node_9_0 [label="<f0>void|<f1>null|<f2>prevtop=2|<f3>next"];
+hashTable:f12 -> node_12_0:f0;
+node_12_0 [label="<f0>string|<f1>string|<f2>prevtop=1|<f3>next"];
 }

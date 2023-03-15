@@ -1,23 +1,23 @@
 package AST;
+
 import TYPES.*;
+import SYMBOL_TABLE.*;
 import IR.*;
 import TEMP.*;
-import SYMBOL_TABLE.*;
+import MIPS.MIPSGenerator;
 
 public class AST_STMT_DEC_VAR extends AST_STMT
 {
-	/***************/
-	/*  var := exp */
-	/***************/
-	public AST_TYPE type;
-	public String name;
-	public AST_EXP exp;
-	private int offset;
-
-	/*******************/
-	/*  CONSTRUCTOR(S) */
-	/*******************/
-	public AST_STMT_DEC_VAR(int line, AST_TYPE type, String name, AST_EXP exp)
+	/****************/
+	/* DATA MEMBERS */
+	/****************/
+	public AST_DEC_VAR var;
+	int line_number;
+	
+	/******************/
+	/* CONSTRUCTOR(S) */
+	/******************/
+	public AST_STMT_DEC_VAR(AST_DEC_VAR var, int line_number)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -27,111 +27,49 @@ public class AST_STMT_DEC_VAR extends AST_STMT
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== varDec -> type ID [ASSIGN exp] SEMICOLON\n");
+		System.out.print("====================== stmt -> VarDec\n");
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
-		this.LineNum = ++line;
-		this.type = type;
-		this.name = name;
-		this.exp = exp;
+		this.var = var;
 	}
-
-	/*********************************************************/
-	/* The printing message for an assign statement AST node */
-	/*********************************************************/
+	
 	public void PrintMe()
 	{
-		/********************************************/
-		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
-		/********************************************/
-		System.out.print("AST NODE DEC VAR\n");
+		/*************************************/
+		/* AST NODE TYPE = AST DEC VAR */
+		/*************************************/
+		System.out.print("AST NODE VAR DEC\n");
 
-		/***********************************/
-		/* RECURSIVELY PRINT VAR + EXP ... */
-		/***********************************/
-		if (type != null) type.PrintMe();
-		if (name != null) System.out.format("%s\n", name);
-		if (exp != null) exp.PrintMe();
-
+		/**************************************/
+		/* RECURSIVELY PRINT variable declaration ... */
+		/**************************************/
+		if (var != null) var.PrintMe();
+		
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-				String.format("DEC\ntype %s = exp;",name));
+			"VAR DEC\n");
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (name != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
-		if (exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
+		if (var != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 	}
 
-	public TYPE SemantMe() throws semanticExc
+	public TYPE SemantMe() throws RuntimeException
 	{
-		TYPE t = type.SemantMe();
-
-		/**************************************/
-		/* [1] Check That Name is available */
-		/**************************************/
-		SYMBOL_TABLE_ENTRY prevDec = SYMBOL_TABLE.getInstance().find(name);
-		if (prevDec != null)
-		{
-			SYMBOL_TABLE_ENTRY scope = SYMBOL_TABLE.getInstance().getScope();
-			/* print error only if declaration shadows a previous declaration in the same scope*/
-			if(scope.prevtop_index < prevDec.prevtop_index) {
-				System.out.format(">> ERROR [%d:%d] variable %s already exists in scope\n", 2, 2, name);
-				throw new semanticExc(this.LineNum);
-			}
-		}
-
-		/***************************************************/
-		/* [2] Enter the Function Type to the Symbol Table */
-		/***************************************************/
-		SYMBOL_TABLE.getInstance().enter(name, t,1);
-		this.offset = SYMBOL_TABLE.getInstance().find(name).offset;
-		/***************************************************/
-		/* [3] check assigned expression type validity */
-		/***************************************************/
-		System.out.print("We kinda get here");
-		if(exp!=null){
-		if(exp.SemantMe().name=="null" &&t.name!="int"&&t.name!="string")
-		{
-		return null;
-		}}
-
-
-		if(exp != null && (exp.SemantMe() == null || !exp.SemantMe().isInstanceOf(t))){
-
-		if(!exp.SemantMe().isInstanceOf(t)){
-		if( exp.SemantMe().isClass() == true && ((TYPE_CLASS)exp.SemantMe()).father != null)
-			System.out.format("!!!!!!!!!!HERE IS THE BUG3 !!!!!!!!!!!!!!!!!!!!!!!!!2 : %s is the name, %s is the father\n",  exp.SemantMe().name, 			((TYPE_CLASS)exp.SemantMe()).father.name);
-		else
-			System.out.format("!!!!!!!!!!HERE IS THE BUG3 !!!!!!!!!!!!!!!!!!!!!!!!!2 : %s is maidenless\n",  exp.SemantMe().name);
-}
-				System.out.format("!!!!!!!!!!HERE IS THE BUG !!!!!!!!!!!!!!!!!!!!!!!!!2 : %s is the name\n",  exp.SemantMe().name);
-			System.out.format(">> ERROR [%d:%d] illegal type cast from %s to %s\n", 2, 2, exp.SemantMe().name, t.name);
-			throw new semanticExc(this.LineNum);
-		}
-
-		
-		/*********************************************************/
-		/* [4] Return value is irrelevant for class declarations */
-		/*********************************************************/
-		return new TYPE_VAR(name,t.name);
-	}
-	
-	public TEMP IRme()
-	{
-		TEMP dst = IR.getInstance().fp;
-		if(exp != null) {
-			TEMP src = exp.IRme();
-			IR.getInstance().Add_IRcommand(new IRcommand_Store_Temp(src, dst, this.offset));
-		}
+		if (var != null) return var.SemantMe();
 
 		return null;
 	}
-	
+
+	public TEMP IRme(){
+		System.out.println("IRME IN AST_STMT_DEC_VAR");
+		return var.IRme();
+	}
+
 }

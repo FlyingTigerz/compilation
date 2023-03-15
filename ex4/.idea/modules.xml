@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Skeleton_Original/Skeleton_Original.iml" filepath="$PROJECT_DIR$/Skeleton_Original/Skeleton_Original.iml" />
-      <module fileurl="file://$PROJECT_DIR$/YousefChanges/YousefChanges.iml" filepath="$PROJECT_DIR$/YousefChanges/YousefChanges.iml" />
       <module fileurl="file://$PROJECT_DIR$/ex4.iml" filepath="$PROJECT_DIR$/ex4.iml" />
     </modules>
   </component>

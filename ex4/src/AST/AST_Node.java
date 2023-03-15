@@ -1,6 +1,7 @@
 package AST;
-import SYMBOL_TABLE.*;
+
 import TYPES.*;
+import TEMP.TEMP;
 
 public abstract class AST_Node
 {
@@ -10,9 +11,7 @@ public abstract class AST_Node
 	/* a graphviz dot format of the AST ...    */
 	/*******************************************/
 	public int SerialNumber;
-	public int LineNum;
-	public TYPE se=null;
-
+	
 	/***********************************************/
 	/* The default message for an unknown AST node */
 	/***********************************************/
@@ -20,4 +19,14 @@ public abstract class AST_Node
 	{
 		System.out.print("AST NODE UNKNOWN\n");
 	}
+
+	public TYPE SemantMe()
+	{
+		return null;
+	}
+	public TEMP IRme() {
+
+		return null;
+	}
+
 }

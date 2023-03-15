@@ -1,22 +1,14 @@
 package AST;
 import TYPES.*;
-import TEMP.*;
-import SYMBOL_TABLE.*;
 
 public abstract class AST_STMT extends AST_Node
 {
-
+	/*********************************************************/
+	/* The default message for an unknown AST statement node */
+	/*********************************************************/
 	public void PrintMe()
 	{
 		System.out.print("UNKNOWN AST STATEMENT NODE\n");
 	}
-	public TYPE SemantMe() throws semanticExc {return null;}
-	/*********************************************************/
-	/* The default message for an unknown AST statement node */
-	/*********************************************************/
-
-	public TEMP IRme(){return null;}
-
-
+	public TYPE SemantMe() throws RuntimeException{ return null;}
 }
-

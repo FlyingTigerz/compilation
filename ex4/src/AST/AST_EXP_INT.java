@@ -1,18 +1,22 @@
 package AST;
 
-import TYPES.TYPE;
-import TYPES.TYPE_INT;
+import TYPES.*;
+import SYMBOL_TABLE.*;
 import IR.*;
 import TEMP.*;
+import MIPS.MIPSGenerator;
 
 public class AST_EXP_INT extends AST_EXP
 {
 	public int value;
-	
+	public int sign;
+	public int lineNumber;
+	int MAX_INT = 32768;
+
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_INT(int LineNum,int value)
+	public AST_EXP_INT(int value, int sign,int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -22,13 +26,14 @@ public class AST_EXP_INT extends AST_EXP
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.format("====================== exp -> INT( %d )\n", value);
+		System.out.format("====================== exp -> INT(%c%d )\n", sign * 2 + 43, value);
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.value = value;
-		this.LineNum=++LineNum;
+		this.sign = sign;
+		this.lineNumber=lineNumber;
 	}
 
 	/************************************************/
@@ -39,36 +44,29 @@ public class AST_EXP_INT extends AST_EXP
 		/*******************************/
 		/* AST NODE TYPE = AST INT EXP */
 		/*******************************/
-		System.out.format("AST NODE INT( %d )\n",value);
+		System.out.format("AST NODE INT( %c%d )\n", sign * 2 + 43, value);
 
 		/*********************************/
 		/* Print to AST GRAPHIZ DOT file */
 		/*********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-			SerialNumber,
-			String.format("INT(%d)",value));
+				SerialNumber,
+				String.format("INT(%c%d)", sign * 2 + 43, value));
 	}
-	public TYPE SemantMe() { 
-		this.se = TYPE_INT.getInstance();
-		return this.se;
-		}
-	
-	public TEMP IRme()
+	public TYPE SemantMe() throws RuntimeException
 	{
-		return this.IRme(false);
-	}
-	
-	
-	public TEMP IRme(boolean allowImmediate)
-	{
-		if(allowImmediate){
-			return new TEMP(value, true);
-		}
-		else {
-			TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
-			IR.getInstance().Add_IRcommand(new IRcommandConstInt(t, value));
-			return t;
-		}
+		if(this.value >= MAX_INT) throw new RuntimeException(String.valueOf(lineNumber));
+		return TYPE_INT.getInstance();
 	}
 
+	public TEMP IRme() {
+		System.out.println("IRME IN AST_EXP_INT");
+
+		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
+		System.out.println(this.value);
+		System.out.println(this.sign);
+		IR.getInstance().Add_IRcommand(new IRcommandConstInt(t, this.sign * this.value));
+
+		return t;
+	}
 }

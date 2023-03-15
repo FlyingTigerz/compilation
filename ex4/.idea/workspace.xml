@@ -4,72 +4,52 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5efda461-f558-4083-81e0-bd213d189958" name="Changes" comment="" />
+    <list default="true" id="8c9eb65c-d781-4248-b086-ae695fe1170e" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
-  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="2LgxIEulYiwuraes13gPSM60QP1" />
+  <component name="ProjectId" id="2Mv3X3kz3tuJHXFUeSUT4QXb5IM" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/home/vboxuser/Downloads/hw4_comp/compilation/ex4/src/TYPES",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/vboxuser/Downloads/compilation-main/ex4&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;
   }
-}]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/TYPES" />
-    </key>
-  </component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="5efda461-f558-4083-81e0-bd213d189958" name="Changes" comment="" />
-      <created>1676306450146</created>
+      <changelist id="8c9eb65c-d781-4248-b086-ae695fe1170e" name="Changes" comment="" />
+      <created>1678634265577</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1676306450146</updated>
-      <workItem from="1677091021401" duration="9221000" />
+      <updated>1678634265577</updated>
+      <workItem from="1678634267870" duration="2309000" />
+      <workItem from="1678650186226" duration="4608000" />
+      <workItem from="1678706303734" duration="8054000" />
+      <workItem from="1678882135076" duration="47000" />
+      <workItem from="1678882436945" duration="37000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.cup" />
   </component>
 </project>

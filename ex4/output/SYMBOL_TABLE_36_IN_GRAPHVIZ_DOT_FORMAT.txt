@@ -27,89 +27,88 @@ hashTable [label="<f0>
 11
 |<f12>
 12
-|<f13>
-13
-|<f14>
-14
-|<f15>
-15
-|<f16>
-16
-|<f17>
-17
-|<f18>
-18
-|<f19>
-19
-|<f20>
-20
-|<f21>
-21
-|<f22>
-22
-|<f23>
-23
-|<f24>
-24
-|<f25>
-25
-|<f26>
-26
-|<f27>
-27
-|<f28>
-28
-|<f29>
-29
-|<f30>
-30
-|<f31>
-31
 "];
+hashTable:f0 -> node_0_0:f0;
+node_0_0 [label="<f0>i13|<f1>int|<f2>prevtop=22|<f3>next"];
+node_0_0 -> node_0_1 [style=invis,weight=10];
+node_0_0:f3 -> node_0_1:f0;
+node_0_1 [label="<f0>i08|<f1>int|<f2>prevtop=17|<f3>next"];
+node_0_1 -> node_0_2 [style=invis,weight=10];
+node_0_1:f3 -> node_0_2:f0;
+node_0_2 [label="<f0>PrintTarce|<f1>PrintTrace|<f2>prevtop=6|<f3>next"];
+node_0_2 -> node_0_3 [style=invis,weight=10];
+node_0_2:f3 -> node_0_3:f0;
+node_0_3 [label="<f0>PrintString|<f1>PrintString|<f2>prevtop=5|<f3>next"];
+hashTable:f1 -> node_1_0:f0;
+node_1_0 [label="<f0>i14|<f1>int|<f2>prevtop=23|<f3>next"];
+node_1_0 -> node_1_1 [style=invis,weight=10];
+node_1_0:f3 -> node_1_1:f0;
+node_1_1 [label="<f0>i09|<f1>int|<f2>prevtop=18|<f3>next"];
+hashTable:f2 -> node_2_0:f0;
+node_2_0 [label="<f0>i20|<f1>int|<f2>prevtop=29|<f3>next"];
+node_2_0 -> node_2_1 [style=invis,weight=10];
+node_2_0:f3 -> node_2_1:f0;
+node_2_1 [label="<f0>i15|<f1>int|<f2>prevtop=24|<f3>next"];
+hashTable:f3 -> node_3_0:f0;
+node_3_0 [label="<f0>i21|<f1>int|<f2>prevtop=30|<f3>next"];
+node_3_0 -> node_3_1 [style=invis,weight=10];
+node_3_0:f3 -> node_3_1:f0;
+node_3_1 [label="<f0>i16|<f1>int|<f2>prevtop=25|<f3>next"];
+hashTable:f4 -> node_4_0:f0;
+node_4_0 [label="<f0>i22|<f1>int|<f2>prevtop=31|<f3>next"];
+node_4_0 -> node_4_1 [style=invis,weight=10];
+node_4_0:f3 -> node_4_1:f0;
+node_4_1 [label="<f0>i17|<f1>int|<f2>prevtop=26|<f3>next"];
 hashTable:f5 -> node_5_0:f0;
-node_5_0 [label="<f0>Exit|<f1>Exit|<f2>prevtop=6|<f3>next"];
+node_5_0 [label="<f0>i18|<f1>int|<f2>prevtop=27|<f3>next"];
+hashTable:f6 -> node_6_0:f0;
+node_6_0 [label="<f0>i19|<f1>int|<f2>prevtop=28|<f3>next"];
+node_6_0 -> node_6_1 [style=invis,weight=10];
+node_6_0:f3 -> node_6_1:f0;
+node_6_1 [label="<f0>i01|<f1>int|<f2>prevtop=10|<f3>next"];
+node_6_1 -> node_6_2 [style=invis,weight=10];
+node_6_1:f3 -> node_6_2:f0;
+node_6_2 [label="<f0>SCOPE-BOUNDARY|<f1>NONE|<f2>prevtop=8|<f3>next"];
+node_6_2 -> node_6_3 [style=invis,weight=10];
+node_6_2:f3 -> node_6_3:f0;
+node_6_3 [label="<f0>int|<f1>int|<f2>prevtop=0|<f3>next"];
+hashTable:f7 -> node_7_0:f0;
+node_7_0 [label="<f0>i02|<f1>int|<f2>prevtop=11|<f3>next"];
+node_7_0 -> node_7_1 [style=invis,weight=10];
+node_7_0:f3 -> node_7_1:f0;
+node_7_1 [label="<f0>nil|<f1>nil|<f2>prevtop=3|<f3>next"];
 hashTable:f8 -> node_8_0:f0;
-node_8_0 [label="<f0>int|<f1>int|<f2>prevtop=1|<f3>next"];
+node_8_0 [label="<f0>i03|<f1>int|<f2>prevtop=12|<f3>next"];
 hashTable:f9 -> node_9_0:f0;
-node_9_0 [label="<f0>p|<f1>int|<f2>prevtop=16|<f3>next"];
+node_9_0 [label="<f0>i04|<f1>int|<f2>prevtop=13|<f3>next"];
 node_9_0 -> node_9_1 [style=invis,weight=10];
 node_9_0:f3 -> node_9_1:f0;
-node_9_1 [label="<f0>p|<f1>int|<f2>prevtop=8|<f3>next"];
+node_9_1 [label="<f0>foo|<f1>foo|<f2>prevtop=9|<f3>next"];
 node_9_1 -> node_9_2 [style=invis,weight=10];
 node_9_1:f3 -> node_9_2:f0;
-node_9_2 [label="<f0>PrintInt|<f1>PrintInt|<f2>prevtop=4|<f3>next"];
+node_9_2 [label="<f0>void|<f1>null|<f2>prevtop=2|<f3>next"];
 hashTable:f10 -> node_10_0:f0;
-node_10_0 [label="<f0>SCOPE-BOUNDARY|<f1>NONE|<f2>prevtop=18|<f3>next"];
+node_10_0 [label="<f0>i10|<f1>int|<f2>prevtop=19|<f3>next"];
 node_10_0 -> node_10_1 [style=invis,weight=10];
 node_10_0:f3 -> node_10_1:f0;
-node_10_1 [label="<f0>SCOPE-BOUNDARY|<f1>NONE|<f2>prevtop=17|<f3>next"];
-node_10_1 -> node_10_2 [style=invis,weight=10];
-node_10_1:f3 -> node_10_2:f0;
-node_10_2 [label="<f0>SCOPE-BOUNDARY|<f1>NONE|<f2>prevtop=13|<f3>next"];
-node_10_2 -> node_10_3 [style=invis,weight=10];
-node_10_2:f3 -> node_10_3:f0;
-node_10_3 [label="<f0>SCOPE-BOUNDARY|<f1>NONE|<f2>prevtop=0|<f3>next"];
-hashTable:f14 -> node_14_0:f0;
-node_14_0 [label="<f0>IsPrime|<f1>IsPrime|<f2>prevtop=9|<f3>next"];
-hashTable:f20 -> node_20_0:f0;
-node_20_0 [label="<f0>end|<f1>int|<f2>prevtop=15|<f3>next"];
-node_20_0 -> node_20_1 [style=invis,weight=10];
-node_20_0:f3 -> node_20_1:f0;
-node_20_1 [label="<f0>end|<f1>int|<f2>prevtop=11|<f3>next"];
-hashTable:f23 -> node_23_0:f0;
-node_23_0 [label="<f0>PrintString|<f1>PrintString|<f2>prevtop=5|<f3>next"];
-hashTable:f24 -> node_24_0:f0;
-node_24_0 [label="<f0>string|<f1>string|<f2>prevtop=2|<f3>next"];
-hashTable:f26 -> node_26_0:f0;
-node_26_0 [label="<f0>PrintPrimes|<f1>PrintPrimes|<f2>prevtop=12|<f3>next"];
-hashTable:f27 -> node_27_0:f0;
-node_27_0 [label="<f0>start|<f1>int|<f2>prevtop=14|<f3>next"];
-node_27_0 -> node_27_1 [style=invis,weight=10];
-node_27_0:f3 -> node_27_1:f0;
-node_27_1 [label="<f0>start|<f1>int|<f2>prevtop=10|<f3>next"];
-node_27_1 -> node_27_2 [style=invis,weight=10];
-node_27_1:f3 -> node_27_2:f0;
-node_27_2 [label="<f0>void|<f1>nil|<f2>prevtop=3|<f3>next"];
-hashTable:f31 -> node_31_0:f0;
-node_31_0 [label="<f0>PrintTrace|<f1>PrintTrace|<f2>prevtop=7|<f3>next"];
+node_10_1 [label="<f0>i05|<f1>int|<f2>prevtop=14|<f3>next"];
+hashTable:f11 -> node_11_0:f0;
+node_11_0 [label="<f0>i11|<f1>int|<f2>prevtop=20|<f3>next"];
+node_11_0 -> node_11_1 [style=invis,weight=10];
+node_11_0:f3 -> node_11_1:f0;
+node_11_1 [label="<f0>i06|<f1>int|<f2>prevtop=15|<f3>next"];
+node_11_1 -> node_11_2 [style=invis,weight=10];
+node_11_1:f3 -> node_11_2:f0;
+node_11_2 [label="<f0>sum|<f1>sum|<f2>prevtop=7|<f3>next"];
+node_11_2 -> node_11_3 [style=invis,weight=10];
+node_11_2:f3 -> node_11_3:f0;
+node_11_3 [label="<f0>PrintInt|<f1>PrintInt|<f2>prevtop=4|<f3>next"];
+hashTable:f12 -> node_12_0:f0;
+node_12_0 [label="<f0>i12|<f1>int|<f2>prevtop=21|<f3>next"];
+node_12_0 -> node_12_1 [style=invis,weight=10];
+node_12_0:f3 -> node_12_1:f0;
+node_12_1 [label="<f0>i07|<f1>int|<f2>prevtop=16|<f3>next"];
+node_12_1 -> node_12_2 [style=invis,weight=10];
+node_12_1:f3 -> node_12_2:f0;
+node_12_2 [label="<f0>string|<f1>string|<f2>prevtop=1|<f3>next"];
 }

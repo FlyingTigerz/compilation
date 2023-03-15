@@ -5,6 +5,12 @@ package IR;
 
 /*******************/
 /* GENERAL IMPORTS */
+
+/*
+What This IR Command Do ?
+Add new label
+
+*/
 /*******************/
 
 /*******************/
@@ -29,6 +35,4 @@ public class IRcommand_Label extends IRcommand
 	{
 		MIPSGenerator.getInstance().label(label_name);
 	}
-
-	public void printMe() { IR.getInstance().fileNewLine(true); IR.getInstance().filePrintln("  " + label_name  + ":"); }
 }

@@ -10,11 +10,9 @@ package IR;
 /*******************/
 /* PROJECT IMPORTS */
 /*******************/
-import TEMP.*;
-import MIPS.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import MIPS.MIPSGenerator;
+import TEMP.TEMP;
 
 public class IRcommand_Jump_If_Eq_To_Zero extends IRcommand
 {
@@ -26,12 +24,6 @@ public class IRcommand_Jump_If_Eq_To_Zero extends IRcommand
 		this.t          = t;
 		this.label_name = label_name;
 	}
-
-	public Set<TEMP> usedRegs() {
-		Set<TEMP> used_regs = new HashSet<TEMP>();
-		used_regs.add(t);
-		return used_regs;
-	}
 	
 	/***************/
 	/* MIPS me !!! */
@@ -40,6 +32,4 @@ public class IRcommand_Jump_If_Eq_To_Zero extends IRcommand
 	{
 		MIPSGenerator.getInstance().beqz(t,label_name);
 	}
-
-	public void printMe() { IR.getInstance().fileNewLine(); IR.getInstance().filePrintln("jifz " + t + ", " + label_name); }
 }

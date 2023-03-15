@@ -1,15 +1,22 @@
 package AST;
+
+import TYPES.*;
+import SYMBOL_TABLE.*;
+import IR.*;
 import TEMP.TEMP;
-import TYPES.TYPE;
+import TEMP.TEMP_FACTORY;
+import MIPS.MIPSGenerator;
 
 public class AST_EXP_VAR extends AST_EXP
 {
 	public AST_VAR var;
+	public int lineNumber;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_VAR(int LineNum,AST_VAR var)
+
+	public AST_EXP_VAR(AST_VAR var,int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -25,7 +32,7 @@ public class AST_EXP_VAR extends AST_EXP
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.var = var;
-		this.LineNum=++LineNum;
+		this.lineNumber=lineNumber;
 	}
 	
 	/***********************************************/
@@ -56,10 +63,20 @@ public class AST_EXP_VAR extends AST_EXP
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 			
 	}
-	
-	public TYPE SemantMe() throws semanticExc { return var.SemantMe(); }
+	public TYPE SemantMe() throws RuntimeException{
+		if (var != null) return var.SemantMe();
+		return null;
+	}
+
+
+	@Override
 	public TEMP IRme() {
-		return var.IRme();
+		System.out.println("IRME IN AST_EXP_VAR");
+
+		TEMP temp_left_value = var.IRme();
+		TEMP temp_right_value = TEMP_FACTORY.getInstance().getFreshTEMP();
+		IR.getInstance().Add_IRcommand(new IRcommand_Load(temp_right_value, temp_left_value));
+		return temp_right_value;
 	}
 
 }
